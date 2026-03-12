@@ -1,468 +1,1422 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Hostel Warden Dashboard</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<script src="https://cdn.tailwindcss.com"></script>
-
+<title>Warden Portal — Hostel Management</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
 <style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-body{
-font-family:Inter;
-background:#f8fafc;
-color:#0f172a;
+:root {
+  --navy: #0a1628;
+  --navy2: #0f2040;
+  --blue: #1a56db;
+  --blue2: #2563eb;
+  --accent: #f59e0b;
+  --green: #10b981;
+  --red: #ef4444;
+  --surface: #ffffff;
+  --surface2: #f8fafc;
+  --border: #e2e8f0;
+  --text: #0f172a;
+  --muted: #64748b;
+  --sidebar-w: 250px;
 }
 
-.sidebar{
-width:230px;
-background:white;
-border-right:1px solid #e5e7eb;
-position:fixed;
-height:100vh;
-padding:24px;
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--surface2);
+  color: var(--text);
+  min-height: 100vh;
+  display: flex;
 }
 
-.main{
-margin-left:230px;
-padding:30px;
+/* ── SIDEBAR ── */
+.sidebar {
+  width: var(--sidebar-w);
+  background: var(--navy);
+  min-height: 100vh;
+  position: fixed;
+  top: 0; left: 0;
+  display: flex;
+  flex-direction: column;
+  z-index: 100;
 }
 
-.card{
-background:white;
-border:1px solid #e5e7eb;
-border-radius:10px;
-padding:20px;
+.sidebar-brand {
+  padding: 28px 24px 20px;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
 }
 
-.nav-item{
-cursor:pointer;
-padding:8px 0;
-font-size:14px;
+.sidebar-brand .logo-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 6px;
 }
 
-.nav-item:hover{
-color:#2563eb;
+.logo-icon {
+  width: 36px; height: 36px;
+  background: linear-gradient(135deg, var(--blue), var(--accent));
+  border-radius: 9px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
 }
 
-.btn{
-background:#2563eb;
-color:white;
-padding:7px 14px;
-border-radius:6px;
-font-size:14px;
+.sidebar-brand h1 {
+  font-family: 'Syne', sans-serif;
+  font-size: 17px;
+  font-weight: 700;
+  color: white;
+  letter-spacing: -0.3px;
 }
 
-table{
-width:100%;
-border-collapse:collapse;
+.sidebar-brand p {
+  font-size: 11px;
+  color: rgba(255,255,255,0.35);
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  margin-top: 2px;
 }
 
-th{
-text-align:left;
-font-size:13px;
-color:#64748b;
-padding:10px;
-border-bottom:1px solid #e5e7eb;
+.sidebar-nav {
+  padding: 20px 14px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
 }
 
-td{
-padding:12px 10px;
-border-bottom:1px solid #f1f5f9;
+.nav-label {
+  font-size: 10px;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.25);
+  padding: 12px 12px 6px;
+  margin-top: 6px;
 }
 
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  color: rgba(255,255,255,0.6);
+  font-size: 13.5px;
+  font-weight: 500;
+  transition: all 0.18s;
+  position: relative;
+}
+
+.nav-item:hover {
+  background: rgba(255,255,255,0.07);
+  color: rgba(255,255,255,0.9);
+}
+
+.nav-item.active {
+  background: rgba(26,86,219,0.3);
+  color: white;
+}
+
+.nav-item.active::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 25%; bottom: 25%;
+  width: 3px;
+  background: var(--blue2);
+  border-radius: 0 3px 3px 0;
+}
+
+.nav-item .ico { font-size: 16px; width: 20px; text-align: center; }
+
+.nav-badge {
+  margin-left: auto;
+  background: var(--accent);
+  color: var(--navy);
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 20px;
+  min-width: 20px;
+  text-align: center;
+}
+
+.sidebar-footer {
+  padding: 14px;
+  border-top: 1px solid rgba(255,255,255,0.07);
+}
+
+.logout-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  color: rgba(255,255,255,0.5);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.18s;
+  width: 100%;
+}
+
+.logout-btn:hover {
+  background: rgba(239,68,68,0.15);
+  color: #fca5a5;
+}
+
+/* ── MAIN ── */
+.main {
+  margin-left: var(--sidebar-w);
+  flex: 1;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.topbar {
+  background: white;
+  border-bottom: 1px solid var(--border);
+  padding: 0 32px;
+  height: 60px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.page-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.breadcrumb {
+  font-size: 12px;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.topbar-right {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.pulse-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--green);
+  position: relative;
+}
+
+.pulse-dot::after {
+  content: '';
+  position: absolute;
+  inset: -3px;
+  border-radius: 50%;
+  background: var(--green);
+  opacity: 0.3;
+  animation: pulse 2s infinite;
+}
+
+@keyframes pulse { 0%,100%{transform:scale(1);opacity:0.3} 50%{transform:scale(1.6);opacity:0} }
+
+.live-label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--green);
+  letter-spacing: 0.5px;
+}
+
+.admin-chip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  padding: 6px 14px 6px 6px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--muted);
+}
+
+.admin-avatar {
+  width: 26px; height: 26px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--blue), var(--accent));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+  color: white;
+  font-weight: 700;
+}
+
+/* ── PAGE CONTENT ── */
+.page-content {
+  padding: 28px 32px;
+  flex: 1;
+}
+
+.page { display: none; }
+.page.active { display: block; animation: fadeIn 0.25s ease; }
+@keyframes fadeIn { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
+
+/* ── STAT CARDS ── */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 18px;
+  margin-bottom: 28px;
+}
+
+.stat-card {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px 22px;
+  position: relative;
+  overflow: hidden;
+  transition: box-shadow 0.2s;
+}
+
+.stat-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.07); }
+
+.stat-card::after {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+}
+
+.stat-card.blue::after { background: linear-gradient(90deg, var(--blue), var(--blue2)); }
+.stat-card.green::after { background: linear-gradient(90deg, #059669, var(--green)); }
+.stat-card.amber::after { background: linear-gradient(90deg, #d97706, var(--accent)); }
+.stat-card.red::after { background: linear-gradient(90deg, #dc2626, var(--red)); }
+
+.stat-icon {
+  font-size: 22px;
+  margin-bottom: 12px;
+  display: block;
+}
+
+.stat-value {
+  font-family: 'Syne', sans-serif;
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1;
+}
+
+.stat-label {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 4px;
+  font-weight: 500;
+}
+
+.stat-sub {
+  font-size: 11px;
+  color: var(--green);
+  margin-top: 8px;
+  font-weight: 500;
+}
+
+/* ── SECTION HEADERS ── */
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+
+.section-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.section-sub {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 2px;
+}
+
+/* ── BUTTONS ── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: 7px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: all 0.15s;
+  font-family: 'DM Sans', sans-serif;
+}
+
+.btn-primary {
+  background: var(--navy);
+  color: white;
+}
+.btn-primary:hover { background: var(--navy2); transform: translateY(-1px); }
+
+.btn-blue {
+  background: var(--blue2);
+  color: white;
+}
+.btn-blue:hover { background: var(--blue); }
+
+.btn-ghost {
+  background: white;
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+.btn-ghost:hover { background: var(--surface2); }
+
+.btn-sm {
+  padding: 5px 11px;
+  font-size: 12px;
+  border-radius: 6px;
+}
+
+.btn-success { background: var(--green); color: white; }
+.btn-success:hover { background: #059669; }
+
+.btn-danger { background: var(--red); color: white; }
+.btn-danger:hover { background: #dc2626; }
+
+/* ── CARD ── */
+.card {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.card-header {
+  padding: 16px 22px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.card-body { padding: 20px 22px; }
+
+/* ── FORM PANEL ── */
+.form-panel {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  margin-bottom: 20px;
+  overflow: hidden;
+  animation: slideDown 0.2s ease;
+}
+
+@keyframes slideDown { from{opacity:0;transform:translateY(-8px)} to{opacity:1;transform:translateY(0)} }
+
+.form-panel-header {
+  padding: 14px 20px;
+  background: var(--navy);
+  color: white;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: 'Syne', sans-serif;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.form-panel-body { padding: 22px; }
+
+.form-grid {
+  display: grid;
+  gap: 14px;
+}
+
+.form-grid-2 { grid-template-columns: 1fr 1fr; }
+.form-grid-3 { grid-template-columns: 1fr 1fr 1fr; }
+
+.form-group { display: flex; flex-direction: column; gap: 5px; }
+
+.form-label {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: var(--muted);
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+}
+
+.form-input {
+  border: 1.5px solid var(--border);
+  border-radius: 7px;
+  padding: 9px 13px;
+  font-size: 13.5px;
+  font-family: 'DM Sans', sans-serif;
+  color: var(--text);
+  background: white;
+  transition: border-color 0.15s, box-shadow 0.15s;
+  outline: none;
+  width: 100%;
+}
+
+.form-input:focus {
+  border-color: var(--blue2);
+  box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+}
+
+.form-input::placeholder { color: #b0bec5; }
+
+select.form-input { cursor: pointer; }
+
+.form-actions {
+  margin-top: 18px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+/* ── TABLE ── */
+.table-wrap { overflow-x: auto; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+thead tr { background: var(--surface2); }
+
+th {
+  text-align: left;
+  font-size: 11px;
+  font-weight: 700;
+  color: var(--muted);
+  padding: 11px 16px;
+  letter-spacing: 0.7px;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--border);
+}
+
+td {
+  padding: 13px 16px;
+  font-size: 13.5px;
+  border-bottom: 1px solid #f1f5f9;
+  color: var(--text);
+  vertical-align: middle;
+}
+
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: #fafcff; }
+
+/* ── AVATAR ── */
+.student-avatar {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--border);
+}
+
+.avatar-placeholder {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--blue2);
+  border: 2px solid var(--border);
+}
+
+/* ── BADGES ── */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 11.5px;
+  font-weight: 600;
+}
+
+.badge-pending { background: #fef3c7; color: #92400e; }
+.badge-approved { background: #d1fae5; color: #065f46; }
+.badge-rejected { background: #fee2e2; color: #991b1b; }
+.badge-room { background: #ede9fe; color: #5b21b6; }
+.badge-bed { background: #e0f2fe; color: #075985; }
+.badge-shift { background: #fce7f3; color: #9d174d; }
+
+/* ── EMPTY STATE ── */
+.empty-state {
+  text-align: center;
+  padding: 50px 20px;
+  color: var(--muted);
+}
+
+.empty-state .icon { font-size: 40px; margin-bottom: 12px; opacity: 0.4; }
+.empty-state p { font-size: 13.5px; }
+
+/* ── TOAST ── */
+#toast-container {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.toast {
+  background: var(--navy);
+  color: white;
+  padding: 13px 18px;
+  border-radius: 9px;
+  font-size: 13px;
+  font-weight: 500;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  animation: toastIn 0.25s ease;
+  min-width: 260px;
+  max-width: 340px;
+}
+
+.toast.success { border-left: 4px solid var(--green); }
+.toast.error { border-left: 4px solid var(--red); }
+.toast.info { border-left: 4px solid var(--blue2); }
+
+@keyframes toastIn { from{opacity:0;transform:translateX(20px)} to{opacity:1;transform:translateX(0)} }
+@keyframes toastOut { from{opacity:1;transform:translateX(0)} to{opacity:0;transform:translateX(20px)} }
+
+/* ── ACTIVITY FEED ── */
+.activity-list { display: flex; flex-direction: column; gap: 0; }
+
+.activity-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 13px;
+  padding: 13px 0;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.activity-item:last-child { border-bottom: none; }
+
+.activity-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  margin-top: 5px;
+  flex-shrink: 0;
+}
+
+.activity-dot.green { background: var(--green); }
+.activity-dot.blue { background: var(--blue2); }
+.activity-dot.amber { background: var(--accent); }
+.activity-dot.red { background: var(--red); }
+
+.activity-text { font-size: 13px; color: var(--text); line-height: 1.4; }
+.activity-time { font-size: 11px; color: var(--muted); margin-top: 3px; }
+
+/* ── ROOM GRID ── */
+.room-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  gap: 14px;
+}
+
+.room-card {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  transition: box-shadow 0.2s;
+}
+
+.room-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.07); }
+
+.room-card-header {
+  background: var(--navy);
+  color: white;
+  padding: 12px 16px;
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.room-card-body { padding: 14px 16px; }
+
+.bed-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 0;
+  border-bottom: 1px solid #f1f5f9;
+  font-size: 13px;
+}
+
+.bed-row:last-child { border-bottom: none; }
+.bed-label { font-weight: 600; color: var(--muted); font-size: 11px; text-transform: uppercase; }
+.bed-name { color: var(--text); }
+
+/* ── SECURITY CARD ── */
+.security-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 16px;
+}
+
+.security-card {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  transition: box-shadow 0.2s;
+}
+
+.security-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.07); }
+
+.security-avatar {
+  width: 50px; height: 50px;
+  border-radius: 12px;
+  background: linear-gradient(135deg, var(--navy), var(--blue));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  flex-shrink: 0;
+}
+
+.security-info .name {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.security-info .username {
+  font-size: 11.5px;
+  color: var(--muted);
+  margin-top: 2px;
+}
+
+.security-info .shift {
+  margin-top: 8px;
+}
+
+/* ── LOADING SPINNER ── */
+.spinner {
+  display: inline-block;
+  width: 16px; height: 16px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 1100px) {
+  .stats-grid { grid-template-columns: repeat(2, 1fr); }
+  .form-grid-3 { grid-template-columns: 1fr 1fr; }
+}
 </style>
-
 </head>
-
 <body>
 
+<!-- TOAST CONTAINER -->
+<div id="toast-container"></div>
+
 <!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="sidebar-brand">
+    <div class="logo-badge">
+      <div class="logo-icon">🏛️</div>
+      <h1>HostelOS</h1>
+    </div>
+    <p>Warden Control Panel</p>
+  </div>
 
-<div class="sidebar">
+  <nav class="sidebar-nav">
+    <div class="nav-label">Overview</div>
+    <div class="nav-item active" onclick="showPage('dashboard',this)">
+      <span class="ico">📊</span> Dashboard
+    </div>
 
-<h2 class="text-xl font-semibold mb-8">Hostel Admin</h2>
+    <div class="nav-label">Management</div>
+    <div class="nav-item" onclick="showPage('students',this)">
+      <span class="ico">🎓</span> Students
+    </div>
+    <div class="nav-item" onclick="showPage('rooms',this)">
+      <span class="ico">🏠</span> Rooms
+    </div>
+    <div class="nav-item" onclick="showPage('requests',this)">
+      <span class="ico">📋</span> Leave Requests
+      <span class="nav-badge" id="sidebarBadge" style="display:none">0</span>
+    </div>
 
-<div class="space-y-3">
+    <div class="nav-label">Staff</div>
+    <div class="nav-item" onclick="showPage('security',this)">
+      <span class="ico">🛡️</span> Security Staff
+    </div>
+  </nav>
 
-<div class="nav-item" onclick="showPage('dashboard')">Dashboard</div>
+  <div class="sidebar-footer">
+    <a href="/logout" class="logout-btn">
+      <span>🚪</span> Sign Out
+    </a>
+  </div>
+</aside>
 
-<div class="nav-item" onclick="showPage('students')">Students</div>
-
-<div class="nav-item" onclick="showPage('rooms')">Rooms</div>
-
-<div class="nav-item" onclick="showPage('requests')">Leave Requests</div>
-
-<div class="nav-item" onclick="showPage('security')">Security Staff</div>
-
+<!-- TOPBAR -->
+<div style="margin-left:var(--sidebar-w); display:flex; flex-direction:column; flex:1;">
+<div class="topbar">
+  <div class="topbar-left">
+    <div>
+      <div class="page-title" id="topbarTitle">Dashboard</div>
+      <div class="breadcrumb">HostelOS / <span id="topbarSub">Overview</span></div>
+    </div>
+  </div>
+  <div class="topbar-right">
+    <div class="pulse-dot"></div>
+    <span class="live-label">LIVE</span>
+    <div class="admin-chip">
+      <div class="admin-avatar">W</div>
+      Warden
+    </div>
+  </div>
 </div>
 
-<div class="mt-10">
-<a href="/logout" class="btn">Logout</a>
+<!-- PAGES -->
+<div class="page-content">
+
+<!-- ════ DASHBOARD ════ -->
+<div id="dashboardPage" class="page active">
+  <div class="stats-grid">
+    <div class="stat-card blue">
+      <span class="stat-icon">🎓</span>
+      <div class="stat-value" id="statStudents">—</div>
+      <div class="stat-label">Total Students</div>
+      <div class="stat-sub" id="statStudentsSub">Loading...</div>
+    </div>
+    <div class="stat-card green">
+      <span class="stat-icon">🏠</span>
+      <div class="stat-value" id="statRooms">—</div>
+      <div class="stat-label">Total Rooms</div>
+      <div class="stat-sub" id="statRoomsSub">Loading...</div>
+    </div>
+    <div class="stat-card amber">
+      <span class="stat-icon">⏳</span>
+      <div class="stat-value" id="statPending">—</div>
+      <div class="stat-label">Pending Requests</div>
+      <div class="stat-sub" id="statPendingSub">Awaiting review</div>
+    </div>
+    <div class="stat-card red">
+      <span class="stat-icon">🛡️</span>
+      <div class="stat-value" id="statSecurity">—</div>
+      <div class="stat-label">Security Staff</div>
+      <div class="stat-sub" id="statSecuritySub">Loading...</div>
+    </div>
+  </div>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <div class="section-title">Recent Leave Requests</div>
+          <div class="section-sub">Latest activity — auto-refreshing</div>
+        </div>
+        <div style="display:flex;gap:5px;align-items:center;font-size:11px;color:var(--green);font-weight:600;">
+          <div class="pulse-dot"></div> Live
+        </div>
+      </div>
+      <div class="card-body" style="padding:0 22px;">
+        <div id="dashActivity" class="activity-list">
+          <div class="empty-state"><div class="icon">📋</div><p>No requests yet</p></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <div class="section-title">Quick Actions</div>
+          <div class="section-sub">Common tasks</div>
+        </div>
+      </div>
+      <div class="card-body" style="display:flex;flex-direction:column;gap:10px;">
+        <button class="btn btn-primary" style="justify-content:flex-start;" onclick="showPage('students', document.querySelectorAll('.nav-item')[1]); toggle('studentFormBox')">
+          <span>➕</span> Add New Student
+        </button>
+        <button class="btn btn-ghost" style="justify-content:flex-start;" onclick="showPage('rooms', document.querySelectorAll('.nav-item')[2]); toggle('roomFormBox')">
+          <span>🏠</span> Create New Room
+        </button>
+        <button class="btn btn-ghost" style="justify-content:flex-start;" onclick="showPage('security', document.querySelectorAll('.nav-item')[4]); toggle('securityFormBox')">
+          <span>🛡️</span> Add Security Staff
+        </button>
+        <button class="btn btn-ghost" style="justify-content:flex-start;" onclick="showPage('requests', document.querySelectorAll('.nav-item')[3])">
+          <span>📋</span> Review Leave Requests
+        </button>
+      </div>
+    </div>
+  </div>
 </div>
 
+<!-- ════ STUDENTS ════ -->
+<div id="studentsPage" class="page">
+  <div class="section-header">
+    <div>
+      <div class="section-title">Student Directory</div>
+      <div class="section-sub">Manage enrolled hostel students</div>
+    </div>
+    <button class="btn btn-primary" onclick="toggle('studentFormBox')">
+      <span>＋</span> Add Student
+    </button>
+  </div>
+
+  <div id="studentFormBox" class="form-panel" style="display:none;">
+    <div class="form-panel-header">🎓 New Student Registration</div>
+    <div class="form-panel-body">
+      <form id="studentForm">
+        <div class="form-grid form-grid-2">
+          <div class="form-group">
+            <label class="form-label">Username</label>
+            <input class="form-input" name="username" placeholder="e.g. john_doe" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Password</label>
+            <input class="form-input" name="password" type="password" placeholder="Set initial password" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Full Name</label>
+            <input class="form-input" name="name" placeholder="e.g. John Doe" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Room Number</label>
+            <input class="form-input" name="room" placeholder="e.g. 101" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Bed Assignment</label>
+            <select class="form-input" name="bed">
+              <option value="A">Bed A</option>
+              <option value="B">Bed B</option>
+              <option value="C">Bed C</option>
+              <option value="D">Bed D</option>
+              <option value="E">Bed E</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Photo (optional)</label>
+            <input class="form-input" type="file" id="photoFile" accept="image/*">
+            <input type="hidden" name="photo" id="photoBase64">
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-blue" id="studentSubmitBtn">
+            <span>✓</span> Register Student
+          </button>
+          <button type="button" class="btn btn-ghost" onclick="toggle('studentFormBox')">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-header">
+      <div class="section-title" style="font-size:13px;">All Students</div>
+      <span id="studentCountBadge" class="badge badge-room">0 enrolled</span>
+    </div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Student</th>
+            <th>Username</th>
+            <th>Room</th>
+            <th>Bed</th>
+          </tr>
+        </thead>
+        <tbody id="studentsTable">
+          <tr><td colspan="4"><div class="empty-state"><div class="icon">🎓</div><p>No students registered</p></div></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
 </div>
 
-<!-- MAIN -->
+<!-- ════ ROOMS ════ -->
+<div id="roomsPage" class="page">
+  <div class="section-header">
+    <div>
+      <div class="section-title">Room Management</div>
+      <div class="section-sub">Configure and assign hostel rooms</div>
+    </div>
+    <button class="btn btn-primary" onclick="toggle('roomFormBox')">
+      <span>＋</span> Create Room
+    </button>
+  </div>
 
-<div class="main">
+  <div id="roomFormBox" class="form-panel" style="display:none;">
+    <div class="form-panel-header">🏠 New Room Configuration</div>
+    <div class="form-panel-body">
+      <form id="roomForm">
+        <div class="form-grid form-grid-3">
+          <div class="form-group" style="grid-column:1/-1;">
+            <label class="form-label">Room Number</label>
+            <input class="form-input" name="room_number" placeholder="e.g. 101" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Bed A — Occupant</label>
+            <input class="form-input" name="bedA" placeholder="Student name or ID">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Bed B — Occupant</label>
+            <input class="form-input" name="bedB" placeholder="Student name or ID">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Bed C — Occupant</label>
+            <input class="form-input" name="bedC" placeholder="Leave blank if unoccupied">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Bed D — Occupant</label>
+            <input class="form-input" name="bedD" placeholder="Leave blank if unoccupied">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Bed E — Occupant</label>
+            <input class="form-input" name="bedE" placeholder="Leave blank if unoccupied">
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-blue">
+            <span>✓</span> Create Room
+          </button>
+          <button type="button" class="btn btn-ghost" onclick="toggle('roomFormBox')">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
-<!-- DASHBOARD -->
-
-<div id="dashboardPage">
-
-<h1 class="text-2xl font-semibold mb-6">Dashboard</h1>
-
-<div class="grid grid-cols-3 gap-6">
-
-<div class="card">
-<div class="text-sm text-gray-500">Students</div>
-<div id="studentCount" class="text-2xl mt-2">0</div>
+  <div id="roomsGrid" class="room-grid">
+    <div style="grid-column:1/-1;"><div class="empty-state"><div class="icon">🏠</div><p>No rooms configured yet</p></div></div>
+  </div>
 </div>
 
-<div class="card">
-<div class="text-sm text-gray-500">Rooms</div>
-<div id="roomCount" class="text-2xl mt-2">0</div>
+<!-- ════ REQUESTS ════ -->
+<div id="requestsPage" class="page">
+  <div class="section-header">
+    <div>
+      <div class="section-title">Leave Requests</div>
+      <div class="section-sub">Review and action student leave applications</div>
+    </div>
+    <div style="display:flex;align-items:center;gap:8px;">
+      <div class="pulse-dot"></div>
+      <span style="font-size:12px;color:var(--green);font-weight:600;">Auto-refreshing every 4s</span>
+    </div>
+  </div>
+
+  <div style="display:flex;gap:12px;margin-bottom:18px;" id="requestFilters">
+    <button class="btn btn-primary btn-sm" onclick="filterRequests('all',this)">All</button>
+    <button class="btn btn-ghost btn-sm" onclick="filterRequests('pending',this)">⏳ Pending</button>
+    <button class="btn btn-ghost btn-sm" onclick="filterRequests('approved',this)">✅ Approved</button>
+    <button class="btn btn-ghost btn-sm" onclick="filterRequests('rejected',this)">❌ Rejected</button>
+  </div>
+
+  <div class="card">
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Student</th>
+            <th>Room</th>
+            <th>Reason</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="requestsTable">
+          <tr><td colspan="5"><div class="empty-state"><div class="icon">📋</div><p>No leave requests</p></div></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
 </div>
 
-<div class="card">
-<div class="text-sm text-gray-500">Pending Requests</div>
-<div id="requestCount" class="text-2xl mt-2">0</div>
+<!-- ════ SECURITY ════ -->
+<div id="securityPage" class="page">
+  <div class="section-header">
+    <div>
+      <div class="section-title">Security Staff</div>
+      <div class="section-sub">Manage hostel security personnel</div>
+    </div>
+    <button class="btn btn-primary" onclick="toggle('securityFormBox')">
+      <span>＋</span> Add Staff
+    </button>
+  </div>
+
+  <div id="securityFormBox" class="form-panel" style="display:none;">
+    <div class="form-panel-header">🛡️ Add Security Personnel</div>
+    <div class="form-panel-body">
+      <form id="securityForm">
+        <div class="form-grid form-grid-2">
+          <div class="form-group">
+            <label class="form-label">Username</label>
+            <input class="form-input" name="username" placeholder="e.g. guard_001" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Password</label>
+            <input class="form-input" name="password" type="password" placeholder="Set initial password" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Full Name</label>
+            <input class="form-input" name="name" placeholder="e.g. Ramesh Kumar" required>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Shift</label>
+            <select class="form-input" name="shift">
+              <option value="morning">🌅 Morning Shift (6AM–2PM)</option>
+              <option value="afternoon">☀️ Afternoon Shift (2PM–10PM)</option>
+              <option value="night">🌙 Night Shift (10PM–6AM)</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-blue">
+            <span>✓</span> Add Personnel
+          </button>
+          <button type="button" class="btn btn-ghost" onclick="toggle('securityFormBox')">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="securityGrid" class="security-grid">
+    <div style="grid-column:1/-1;"><div class="empty-state"><div class="icon">🛡️</div><p>No security staff added</p></div></div>
+  </div>
 </div>
 
-</div>
-
-</div>
-
-<!-- STUDENTS PAGE -->
-
-<div id="studentsPage" class="hidden">
-
-<div class="flex justify-between mb-4">
-
-<h1 class="text-xl font-semibold">Students</h1>
-
-<button onclick="toggle('studentFormBox')" class="btn">Add Student</button>
-
-</div>
-
-<div id="studentFormBox" class="card mb-6 hidden">
-
-<form id="studentForm" class="grid grid-cols-2 gap-4">
-
-<input name="username" placeholder="Username" required>
-<input name="password" placeholder="Password" required>
-<input name="name" placeholder="Full Name" required>
-<input name="room" placeholder="Room Number" required>
-
-<select name="bed">
-<option>A</option>
-<option>B</option>
-<option>C</option>
-<option>D</option>
-<option>E</option>
-</select>
-
-<input type="file" id="photoFile">
-
-<input type="hidden" name="photo" id="photoBase64">
-
-<button class="btn col-span-2">Create Student</button>
-
-</form>
-
-</div>
-
-<div class="card">
-
-<table>
-
-<thead>
-<tr>
-<th>Photo</th>
-<th>Name</th>
-<th>Room</th>
-<th>Bed</th>
-</tr>
-</thead>
-
-<tbody id="studentsTable"></tbody>
-
-</table>
-
-</div>
-
-</div>
-
-<!-- ROOMS PAGE -->
-
-<div id="roomsPage" class="hidden">
-
-<div class="flex justify-between mb-4">
-
-<h1 class="text-xl font-semibold">Rooms</h1>
-
-<button onclick="toggle('roomFormBox')" class="btn">Create Room</button>
-
-</div>
-
-<div id="roomFormBox" class="card mb-6 hidden">
-
-<form id="roomForm" class="grid grid-cols-3 gap-4">
-
-<input name="room_number" placeholder="Room">
-
-<input name="bedA" placeholder="Bed A">
-<input name="bedB" placeholder="Bed B">
-<input name="bedC" placeholder="Bed C">
-<input name="bedD" placeholder="Bed D">
-<input name="bedE" placeholder="Bed E">
-
-<button class="btn col-span-3">Create Room</button>
-
-</form>
-
-</div>
-
-<div class="card">
-
-<table>
-
-<thead>
-<tr>
-<th>Room</th>
-<th>A</th>
-<th>B</th>
-<th>C</th>
-<th>D</th>
-<th>E</th>
-</tr>
-</thead>
-
-<tbody id="roomsTable"></tbody>
-
-</table>
-
-</div>
-
-</div>
-
-<!-- REQUESTS PAGE -->
-
-<div id="requestsPage" class="hidden">
-
-<h1 class="text-xl font-semibold mb-4">Leave Requests</h1>
-
-<div class="card">
-
-<table>
-
-<thead>
-<tr>
-<th>Student</th>
-<th>Room</th>
-<th>Reason</th>
-<th>Status</th>
-<th>Action</th>
-</tr>
-</thead>
-
-<tbody id="requestsTable"></tbody>
-
-</table>
-
-</div>
-
-</div>
-
-</div>
+</div><!-- /page-content -->
+</div><!-- /main wrapper -->
 
 <script>
+/* ════════════ STATE ════════════ */
+let allRequests = [];
+let currentFilter = 'all';
+const pageTitles = {
+  dashboard: ['Dashboard','Overview'],
+  students: ['Students','Directory'],
+  rooms: ['Rooms','Floor Plan'],
+  requests: ['Leave Requests','Approvals'],
+  security: ['Security Staff','Personnel']
+};
 
-/* PAGE NAVIGATION */
-
-function showPage(page){
-
-document.querySelectorAll("[id$='Page']").forEach(p=>p.classList.add("hidden"))
-
-document.getElementById(page+"Page").classList.remove("hidden")
-
+/* ════════════ PAGE NAV ════════════ */
+function showPage(page, el) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(page + 'Page').classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  if (el) el.classList.add('active');
+  const [title, sub] = pageTitles[page] || [page, ''];
+  document.getElementById('topbarTitle').textContent = title;
+  document.getElementById('topbarSub').textContent = sub;
+  if (page === 'students') loadStudents();
+  if (page === 'rooms') loadRooms();
+  if (page === 'security') loadSecurity();
 }
 
-/* TOGGLE */
-
-function toggle(id){
-document.getElementById(id).classList.toggle("hidden")
+/* ════════════ TOGGLE ════════════ */
+function toggle(id) {
+  const el = document.getElementById(id);
+  el.style.display = el.style.display === 'none' ? 'block' : 'none';
 }
 
-/* IMAGE ENCODE */
-
-document.addEventListener("change",function(e){
-
-if(e.target.id==="photoFile"){
-
-const reader=new FileReader()
-
-reader.onload=()=>{
-
-document.getElementById("photoBase64").value=reader.result.split(",")[1]
-
+/* ════════════ TOAST ════════════ */
+function toast(msg, type = 'info') {
+  const icons = { success:'✅', error:'❌', info:'ℹ️' };
+  const t = document.createElement('div');
+  t.className = `toast ${type}`;
+  t.innerHTML = `<span>${icons[type]||'ℹ️'}</span><span>${msg}</span>`;
+  document.getElementById('toast-container').appendChild(t);
+  setTimeout(() => {
+    t.style.animation = 'toastOut 0.25s ease forwards';
+    setTimeout(() => t.remove(), 300);
+  }, 3500);
 }
 
-reader.readAsDataURL(e.target.files[0])
+/* ════════════ IMAGE ENCODE ════════════ */
+document.addEventListener('change', e => {
+  if (e.target.id === 'photoFile') {
+    const reader = new FileReader();
+    reader.onload = () => { document.getElementById('photoBase64').value = reader.result.split(',')[1]; };
+    reader.readAsDataURL(e.target.files[0]);
+  }
+});
 
+/* ════════════ STUDENTS ════════════ */
+async function loadStudents() {
+  const res = await fetch('/api/students');
+  const data = await res.json();
+  document.getElementById('statStudents').textContent = data.length;
+  document.getElementById('statStudentsSub').textContent = data.length + ' active enrollments';
+  document.getElementById('studentCountBadge').textContent = data.length + ' enrolled';
+
+  const box = document.getElementById('studentsTable');
+  if (!data.length) {
+    box.innerHTML = '<tr><td colspan="4"><div class="empty-state"><div class="icon">🎓</div><p>No students registered yet</p></div></td></tr>';
+    return;
+  }
+  box.innerHTML = data.map(s => `
+    <tr>
+      <td style="display:flex;align-items:center;gap:12px;">
+        ${s.photo
+          ? `<img src="data:image/png;base64,${s.photo}" class="student-avatar">`
+          : `<div class="avatar-placeholder">${(s.name||'?')[0].toUpperCase()}</div>`}
+        <span style="font-weight:600;">${s.name||'—'}</span>
+      </td>
+      <td style="color:var(--muted);font-size:12.5px;">@${s.username||'—'}</td>
+      <td><span class="badge badge-room">Room ${s.room||'—'}</span></td>
+      <td><span class="badge badge-bed">Bed ${s.bed||'—'}</span></td>
+    </tr>
+  `).join('');
 }
 
-})
+document.getElementById('studentForm').onsubmit = async e => {
+  e.preventDefault();
+  const btn = document.getElementById('studentSubmitBtn');
+  btn.innerHTML = '<span class="spinner"></span> Registering...';
+  btn.disabled = true;
+  try {
+    const fd = new FormData(document.getElementById('studentForm'));
+    const res = await fetch('/api/add_student', { method: 'POST', body: fd });
+    if (res.ok) {
+      toast('Student registered successfully!', 'success');
+      document.getElementById('studentForm').reset();
+      document.getElementById('photoBase64').value = '';
+      toggle('studentFormBox');
+      loadStudents();
+    } else {
+      const err = await res.json();
+      toast(err.detail || 'Failed to register student', 'error');
+    }
+  } catch { toast('Network error', 'error'); }
+  btn.innerHTML = '<span>✓</span> Register Student';
+  btn.disabled = false;
+};
 
-/* STUDENTS */
+/* ════════════ ROOMS ════════════ */
+async function loadRooms() {
+  const res = await fetch('/api/rooms');
+  const data = await res.json();
+  document.getElementById('statRooms').textContent = data.length;
+  document.getElementById('statRoomsSub').textContent = data.length + ' rooms configured';
 
-async function loadStudents(){
-
-const res=await fetch("/api/students")
-const data=await res.json()
-
-document.getElementById("studentCount").innerText=data.length
-
-const box=document.getElementById("studentsTable")
-box.innerHTML=""
-
-data.forEach(s=>{
-
-box.innerHTML+=`
-
-<tr>
-
-<td>
-<img src="data:image/png;base64,${s.photo||''}" class="w-10 h-10 rounded-full">
-</td>
-
-<td>${s.name}</td>
-<td>${s.room}</td>
-<td>${s.bed}</td>
-
-</tr>
-
-`
-
-})
-
+  const grid = document.getElementById('roomsGrid');
+  if (!data.length) {
+    grid.innerHTML = '<div style="grid-column:1/-1;"><div class="empty-state"><div class="icon">🏠</div><p>No rooms configured yet</p></div></div>';
+    return;
+  }
+  grid.innerHTML = data.map(r => {
+    const beds = ['A','B','C','D','E'].map(b => r[b] ? `
+      <div class="bed-row">
+        <span class="bed-label">Bed ${b}</span>
+        <span class="bed-name">${r[b]}</span>
+      </div>` : '').join('');
+    const occupied = ['A','B','C','D','E'].filter(b => r[b]).length;
+    return `
+      <div class="room-card">
+        <div class="room-card-header">
+          Room ${r.room}
+          <span style="font-size:11px;opacity:0.7;">${occupied}/5</span>
+        </div>
+        <div class="room-card-body">
+          ${beds || '<div style="font-size:12px;color:var(--muted);text-align:center;padding:8px 0;">All beds vacant</div>'}
+        </div>
+      </div>`;
+  }).join('');
 }
 
-/* ROOMS */
+document.getElementById('roomForm').onsubmit = async e => {
+  e.preventDefault();
+  const data = Object.fromEntries(new FormData(document.getElementById('roomForm')));
+  const res = await fetch('/api/create_room', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data)
+  });
+  if (res.ok) {
+    toast('Room created successfully!', 'success');
+    document.getElementById('roomForm').reset();
+    toggle('roomFormBox');
+    loadRooms();
+  } else { toast('Failed to create room', 'error'); }
+};
 
-async function loadRooms(){
+/* ════════════ REQUESTS ════════════ */
+async function loadRequests() {
+  try {
+    const res = await fetch('/api/requests');
+    const data = await res.json();
 
-const res=await fetch("/api/rooms")
-const data=await res.json()
+    const prevPending = allRequests.filter(r => r.status === 'pending').length;
+    allRequests = data;
+    const pending = data.filter(r => r.status === 'pending').length;
 
-document.getElementById("roomCount").innerText=data.length
+    // Notify if new request came in
+    if (pending > prevPending && prevPending >= 0 && document.hidden !== undefined) {
+      toast(`New leave request received!`, 'info');
+    }
 
-const box=document.getElementById("roomsTable")
-box.innerHTML=""
+    document.getElementById('statPending').textContent = pending;
+    const badge = document.getElementById('sidebarBadge');
+    if (pending > 0) {
+      badge.style.display = 'inline';
+      badge.textContent = pending;
+    } else {
+      badge.style.display = 'none';
+    }
 
-data.forEach(r=>{
-
-box.innerHTML+=`
-
-<tr>
-<td>${r.room}</td>
-<td>${r.A||""}</td>
-<td>${r.B||""}</td>
-<td>${r.C||""}</td>
-<td>${r.D||""}</td>
-<td>${r.E||""}</td>
-</tr>
-
-`
-
-})
-
+    renderRequests();
+    renderDashActivity(data);
+  } catch {}
 }
 
-/* REQUESTS */
-
-async function loadRequests(){
-
-const res=await fetch("/api/requests")
-const data=await res.json()
-
-document.getElementById("requestCount").innerText=data.filter(r=>r.status=="pending").length
-
-const box=document.getElementById("requestsTable")
-box.innerHTML=""
-
-data.forEach(r=>{
-
-box.innerHTML+=`
-
-<tr>
-
-<td>${r.student}</td>
-<td>${r.room}</td>
-<td>${r.reason}</td>
-<td>${r.status}</td>
-
-<td>
-
-<button onclick="approve('${r.id}')" class="btn text-xs">Approve</button>
-
-<button onclick="reject('${r.id}')" class="btn bg-red-500 text-xs">Reject</button>
-
-</td>
-
-</tr>
-
-`
-
-})
-
+function renderRequests() {
+  const filtered = currentFilter === 'all' ? allRequests : allRequests.filter(r => r.status === currentFilter);
+  const box = document.getElementById('requestsTable');
+  if (!filtered.length) {
+    box.innerHTML = `<tr><td colspan="5"><div class="empty-state"><div class="icon">📋</div><p>No ${currentFilter} requests</p></div></td></tr>`;
+    return;
+  }
+  box.innerHTML = filtered.map(r => `
+    <tr>
+      <td style="font-weight:600;">${r.student||'—'}</td>
+      <td><span class="badge badge-room">Room ${r.room||'—'}</span></td>
+      <td style="max-width:200px;font-size:13px;color:var(--muted);">${r.reason||'—'}</td>
+      <td><span class="badge badge-${r.status}">${statusEmoji(r.status)} ${capitalize(r.status)}</span></td>
+      <td>
+        ${r.status === 'pending' ? `
+          <button class="btn btn-success btn-sm" onclick="handleRequest('${r.id}','approve')">✓ Approve</button>
+          <button class="btn btn-danger btn-sm" style="margin-left:6px;" onclick="handleRequest('${r.id}','reject')">✗ Reject</button>
+        ` : `<span style="font-size:12px;color:var(--muted);">—</span>`}
+      </td>
+    </tr>
+  `).join('');
 }
 
-async function approve(id){
-
-await fetch("/api/approve/"+id,{method:"POST"})
-loadRequests()
-
+function renderDashActivity(data) {
+  const box = document.getElementById('dashActivity');
+  if (!data.length) {
+    box.innerHTML = '<div class="empty-state"><div class="icon">📋</div><p>No requests yet</p></div>';
+    return;
+  }
+  const recent = data.slice(-5).reverse();
+  box.innerHTML = recent.map(r => `
+    <div class="activity-item">
+      <div class="activity-dot ${r.status === 'pending' ? 'amber' : r.status === 'approved' ? 'green' : 'red'}"></div>
+      <div>
+        <div class="activity-text"><strong>${r.student}</strong> — ${r.reason||'Leave request'}</div>
+        <div class="activity-time">${capitalize(r.status)} · Room ${r.room}</div>
+      </div>
+    </div>
+  `).join('');
 }
 
-async function reject(id){
-
-await fetch("/api/reject/"+id,{method:"POST"})
-loadRequests()
-
+function filterRequests(f, btn) {
+  currentFilter = f;
+  document.querySelectorAll('#requestFilters .btn').forEach(b => { b.className = 'btn btn-ghost btn-sm'; });
+  btn.className = 'btn btn-primary btn-sm';
+  renderRequests();
 }
 
-/* FORMS */
-
-studentForm.onsubmit=async e=>{
-e.preventDefault()
-await fetch("/api/add_student",{method:"POST",body:new FormData(studentForm)})
-studentForm.reset()
-loadStudents()
+async function handleRequest(id, action) {
+  const url = action === 'approve' ? `/api/approve/${id}` : `/api/reject/${id}`;
+  const res = await fetch(url, { method: 'POST' });
+  if (res.ok) {
+    toast(`Request ${action}d successfully`, 'success');
+    loadRequests();
+  } else { toast('Action failed', 'error'); }
 }
 
-roomForm.onsubmit=async e=>{
-e.preventDefault()
-const data=Object.fromEntries(new FormData(roomForm))
-await fetch("/api/create_room",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(data)})
-roomForm.reset()
-loadRooms()
+/* ════════════ SECURITY ════════════ */
+async function loadSecurity() {
+  const res = await fetch('/api/security_staff');
+  const data = await res.json();
+  document.getElementById('statSecurity').textContent = data.length;
+  document.getElementById('statSecuritySub').textContent = data.length + ' personnel on duty';
+
+  const grid = document.getElementById('securityGrid');
+  if (!data.length) {
+    grid.innerHTML = '<div style="grid-column:1/-1;"><div class="empty-state"><div class="icon">🛡️</div><p>No security staff added</p></div></div>';
+    return;
+  }
+  const shiftLabels = {
+    morning: '🌅 Morning (6AM–2PM)',
+    afternoon: '☀️ Afternoon (2PM–10PM)',
+    night: '🌙 Night (10PM–6AM)'
+  };
+  grid.innerHTML = data.map(g => `
+    <div class="security-card">
+      <div class="security-avatar">🛡️</div>
+      <div class="security-info">
+        <div class="name">${g.name||'—'}</div>
+        <div class="username">@${g.username||'—'}</div>
+        <div class="shift"><span class="badge badge-shift">${shiftLabels[g.shift] || g.shift || 'Unassigned'}</span></div>
+      </div>
+    </div>
+  `).join('');
 }
 
-/* INITIAL LOAD */
+document.getElementById('securityForm').onsubmit = async e => {
+  e.preventDefault();
+  const fd = new FormData(document.getElementById('securityForm'));
+  const res = await fetch('/api/add_security', { method: 'POST', body: fd });
+  if (res.ok) {
+    toast('Security staff added!', 'success');
+    document.getElementById('securityForm').reset();
+    toggle('securityFormBox');
+    loadSecurity();
+  } else { toast('Failed to add staff', 'error'); }
+};
 
-loadStudents()
-loadRooms()
-loadRequests()
+/* ════════════ HELPERS ════════════ */
+function capitalize(s) { return s ? s[0].toUpperCase() + s.slice(1) : ''; }
+function statusEmoji(s) { return { pending:'⏳', approved:'✅', rejected:'❌' }[s] || ''; }
 
-setInterval(loadRequests,4000)
-
+/* ════════════ INIT ════════════ */
+loadStudents();
+loadRooms();
+loadRequests();
+loadSecurity();
+setInterval(loadRequests, 4000);
 </script>
-
 </body>
 </html>
