@@ -1,18 +1,25 @@
+```html
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Student Dashboard</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 
 <style>
 
+*{
+box-sizing:border-box;
+}
+
 body{
 margin:0;
-font-family:"Google Sans";
-background:#f5f7fa;
+font-family:"Google Sans",Arial;
+background:#f1f5f9;
 display:flex;
 height:100vh;
 }
@@ -20,16 +27,18 @@ height:100vh;
 /* SIDEBAR */
 
 .sidebar{
-width:230px;
-background:white;
-border-right:1px solid #e5e5e5;
+width:240px;
+background:#0f172a;
+color:white;
 padding:30px 20px;
+display:flex;
+flex-direction:column;
 }
 
 .logo{
-font-size:18px;
+font-size:20px;
 font-weight:600;
-margin-bottom:30px;
+margin-bottom:40px;
 }
 
 .menu button{
@@ -37,14 +46,23 @@ width:100%;
 padding:12px;
 margin-bottom:10px;
 border:none;
-background:#f1f3f4;
+background:#1e293b;
+color:white;
 border-radius:8px;
 cursor:pointer;
+text-align:left;
 font-size:14px;
 }
 
 .menu button:hover{
-background:#e8f0fe;
+background:#2563eb;
+}
+
+.logout{
+margin-top:auto;
+color:#94a3b8;
+text-decoration:none;
+font-size:14px;
 }
 
 /* MAIN */
@@ -55,11 +73,13 @@ padding:40px;
 overflow:auto;
 }
 
+/* CARD */
+
 .card{
 background:white;
 padding:30px;
 border-radius:14px;
-box-shadow:0 10px 25px rgba(0,0,0,0.06);
+box-shadow:0 10px 30px rgba(0,0,0,0.06);
 margin-bottom:30px;
 }
 
@@ -69,42 +89,67 @@ margin-top:0;
 
 /* PROFILE */
 
+.profile-box{
+display:flex;
+gap:30px;
+align-items:center;
+}
+
 .profile-img{
-width:90px;
-height:90px;
+width:110px;
+height:110px;
 border-radius:50%;
 object-fit:cover;
-margin-bottom:10px;
+border:3px solid #e5e7eb;
+background:#e2e8f0;
 }
 
-/* INPUTS */
+.profile-info{
+flex:1;
+}
 
-input, textarea{
+.profile-info label{
+font-size:13px;
+color:#64748b;
+display:block;
+margin-top:10px;
+}
+
+.profile-info input{
 width:100%;
 padding:10px;
+border:1px solid #e2e8f0;
 border-radius:6px;
-border:1px solid #ccc;
-margin-bottom:12px;
+margin-top:5px;
 font-family:"Google Sans";
-}
-
-textarea{
-resize:none;
 }
 
 /* BUTTON */
 
 .btn{
-background:#1a73e8;
+margin-top:15px;
+background:#2563eb;
 color:white;
 border:none;
 padding:10px 16px;
 border-radius:6px;
 cursor:pointer;
+font-size:14px;
 }
 
 .btn:hover{
-background:#1669c1;
+background:#1d4ed8;
+}
+
+/* TEXTAREA */
+
+textarea{
+width:100%;
+padding:10px;
+border:1px solid #e2e8f0;
+border-radius:6px;
+font-family:"Google Sans";
+resize:none;
 }
 
 /* TABLE */
@@ -112,23 +157,43 @@ background:#1669c1;
 table{
 width:100%;
 border-collapse:collapse;
+margin-top:20px;
 }
 
 th,td{
-padding:10px;
-border-bottom:1px solid #eee;
+padding:12px;
+border-bottom:1px solid #e5e7eb;
+text-align:left;
 font-size:14px;
 }
 
-.status-approved{color:green;}
-.status-pending{color:orange;}
-.status-rejected{color:red;}
+th{
+color:#64748b;
+font-weight:500;
+}
+
+.status-approved{
+color:green;
+font-weight:500;
+}
+
+.status-pending{
+color:orange;
+font-weight:500;
+}
+
+.status-rejected{
+color:red;
+font-weight:500;
+}
+
+/* SECTIONS */
 
 .section{
 display:none;
 }
 
-.active{
+.section.active{
 display:block;
 }
 
@@ -154,13 +219,14 @@ display:block;
 
 <button onclick="showSection('room')">Room Info</button>
 
-<a href="/logout">Logout</a>
+</div>
+
+<a href="/logout" class="logout">Logout</a>
 
 </div>
 
-</div>
 
-<!-- MAIN -->
+<!-- MAIN CONTENT -->
 
 <div class="main">
 
@@ -170,29 +236,45 @@ display:block;
 
 <h2>Edit Profile</h2>
 
+<div class="profile-box">
+
 <img id="photoPreview" class="profile-img">
 
-<input id="name" placeholder="Name">
+<div class="profile-info">
 
+<label>Name</label>
+<input id="name">
+
+<label>Upload Photo</label>
 <input type="file" id="photo">
 
 <button class="btn" onclick="updateProfile()">Update Profile</button>
 
 </div>
 
-<!-- REQUEST -->
+</div>
+
+</div>
+
+
+<!-- LEAVE REQUEST -->
 
 <div id="request" class="card section">
 
 <h2>Leave Request</h2>
 
-<textarea id="reason" rows="4" placeholder="Reason"></textarea>
+<p style="color:#64748b;font-size:14px">
+Submit a request when leaving the hostel.
+</p>
 
-<button class="btn" onclick="sendRequest()">Submit</button>
+<textarea id="reason" rows="4" placeholder="Enter reason"></textarea>
+
+<button class="btn" onclick="sendRequest()">Submit Request</button>
 
 </div>
 
-<!-- STATUS -->
+
+<!-- REQUEST STATUS -->
 
 <div id="status" class="card section">
 
@@ -201,12 +283,14 @@ display:block;
 <table>
 
 <thead>
+
 <tr>
 <th>Reason</th>
 <th>Status</th>
 <th>Room</th>
 <th>Date</th>
 </tr>
+
 </thead>
 
 <tbody id="requestTable"></tbody>
@@ -215,17 +299,19 @@ display:block;
 
 </div>
 
-<!-- ROOM -->
+
+<!-- ROOM INFO -->
 
 <div id="room" class="card section">
 
 <h2>Room Information</h2>
 
-<p><b>Room:</b> <span id="roomNo"></span></p>
+<p><b>Room Number:</b> <span id="roomNo"></span></p>
 
 </div>
 
 </div>
+
 
 <script>
 
@@ -244,44 +330,58 @@ document.getElementById(id).classList.add("active")
 
 }
 
-/* LOAD USER */
+
+/* LOAD USER DATA */
 
 async function loadUser(){
 
-const res=await fetch("/api/me",{credentials:"same-origin"})
+const res = await fetch("/api/me",{credentials:"same-origin"})
 
-const data=await res.json()
+if(!res.ok) return
 
-currentUser=data.username
-currentRoom=data.room
+const data = await res.json()
 
-document.getElementById("name").value=data.name
-document.getElementById("roomNo").innerText=data.room
+currentUser = data.username
+currentRoom = data.room
+
+document.getElementById("name").value = data.name
+document.getElementById("roomNo").innerText = data.room
 
 if(data.photo){
-document.getElementById("photoPreview").src=data.photo
+
+let photo = data.photo
+
+/* fix missing base64 prefix */
+
+if(!photo.startsWith("data:image")){
+photo = "data:image/png;base64," + photo
+}
+
+document.getElementById("photoPreview").src = photo
+
 }
 
 loadRequests()
 
 }
 
+
 /* UPDATE PROFILE */
 
 async function updateProfile(){
 
-const name=document.getElementById("name").value
-const file=document.getElementById("photo").files[0]
+const name = document.getElementById("name").value
+const file = document.getElementById("photo").files[0]
 
 let base64=""
 
 if(file){
 
-const reader=new FileReader()
+const reader = new FileReader()
 
-reader.onload=async function(){
+reader.onload = async function(){
 
-base64=reader.result
+base64 = reader.result
 
 await sendProfile(name,base64)
 
@@ -297,9 +397,10 @@ await sendProfile(name,null)
 
 }
 
+
 async function sendProfile(name,photo){
 
-const form=new FormData()
+const form = new FormData()
 
 form.append("name",name)
 
@@ -311,15 +412,21 @@ body:form,
 credentials:"same-origin"
 })
 
-alert("Profile Updated")
+alert("Profile updated")
 
 }
+
 
 /* SEND REQUEST */
 
 async function sendRequest(){
 
-const reason=document.getElementById("reason").value
+const reason = document.getElementById("reason").value.trim()
+
+if(!reason){
+alert("Enter reason")
+return
+}
 
 await fetch("/api/request",{
 
@@ -341,49 +448,58 @@ credentials:"same-origin"
 
 })
 
-alert("Request Sent")
+alert("Request submitted")
+
+document.getElementById("reason").value=""
 
 loadRequests()
 
 }
 
+
 /* LOAD REQUESTS */
 
 async function loadRequests(){
 
-const res=await fetch("/api/my_requests",{credentials:"same-origin"})
+const res = await fetch("/api/my_requests",{credentials:"same-origin"})
 
-const data=await res.json()
+if(!res.ok) return
 
-const table=document.getElementById("requestTable")
+const data = await res.json()
+
+const table = document.getElementById("requestTable")
 
 table.innerHTML=""
 
+if(data.length===0){
+
+table.innerHTML="<tr><td colspan='4'>No requests yet</td></tr>"
+return
+
+}
+
 data.forEach(r=>{
 
-table.innerHTML+=`
-
+table.innerHTML += `
 <tr>
-
 <td>${r.reason}</td>
-
 <td class="status-${r.status}">${r.status}</td>
-
 <td>${r.room}</td>
-
 <td>${new Date(r.created).toLocaleDateString()}</td>
-
 </tr>
-
 `
 
 })
 
 }
 
-window.onload=loadUser
+
+/* INIT */
+
+window.onload = loadUser
 
 </script>
 
 </body>
 </html>
+```
