@@ -1,146 +1,110 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Student Dashboard | Converse Labs</title>
+<meta charset="UTF-8">
+<title>Student Dashboard</title>
 
 <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 
 <style>
 
-:root{
---primary:#1a73e8;
---primary-hover:#1669c1;
---text:#202124;
---muted:#5f6368;
---border:#dadce0;
---card:#ffffff;
---bg:#f5f7fa;
---success:#34a853;
---pending:#e37400;
---rejected:#d93025;
-}
-
-*{
-box-sizing:border-box;
-}
-
 body{
-font-family:"Google Sans",Arial;
-background:var(--bg);
 margin:0;
+font-family:"Google Sans";
+background:#f5f7fa;
+display:flex;
+height:100vh;
 }
 
-/* HEADER */
+/* SIDEBAR */
 
-.header{
-width:100%;
+.sidebar{
+width:230px;
 background:white;
-border-bottom:1px solid var(--border);
-padding:18px 40px;
-display:flex;
-justify-content:space-between;
-align-items:center;
+border-right:1px solid #e5e5e5;
+padding:30px 20px;
 }
 
 .logo{
-font-weight:600;
 font-size:18px;
-color:var(--text);
+font-weight:600;
+margin-bottom:30px;
 }
 
-.user{
+.menu button{
+width:100%;
+padding:12px;
+margin-bottom:10px;
+border:none;
+background:#f1f3f4;
+border-radius:8px;
+cursor:pointer;
 font-size:14px;
-color:var(--muted);
 }
 
-.logout{
-margin-left:20px;
-color:var(--primary);
-text-decoration:none;
-font-weight:500;
+.menu button:hover{
+background:#e8f0fe;
 }
 
 /* MAIN */
 
-.container{
-max-width:900px;
-margin:40px auto;
-padding:0 20px;
+.main{
+flex:1;
+padding:40px;
+overflow:auto;
 }
-
-.welcome{
-margin-bottom:30px;
-}
-
-.welcome h1{
-margin:0;
-font-size:26px;
-color:var(--text);
-}
-
-.welcome p{
-margin-top:6px;
-color:var(--muted);
-font-size:14px;
-}
-
-/* CARDS */
 
 .card{
-background:var(--card);
-border-radius:16px;
-padding:28px;
-box-shadow:0 10px 30px rgba(0,0,0,0.08);
+background:white;
+padding:30px;
+border-radius:14px;
+box-shadow:0 10px 25px rgba(0,0,0,0.06);
 margin-bottom:30px;
+}
+
+h2{
+margin-top:0;
+}
+
+/* PROFILE */
+
+.profile-img{
+width:90px;
+height:90px;
+border-radius:50%;
+object-fit:cover;
+margin-bottom:10px;
+}
+
+/* INPUTS */
+
+input, textarea{
+width:100%;
+padding:10px;
+border-radius:6px;
+border:1px solid #ccc;
+margin-bottom:12px;
+font-family:"Google Sans";
+}
+
+textarea{
+resize:none;
 }
 
 /* BUTTON */
 
 .btn{
-background:var(--primary);
+background:#1a73e8;
 color:white;
 border:none;
-padding:12px 18px;
-border-radius:8px;
+padding:10px 16px;
+border-radius:6px;
 cursor:pointer;
-font-size:14px;
-font-weight:500;
-transition:0.2s;
 }
 
 .btn:hover{
-background:var(--primary-hover);
-}
-
-/* FORM */
-
-.form{
-margin-top:20px;
-display:none;
-}
-
-label{
-font-size:13px;
-color:var(--muted);
-}
-
-textarea{
-width:100%;
-margin-top:6px;
-padding:12px;
-border-radius:8px;
-border:1px solid var(--border);
-font-family:"Google Sans";
-font-size:14px;
-margin-bottom:16px;
-}
-
-textarea:focus{
-outline:none;
-border:1px solid var(--primary);
+background:#1669c1;
 }
 
 /* TABLE */
@@ -148,109 +112,94 @@ border:1px solid var(--primary);
 table{
 width:100%;
 border-collapse:collapse;
-margin-top:20px;
 }
 
 th,td{
-padding:12px;
-border-bottom:1px solid var(--border);
+padding:10px;
+border-bottom:1px solid #eee;
 font-size:14px;
-text-align:left;
 }
 
-th{
-color:var(--muted);
-font-weight:500;
-}
+.status-approved{color:green;}
+.status-pending{color:orange;}
+.status-rejected{color:red;}
 
-.status-pending{
-color:var(--pending);
-font-weight:500;
-}
-
-.status-approved{
-color:var(--success);
-font-weight:500;
-}
-
-.status-rejected{
-color:var(--rejected);
-font-weight:500;
-}
-
-.empty{
-color:var(--muted);
-font-size:14px;
-text-align:center;
-padding:20px;
-}
-
-.success{
-margin-top:10px;
-color:var(--success);
+.section{
 display:none;
-font-size:14px;
-font-weight:500;
+}
+
+.active{
+display:block;
 }
 
 </style>
+
 </head>
+
 <body>
 
-<!-- HEADER -->
+<!-- SIDEBAR -->
 
-<div class="header">
+<div class="sidebar">
+
 <div class="logo">Converse Labs</div>
 
-<div class="user">
-<span id="username">Student</span>
-<a href="/logout" class="logout">Logout</a>
-</div>
-</div>
+<div class="menu">
 
+<button onclick="showSection('profile')">Edit Profile</button>
 
-<div class="container">
+<button onclick="showSection('request')">Send Request</button>
 
-<!-- GREETING -->
+<button onclick="showSection('status')">Request Status</button>
 
-<div class="welcome">
-<h1 id="greeting">Welcome</h1>
-<p>Manage your hostel leave permissions and track request status.</p>
-</div>
+<button onclick="showSection('room')">Room Info</button>
 
-<!-- REQUEST CARD -->
-
-<div class="card">
-
-<h2 style="margin-top:0">Leave Permission</h2>
-
-<p style="color:var(--muted);font-size:14px">
-Submit a permission request when leaving the hostel.
-</p>
-
-<button class="btn" onclick="toggleForm()">Request Permission</button>
-
-<div class="form" id="form">
-
-<label>Reason</label>
-<textarea id="reason" rows="4" placeholder="Explain why you need permission"></textarea>
-
-<button class="btn" onclick="submitRequest()">Submit Request</button>
-
-<div class="success" id="msg">Request submitted successfully</div>
+<a href="/logout">Logout</a>
 
 </div>
 
 </div>
 
+<!-- MAIN -->
 
-<!-- REQUESTS TABLE -->
+<div class="main">
 
-<div class="card">
+<!-- PROFILE -->
 
-<h2 style="margin-top:0">My Requests</h2>
+<div id="profile" class="card section active">
 
-<table id="table">
+<h2>Edit Profile</h2>
+
+<img id="photoPreview" class="profile-img">
+
+<input id="name" placeholder="Name">
+
+<input type="file" id="photo">
+
+<button class="btn" onclick="updateProfile()">Update Profile</button>
+
+</div>
+
+<!-- REQUEST -->
+
+<div id="request" class="card section">
+
+<h2>Leave Request</h2>
+
+<textarea id="reason" rows="4" placeholder="Reason"></textarea>
+
+<button class="btn" onclick="sendRequest()">Submit</button>
+
+</div>
+
+<!-- STATUS -->
+
+<div id="status" class="card section">
+
+<h2>My Requests</h2>
+
+<table>
+
 <thead>
 <tr>
 <th>Reason</th>
@@ -260,13 +209,19 @@ Submit a permission request when leaving the hostel.
 </tr>
 </thead>
 
-<tbody id="tableBody">
-<tr>
-<td colspan="4" class="empty">No requests yet</td>
-</tr>
-</tbody>
+<tbody id="requestTable"></tbody>
 
 </table>
+
+</div>
+
+<!-- ROOM -->
+
+<div id="room" class="card section">
+
+<h2>Room Information</h2>
+
+<p><b>Room:</b> <span id="roomNo"></span></p>
 
 </div>
 
@@ -274,128 +229,159 @@ Submit a permission request when leaving the hostel.
 
 <script>
 
-let currentUser = "";
-let currentRoom = "";
+let currentUser=""
+let currentRoom=""
 
-/* LOAD USER INFO */
+/* SWITCH SECTIONS */
+
+function showSection(id){
+
+document.querySelectorAll(".section").forEach(s=>{
+s.classList.remove("active")
+})
+
+document.getElementById(id).classList.add("active")
+
+}
+
+/* LOAD USER */
 
 async function loadUser(){
 
-const res = await fetch("/api/me",{credentials:"same-origin"});
+const res=await fetch("/api/me",{credentials:"same-origin"})
 
-if(!res.ok) return;
+const data=await res.json()
 
-const data = await res.json();
+currentUser=data.username
+currentRoom=data.room
 
-currentUser = data.username;
-currentRoom = data.room;
+document.getElementById("name").value=data.name
+document.getElementById("roomNo").innerText=data.room
 
-document.getElementById("username").innerText = data.username;
+if(data.photo){
+document.getElementById("photoPreview").src=data.photo
+}
 
-document.getElementById("greeting").innerText =
-"Welcome back, " + data.username;
-
-loadRequests();
+loadRequests()
 
 }
 
+/* UPDATE PROFILE */
 
-/* SHOW / HIDE FORM */
+async function updateProfile(){
 
-function toggleForm(){
+const name=document.getElementById("name").value
+const file=document.getElementById("photo").files[0]
 
-const form = document.getElementById("form");
+let base64=""
 
-form.style.display =
-form.style.display === "block" ? "none" : "block";
+if(file){
+
+const reader=new FileReader()
+
+reader.onload=async function(){
+
+base64=reader.result
+
+await sendProfile(name,base64)
 
 }
 
+reader.readAsDataURL(file)
 
-/* SUBMIT REQUEST */
+}else{
 
-async function submitRequest(){
+await sendProfile(name,null)
 
-const reason = document.getElementById("reason").value.trim();
-
-if(!reason){
-alert("Please enter a reason");
-return;
 }
 
-const res = await fetch("/api/request",{
+}
+
+async function sendProfile(name,photo){
+
+const form=new FormData()
+
+form.append("name",name)
+
+if(photo) form.append("photo",photo)
+
+await fetch("/api/update_profile",{
+method:"POST",
+body:form,
+credentials:"same-origin"
+})
+
+alert("Profile Updated")
+
+}
+
+/* SEND REQUEST */
+
+async function sendRequest(){
+
+const reason=document.getElementById("reason").value
+
+await fetch("/api/request",{
 
 method:"POST",
-headers:{"Content-Type":"application/json"},
+
+headers:{
+"Content-Type":"application/json"
+},
 
 body:JSON.stringify({
+
 student:currentUser,
 room:currentRoom,
 reason:reason
+
 }),
 
 credentials:"same-origin"
 
-});
+})
 
-if(res.ok){
+alert("Request Sent")
 
-document.getElementById("msg").style.display="block";
-document.getElementById("reason").value="";
-
-loadRequests();
+loadRequests()
 
 }
-
-}
-
 
 /* LOAD REQUESTS */
 
 async function loadRequests(){
 
-const res = await fetch("/api/my_requests",{credentials:"same-origin"});
+const res=await fetch("/api/my_requests",{credentials:"same-origin"})
 
-if(!res.ok) return;
+const data=await res.json()
 
-const data = await res.json();
+const table=document.getElementById("requestTable")
 
-const table = document.getElementById("tableBody");
+table.innerHTML=""
 
-table.innerHTML="";
+data.forEach(r=>{
 
-if(data.length === 0){
+table.innerHTML+=`
 
-table.innerHTML = `
 <tr>
-<td colspan="4" class="empty">No requests yet</td>
+
+<td>${r.reason}</td>
+
+<td class="status-${r.status}">${r.status}</td>
+
+<td>${r.room}</td>
+
+<td>${new Date(r.created).toLocaleDateString()}</td>
+
 </tr>
-`;
 
-return;
-}
+`
 
-data.forEach(req=>{
-
-const row = document.createElement("tr");
-
-row.innerHTML = `
-<td>${req.reason}</td>
-<td class="status-${req.status}">${req.status}</td>
-<td>${req.room}</td>
-<td>${ new Date(req.created).toLocaleDateString() }</td>
-`;
-
-table.appendChild(row);
-
-});
+})
 
 }
 
-
-/* INIT */
-
-window.onload = loadUser;
+window.onload=loadUser
 
 </script>
 
