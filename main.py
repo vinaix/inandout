@@ -320,7 +320,34 @@ def get_rooms():
         rooms.append(data)
 
     return rooms
+# -------------------------
+# UPDATE STUDENT PROFILE
+# -------------------------
 
+@app.post("/api/update_profile")
+def update_profile(
+    request: Request,
+    name: str = Form(...),
+    photo: str = Form(None)
+):
+
+    require_role(request, "student")
+
+    username = request.session.get("user")
+
+    if not username:
+        raise HTTPException(status_code=401)
+
+    update_data = {
+        "name": name
+    }
+
+    if photo:
+        update_data["photo"] = photo
+
+    db.collection("users").document(username).update(update_data)
+
+    return {"status": "profile updated"}
 # -------------------------
 # STUDENT REQUEST LEAVE
 # -------------------------
