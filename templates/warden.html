@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Hostel Warden Dashboard</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+
+<style>
+
+body{
+font-family:Inter;
+background:#f8fafc;
+color:#0f172a;
+}
+
+.sidebar{
+width:230px;
+background:white;
+border-right:1px solid #e5e7eb;
+position:fixed;
+height:100vh;
+padding:24px;
+}
+
+.main{
+margin-left:230px;
+padding:30px;
+}
+
+.card{
+background:white;
+border:1px solid #e5e7eb;
+border-radius:10px;
+padding:20px;
+}
+
+.nav-item{
+cursor:pointer;
+padding:8px 0;
+font-size:14px;
+}
+
+.nav-item:hover{
+color:#2563eb;
+}
+
+.btn{
+background:#2563eb;
+color:white;
+padding:7px 14px;
+border-radius:6px;
+font-size:14px;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+}
+
+th{
+text-align:left;
+font-size:13px;
+color:#64748b;
+padding:10px;
+border-bottom:1px solid #e5e7eb;
+}
+
+td{
+padding:12px 10px;
+border-bottom:1px solid #f1f5f9;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<!-- SIDEBAR -->
+
+<div class="sidebar">
+
+<h2 class="text-xl font-semibold mb-8">Hostel Admin</h2>
+
+<div class="space-y-3">
+
+<div class="nav-item" onclick="showPage('dashboard')">Dashboard</div>
+
+<div class="nav-item" onclick="showPage('students')">Students</div>
+
+<div class="nav-item" onclick="showPage('rooms')">Rooms</div>
+
+<div class="nav-item" onclick="showPage('requests')">Leave Requests</div>
+
+<div class="nav-item" onclick="showPage('security')">Security Staff</div>
+
+</div>
+
+<div class="mt-10">
+<a href="/logout" class="btn">Logout</a>
+</div>
+
+</div>
+
+<!-- MAIN -->
+
+<div class="main">
+
+<!-- DASHBOARD -->
+
+<div id="dashboardPage">
+
+<h1 class="text-2xl font-semibold mb-6">Dashboard</h1>
+
+<div class="grid grid-cols-3 gap-6">
+
+<div class="card">
+<div class="text-sm text-gray-500">Students</div>
+<div id="studentCount" class="text-2xl mt-2">0</div>
+</div>
+
+<div class="card">
+<div class="text-sm text-gray-500">Rooms</div>
+<div id="roomCount" class="text-2xl mt-2">0</div>
+</div>
+
+<div class="card">
+<div class="text-sm text-gray-500">Pending Requests</div>
+<div id="requestCount" class="text-2xl mt-2">0</div>
+</div>
+
+</div>
+
+</div>
+
+<!-- STUDENTS PAGE -->
+
+<div id="studentsPage" class="hidden">
+
+<div class="flex justify-between mb-4">
+
+<h1 class="text-xl font-semibold">Students</h1>
+
+<button onclick="toggle('studentFormBox')" class="btn">Add Student</button>
+
+</div>
+
+<div id="studentFormBox" class="card mb-6 hidden">
+
+<form id="studentForm" class="grid grid-cols-2 gap-4">
+
+<input name="username" placeholder="Username" required>
+<input name="password" placeholder="Password" required>
+<input name="name" placeholder="Full Name" required>
+<input name="room" placeholder="Room Number" required>
+
+<select name="bed">
+<option>A</option>
+<option>B</option>
+<option>C</option>
+<option>D</option>
+<option>E</option>
+</select>
+
+<input type="file" id="photoFile">
+
+<input type="hidden" name="photo" id="photoBase64">
+
+<button class="btn col-span-2">Create Student</button>
+
+</form>
+
+</div>
+
+<div class="card">
+
+<table>
+
+<thead>
+<tr>
+<th>Photo</th>
+<th>Name</th>
+<th>Room</th>
+<th>Bed</th>
+</tr>
+</thead>
+
+<tbody id="studentsTable"></tbody>
+
+</table>
+
+</div>
+
+</div>
+
+<!-- ROOMS PAGE -->
+
+<div id="roomsPage" class="hidden">
+
+<div class="flex justify-between mb-4">
+
+<h1 class="text-xl font-semibold">Rooms</h1>
+
+<button onclick="toggle('roomFormBox')" class="btn">Create Room</button>
+
+</div>
+
+<div id="roomFormBox" class="card mb-6 hidden">
+
+<form id="roomForm" class="grid grid-cols-3 gap-4">
+
+<input name="room_number" placeholder="Room">
+
+<input name="bedA" placeholder="Bed A">
+<input name="bedB" placeholder="Bed B">
+<input name="bedC" placeholder="Bed C">
+<input name="bedD" placeholder="Bed D">
+<input name="bedE" placeholder="Bed E">
+
+<button class="btn col-span-3">Create Room</button>
+
+</form>
+
+</div>
+
+<div class="card">
+
+<table>
+
+<thead>
+<tr>
+<th>Room</th>
+<th>A</th>
+<th>B</th>
+<th>C</th>
+<th>D</th>
+<th>E</th>
+</tr>
+</thead>
+
+<tbody id="roomsTable"></tbody>
+
+</table>
+
+</div>
+
+</div>
+
+<!-- REQUESTS PAGE -->
+
+<div id="requestsPage" class="hidden">
+
+<h1 class="text-xl font-semibold mb-4">Leave Requests</h1>
+
+<div class="card">
+
+<table>
+
+<thead>
+<tr>
+<th>Student</th>
+<th>Room</th>
+<th>Reason</th>
+<th>Status</th>
+<th>Action</th>
+</tr>
+</thead>
+
+<tbody id="requestsTable"></tbody>
+
+</table>
+
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+/* PAGE NAVIGATION */
+
+function showPage(page){
+
+document.querySelectorAll("[id$='Page']").forEach(p=>p.classList.add("hidden"))
+
+document.getElementById(page+"Page").classList.remove("hidden")
+
+}
+
+/* TOGGLE */
+
+function toggle(id){
+document.getElementById(id).classList.toggle("hidden")
+}
+
+/* IMAGE ENCODE */
+
+document.addEventListener("change",function(e){
+
+if(e.target.id==="photoFile"){
+
+const reader=new FileReader()
+
+reader.onload=()=>{
+
+document.getElementById("photoBase64").value=reader.result.split(",")[1]
+
+}
+
+reader.readAsDataURL(e.target.files[0])
+
+}
+
+})
+
+/* STUDENTS */
+
+async function loadStudents(){
+
+const res=await fetch("/api/students")
+const data=await res.json()
+
+document.getElementById("studentCount").innerText=data.length
+
+const box=document.getElementById("studentsTable")
+box.innerHTML=""
+
+data.forEach(s=>{
+
+box.innerHTML+=`
+
+<tr>
+
+<td>
+<img src="data:image/png;base64,${s.photo||''}" class="w-10 h-10 rounded-full">
+</td>
+
+<td>${s.name}</td>
+<td>${s.room}</td>
+<td>${s.bed}</td>
+
+</tr>
+
+`
+
+})
+
+}
+
+/* ROOMS */
+
+async function loadRooms(){
+
+const res=await fetch("/api/rooms")
+const data=await res.json()
+
+document.getElementById("roomCount").innerText=data.length
+
+const box=document.getElementById("roomsTable")
+box.innerHTML=""
+
+data.forEach(r=>{
+
+box.innerHTML+=`
+
+<tr>
+<td>${r.room}</td>
+<td>${r.A||""}</td>
+<td>${r.B||""}</td>
+<td>${r.C||""}</td>
+<td>${r.D||""}</td>
+<td>${r.E||""}</td>
+</tr>
+
+`
+
+})
+
+}
+
+/* REQUESTS */
+
+async function loadRequests(){
+
+const res=await fetch("/api/requests")
+const data=await res.json()
+
+document.getElementById("requestCount").innerText=data.filter(r=>r.status=="pending").length
+
+const box=document.getElementById("requestsTable")
+box.innerHTML=""
+
+data.forEach(r=>{
+
+box.innerHTML+=`
+
+<tr>
+
+<td>${r.student}</td>
+<td>${r.room}</td>
+<td>${r.reason}</td>
+<td>${r.status}</td>
+
+<td>
+
+<button onclick="approve('${r.id}')" class="btn text-xs">Approve</button>
+
+<button onclick="reject('${r.id}')" class="btn bg-red-500 text-xs">Reject</button>
+
+</td>
+
+</tr>
+
+`
+
+})
+
+}
+
+async function approve(id){
+
+await fetch("/api/approve/"+id,{method:"POST"})
+loadRequests()
+
+}
+
+async function reject(id){
+
+await fetch("/api/reject/"+id,{method:"POST"})
+loadRequests()
+
+}
+
+/* FORMS */
+
+studentForm.onsubmit=async e=>{
+e.preventDefault()
+await fetch("/api/add_student",{method:"POST",body:new FormData(studentForm)})
+studentForm.reset()
+loadStudents()
+}
+
+roomForm.onsubmit=async e=>{
+e.preventDefault()
+const data=Object.fromEntries(new FormData(roomForm))
+await fetch("/api/create_room",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(data)})
+roomForm.reset()
+loadRooms()
+}
+
+/* INITIAL LOAD */
+
+loadStudents()
+loadRooms()
+loadRequests()
+
+setInterval(loadRequests,4000)
+
+</script>
+
+</body>
+</html>

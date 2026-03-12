@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>In&Out – Hostel Access System</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+
+<style>
+
+/* ---------- COLORS ---------- */
+:root{
+  --text:#1d1d1f;
+  --muted:#6e6e73;
+  --border:#e5e5e7;
+
+  --primary:#0071e3;      /* Apple blue */
+  --primary-hover:#0062c7;
+
+  --bg:#f5f5f7;
+  --card:#ffffff;
+
+  --glass:rgba(255,255,255,0.7);
+}
+
+/* ---------- GLOBAL ---------- */
+
+*{
+  box-sizing:border-box;
+}
+
+body{
+  margin:0;
+  font-family:"Google Sans",system-ui,-apple-system,BlinkMacSystemFont,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  -webkit-font-smoothing:antialiased;
+}
+
+a{
+  text-decoration:none;
+  color:var(--primary);
+}
+
+/* ---------- NAV ---------- */
+
+nav{
+  position:fixed;
+  top:0;
+  width:100%;
+  backdrop-filter:blur(14px);
+  background:var(--glass);
+  border-bottom:1px solid var(--border);
+  z-index:100;
+}
+
+.nav-inner{
+  max-width:1100px;
+  margin:auto;
+  padding:16px 24px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+nav strong{
+  font-size:1.4rem;
+  letter-spacing:-0.02em;
+}
+
+nav span{
+  color:var(--muted);
+  font-size:0.95rem;
+}
+
+/* ---------- HERO ---------- */
+
+.hero{
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding-top:120px;
+
+  background:
+  radial-gradient(circle at 20% 30%, #e6f0ff, transparent 40%),
+  radial-gradient(circle at 80% 70%, #e8f5ff, transparent 40%),
+  var(--bg);
+}
+
+.container{
+  max-width:520px;
+  text-align:center;
+  padding:20px;
+}
+
+/* ---------- TYPOGRAPHY ---------- */
+
+h1{
+  font-size:3rem;
+  font-weight:700;
+  letter-spacing:-0.03em;
+  line-height:1.15;
+}
+
+h1 span{
+  font-weight:400;
+  color:var(--muted);
+}
+
+.subtitle{
+  margin-top:16px;
+  font-size:1.1rem;
+  color:var(--muted);
+  line-height:1.6;
+}
+
+/* ---------- LOGIN CARD ---------- */
+
+.login-box{
+  margin-top:40px;
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:22px;
+  padding:42px 34px;
+
+  box-shadow:
+  0 20px 40px rgba(0,0,0,0.06),
+  0 2px 6px rgba(0,0,0,0.04);
+
+  transition:0.25s;
+}
+
+.login-box:hover{
+  transform:translateY(-3px);
+  box-shadow:
+  0 24px 48px rgba(0,0,0,0.08),
+  0 4px 12px rgba(0,0,0,0.06);
+}
+
+/* ---------- INPUTS ---------- */
+
+input{
+  width:100%;
+  padding:16px 18px;
+  margin-top:18px;
+
+  border-radius:12px;
+  border:1px solid var(--border);
+
+  font-size:0.98rem;
+  background:#fafafa;
+
+  transition:0.2s;
+}
+
+input:focus{
+  outline:none;
+  border-color:var(--primary);
+  background:#fff;
+
+  box-shadow:0 0 0 4px rgba(0,113,227,0.15);
+}
+
+input::placeholder{
+  color:#9aa0a6;
+}
+
+/* ---------- BUTTON ---------- */
+
+button{
+  width:100%;
+  margin-top:24px;
+  padding:15px;
+
+  border:none;
+  border-radius:28px;
+
+  background:var(--primary);
+  color:white;
+
+  font-weight:600;
+  font-size:1rem;
+
+  cursor:pointer;
+  transition:0.2s;
+}
+
+button:hover{
+  background:var(--primary-hover);
+  box-shadow:0 6px 16px rgba(0,113,227,0.25);
+}
+
+/* ---------- FOOTER TEXT ---------- */
+
+.login-footer{
+  margin-top:18px;
+  font-size:0.9rem;
+  color:var(--muted);
+}
+
+/* ---------- RESPONSIVE ---------- */
+
+@media(max-width:600px){
+
+  h1{
+    font-size:2.2rem;
+  }
+
+  .login-box{
+    padding:30px 22px;
+  }
+
+}
+
+</style>
+</head>
+
+<body>
+
+<nav>
+  <div class="nav-inner">
+    <strong>In&Out</strong>
+    <span>Hostel Security Portal</span>
+  </div>
+</nav>
+
+<section class="hero">
+
+  <div class="container">
+
+    <h1>
+      Welcome to In&Out<br>
+      <span>Secure hostel access made simple</span>
+    </h1>
+
+    <p class="subtitle">
+      Manage student movements, approve exit requests, and maintain a safe
+      hostel environment with a centralized campus access system.
+    </p>
+
+    <div class="login-box">
+
+      <form method="post" action="/login">
+        <input name="username" placeholder="Username" required>
+        <input name="password" type="password" placeholder="Password" required>
+
+        <button>Login</button>
+      </form>
+
+      <div class="login-footer">
+       developed by Josh and team
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+</body>
+</html>

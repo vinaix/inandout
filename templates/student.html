@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Student Dashboard | Converse Labs</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+
+:root{
+--primary:#1a73e8;
+--primary-hover:#1669c1;
+--text:#202124;
+--muted:#5f6368;
+--border:#dadce0;
+--card:#ffffff;
+--bg:#f5f7fa;
+--success:#34a853;
+--pending:#e37400;
+--rejected:#d93025;
+}
+
+*{
+box-sizing:border-box;
+}
+
+body{
+font-family:"Google Sans",Arial;
+background:var(--bg);
+margin:0;
+}
+
+/* HEADER */
+
+.header{
+width:100%;
+background:white;
+border-bottom:1px solid var(--border);
+padding:18px 40px;
+display:flex;
+justify-content:space-between;
+align-items:center;
+}
+
+.logo{
+font-weight:600;
+font-size:18px;
+color:var(--text);
+}
+
+.user{
+font-size:14px;
+color:var(--muted);
+}
+
+.logout{
+margin-left:20px;
+color:var(--primary);
+text-decoration:none;
+font-weight:500;
+}
+
+/* MAIN */
+
+.container{
+max-width:900px;
+margin:40px auto;
+padding:0 20px;
+}
+
+.welcome{
+margin-bottom:30px;
+}
+
+.welcome h1{
+margin:0;
+font-size:26px;
+color:var(--text);
+}
+
+.welcome p{
+margin-top:6px;
+color:var(--muted);
+font-size:14px;
+}
+
+/* CARDS */
+
+.card{
+background:var(--card);
+border-radius:16px;
+padding:28px;
+box-shadow:0 10px 30px rgba(0,0,0,0.08);
+margin-bottom:30px;
+}
+
+/* BUTTON */
+
+.btn{
+background:var(--primary);
+color:white;
+border:none;
+padding:12px 18px;
+border-radius:8px;
+cursor:pointer;
+font-size:14px;
+font-weight:500;
+transition:0.2s;
+}
+
+.btn:hover{
+background:var(--primary-hover);
+}
+
+/* FORM */
+
+.form{
+margin-top:20px;
+display:none;
+}
+
+label{
+font-size:13px;
+color:var(--muted);
+}
+
+textarea{
+width:100%;
+margin-top:6px;
+padding:12px;
+border-radius:8px;
+border:1px solid var(--border);
+font-family:"Google Sans";
+font-size:14px;
+margin-bottom:16px;
+}
+
+textarea:focus{
+outline:none;
+border:1px solid var(--primary);
+}
+
+/* TABLE */
+
+table{
+width:100%;
+border-collapse:collapse;
+margin-top:20px;
+}
+
+th,td{
+padding:12px;
+border-bottom:1px solid var(--border);
+font-size:14px;
+text-align:left;
+}
+
+th{
+color:var(--muted);
+font-weight:500;
+}
+
+.status-pending{
+color:var(--pending);
+font-weight:500;
+}
+
+.status-approved{
+color:var(--success);
+font-weight:500;
+}
+
+.status-rejected{
+color:var(--rejected);
+font-weight:500;
+}
+
+.empty{
+color:var(--muted);
+font-size:14px;
+text-align:center;
+padding:20px;
+}
+
+.success{
+margin-top:10px;
+color:var(--success);
+display:none;
+font-size:14px;
+font-weight:500;
+}
+
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+
+<div class="header">
+<div class="logo">Converse Labs</div>
+
+<div class="user">
+<span id="username">Student</span>
+<a href="/logout" class="logout">Logout</a>
+</div>
+</div>
+
+
+<div class="container">
+
+<!-- GREETING -->
+
+<div class="welcome">
+<h1 id="greeting">Welcome</h1>
+<p>Manage your hostel leave permissions and track request status.</p>
+</div>
+
+<!-- REQUEST CARD -->
+
+<div class="card">
+
+<h2 style="margin-top:0">Leave Permission</h2>
+
+<p style="color:var(--muted);font-size:14px">
+Submit a permission request when leaving the hostel.
+</p>
+
+<button class="btn" onclick="toggleForm()">Request Permission</button>
+
+<div class="form" id="form">
+
+<label>Reason</label>
+<textarea id="reason" rows="4" placeholder="Explain why you need permission"></textarea>
+
+<button class="btn" onclick="submitRequest()">Submit Request</button>
+
+<div class="success" id="msg">Request submitted successfully</div>
+
+</div>
+
+</div>
+
+
+<!-- REQUESTS TABLE -->
+
+<div class="card">
+
+<h2 style="margin-top:0">My Requests</h2>
+
+<table id="table">
+<thead>
+<tr>
+<th>Reason</th>
+<th>Status</th>
+<th>Room</th>
+<th>Date</th>
+</tr>
+</thead>
+
+<tbody id="tableBody">
+<tr>
+<td colspan="4" class="empty">No requests yet</td>
+</tr>
+</tbody>
+
+</table>
+
+</div>
+
+</div>
+
+<script>
+
+let currentUser = "";
+let currentRoom = "";
+
+/* LOAD USER INFO */
+
+async function loadUser(){
+
+const res = await fetch("/api/me",{credentials:"same-origin"});
+
+if(!res.ok) return;
+
+const data = await res.json();
+
+currentUser = data.username;
+currentRoom = data.room;
+
+document.getElementById("username").innerText = data.username;
+
+document.getElementById("greeting").innerText =
+"Welcome back, " + data.username;
+
+loadRequests();
+
+}
+
+
+/* SHOW / HIDE FORM */
+
+function toggleForm(){
+
+const form = document.getElementById("form");
+
+form.style.display =
+form.style.display === "block" ? "none" : "block";
+
+}
+
+
+/* SUBMIT REQUEST */
+
+async function submitRequest(){
+
+const reason = document.getElementById("reason").value.trim();
+
+if(!reason){
+alert("Please enter a reason");
+return;
+}
+
+const res = await fetch("/api/request",{
+
+method:"POST",
+headers:{"Content-Type":"application/json"},
+
+body:JSON.stringify({
+student:currentUser,
+room:currentRoom,
+reason:reason
+}),
+
+credentials:"same-origin"
+
+});
+
+if(res.ok){
+
+document.getElementById("msg").style.display="block";
+document.getElementById("reason").value="";
+
+loadRequests();
+
+}
+
+}
+
+
+/* LOAD REQUESTS */
+
+async function loadRequests(){
+
+const res = await fetch("/api/my_requests",{credentials:"same-origin"});
+
+if(!res.ok) return;
+
+const data = await res.json();
+
+const table = document.getElementById("tableBody");
+
+table.innerHTML="";
+
+if(data.length === 0){
+
+table.innerHTML = `
+<tr>
+<td colspan="4" class="empty">No requests yet</td>
+</tr>
+`;
+
+return;
+}
+
+data.forEach(req=>{
+
+const row = document.createElement("tr");
+
+row.innerHTML = `
+<td>${req.reason}</td>
+<td class="status-${req.status}">${req.status}</td>
+<td>${req.room}</td>
+<td>${ new Date(req.created).toLocaleDateString() }</td>
+`;
+
+table.appendChild(row);
+
+});
+
+}
+
+
+/* INIT */
+
+window.onload = loadUser;
+
+</script>
+
+</body>
+</html>
