@@ -3,792 +3,656 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Warden Portal — Hostel Management</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
+<title>In&Out — Warden Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-:root {
-  --navy: #0a1628;
-  --navy2: #0f2040;
-  --blue: #1a56db;
-  --blue2: #2563eb;
-  --accent: #f59e0b;
-  --green: #10b981;
-  --red: #ef4444;
-  --surface: #ffffff;
-  --surface2: #f8fafc;
-  --border: #e2e8f0;
-  --text: #0f172a;
-  --muted: #64748b;
-  --sidebar-w: 250px;
-}
-
-body {
-  font-family: 'DM Sans', sans-serif;
-  background: var(--surface2);
-  color: var(--text);
-  min-height: 100vh;
-  display: flex;
-}
-
-/* ── SIDEBAR ── */
-.sidebar {
-  width: var(--sidebar-w);
-  background: var(--navy);
-  min-height: 100vh;
-  position: fixed;
-  top: 0; left: 0;
-  display: flex;
-  flex-direction: column;
-  z-index: 100;
-}
-
-.sidebar-brand {
-  padding: 28px 24px 20px;
-  border-bottom: 1px solid rgba(255,255,255,0.07);
-}
-
-.sidebar-brand .logo-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 6px;
-}
-
-.logo-icon {
-  width: 36px; height: 36px;
-  background: linear-gradient(135deg, var(--blue), var(--accent));
-  border-radius: 9px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 16px;
-}
-
-.sidebar-brand h1 {
-  font-family: 'Syne', sans-serif;
-  font-size: 17px;
-  font-weight: 700;
-  color: white;
-  letter-spacing: -0.3px;
-}
-
-.sidebar-brand p {
-  font-size: 11px;
-  color: rgba(255,255,255,0.35);
-  letter-spacing: 0.8px;
-  text-transform: uppercase;
-  margin-top: 2px;
-}
-
-.sidebar-nav {
-  padding: 20px 14px;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 3px;
-}
-
-.nav-label {
-  font-size: 10px;
-  letter-spacing: 1.2px;
-  text-transform: uppercase;
-  color: rgba(255,255,255,0.25);
-  padding: 12px 12px 6px;
-  margin-top: 6px;
-}
-
-.nav-item {
-  display: flex;
-  align-items: center;
-  gap: 11px;
-  padding: 10px 14px;
-  border-radius: 8px;
-  cursor: pointer;
-  color: rgba(255,255,255,0.6);
-  font-size: 13.5px;
-  font-weight: 500;
-  transition: all 0.18s;
-  position: relative;
-}
-
-.nav-item:hover {
-  background: rgba(255,255,255,0.07);
-  color: rgba(255,255,255,0.9);
-}
-
-.nav-item.active {
-  background: rgba(26,86,219,0.3);
-  color: white;
-}
-
-.nav-item.active::before {
-  content: '';
-  position: absolute;
-  left: 0; top: 25%; bottom: 25%;
-  width: 3px;
-  background: var(--blue2);
-  border-radius: 0 3px 3px 0;
-}
-
-.nav-item .ico { font-size: 16px; width: 20px; text-align: center; }
-
-.nav-badge {
-  margin-left: auto;
-  background: var(--accent);
-  color: var(--navy);
-  font-size: 10px;
-  font-weight: 700;
-  padding: 2px 7px;
-  border-radius: 20px;
-  min-width: 20px;
-  text-align: center;
-}
-
-.sidebar-footer {
-  padding: 14px;
-  border-top: 1px solid rgba(255,255,255,0.07);
-}
-
-.logout-btn {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 14px;
-  border-radius: 8px;
-  color: rgba(255,255,255,0.5);
-  font-size: 13px;
-  font-weight: 500;
-  cursor: pointer;
-  text-decoration: none;
-  transition: all 0.18s;
-  width: 100%;
-}
-
-.logout-btn:hover {
-  background: rgba(239,68,68,0.15);
-  color: #fca5a5;
-}
-
-/* ── MAIN ── */
-.main {
-  margin-left: var(--sidebar-w);
-  flex: 1;
-  padding: 0;
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-}
-
-.topbar {
-  background: white;
-  border-bottom: 1px solid var(--border);
-  padding: 0 32px;
-  height: 60px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  position: sticky;
-  top: 0;
-  z-index: 50;
-}
-
-.topbar-left {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-
-.page-title {
-  font-family: 'Syne', sans-serif;
-  font-size: 18px;
-  font-weight: 700;
-  color: var(--text);
-}
-
-.breadcrumb {
-  font-size: 12px;
-  color: var(--muted);
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.topbar-right {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-}
-
-.pulse-dot {
-  width: 8px; height: 8px;
-  border-radius: 50%;
-  background: var(--green);
-  position: relative;
-}
-
-.pulse-dot::after {
-  content: '';
-  position: absolute;
-  inset: -3px;
-  border-radius: 50%;
-  background: var(--green);
-  opacity: 0.3;
-  animation: pulse 2s infinite;
-}
-
-@keyframes pulse { 0%,100%{transform:scale(1);opacity:0.3} 50%{transform:scale(1.6);opacity:0} }
-
-.live-label {
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--green);
-  letter-spacing: 0.5px;
-}
-
-.admin-chip {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  padding: 6px 14px 6px 6px;
-  border-radius: 20px;
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--muted);
-}
-
-.admin-avatar {
-  width: 26px; height: 26px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, var(--blue), var(--accent));
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 11px;
-  color: white;
-  font-weight: 700;
-}
-
-/* ── PAGE CONTENT ── */
-.page-content {
-  padding: 28px 32px;
-  flex: 1;
-}
-
-.page { display: none; }
-.page.active { display: block; animation: fadeIn 0.25s ease; }
-@keyframes fadeIn { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
-
-/* ── STAT CARDS ── */
-.stats-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 18px;
-  margin-bottom: 28px;
-}
-
-.stat-card {
-  background: white;
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 20px 22px;
-  position: relative;
-  overflow: hidden;
-  transition: box-shadow 0.2s;
-}
-
-.stat-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.07); }
-
-.stat-card::after {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 3px;
-}
-
-.stat-card.blue::after { background: linear-gradient(90deg, var(--blue), var(--blue2)); }
-.stat-card.green::after { background: linear-gradient(90deg, #059669, var(--green)); }
-.stat-card.amber::after { background: linear-gradient(90deg, #d97706, var(--accent)); }
-.stat-card.red::after { background: linear-gradient(90deg, #dc2626, var(--red)); }
-
-.stat-icon {
-  font-size: 22px;
-  margin-bottom: 12px;
-  display: block;
-}
-
-.stat-value {
-  font-family: 'Syne', sans-serif;
-  font-size: 28px;
-  font-weight: 700;
-  color: var(--text);
-  line-height: 1;
-}
-
-.stat-label {
-  font-size: 12px;
-  color: var(--muted);
-  margin-top: 4px;
-  font-weight: 500;
-}
-
-.stat-sub {
-  font-size: 11px;
-  color: var(--green);
-  margin-top: 8px;
-  font-weight: 500;
-}
-
-/* ── SECTION HEADERS ── */
-.section-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: 16px;
-}
-
-.section-title {
-  font-family: 'Syne', sans-serif;
-  font-size: 15px;
-  font-weight: 700;
-  color: var(--text);
-}
-
-.section-sub {
-  font-size: 12px;
-  color: var(--muted);
-  margin-top: 2px;
-}
-
-/* ── BUTTONS ── */
-.btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  padding: 8px 16px;
-  border-radius: 7px;
-  font-size: 13px;
-  font-weight: 600;
-  cursor: pointer;
-  border: none;
-  transition: all 0.15s;
-  font-family: 'DM Sans', sans-serif;
-}
-
-.btn-primary {
-  background: var(--navy);
-  color: white;
-}
-.btn-primary:hover { background: var(--navy2); transform: translateY(-1px); }
-
-.btn-blue {
-  background: var(--blue2);
-  color: white;
-}
-.btn-blue:hover { background: var(--blue); }
-
-.btn-ghost {
-  background: white;
-  color: var(--text);
-  border: 1px solid var(--border);
-}
-.btn-ghost:hover { background: var(--surface2); }
-
-.btn-sm {
-  padding: 5px 11px;
-  font-size: 12px;
-  border-radius: 6px;
-}
-
-.btn-success { background: var(--green); color: white; }
-.btn-success:hover { background: #059669; }
-
-.btn-danger { background: var(--red); color: white; }
-.btn-danger:hover { background: #dc2626; }
-
-/* ── CARD ── */
-.card {
-  background: white;
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  overflow: hidden;
-}
-
-.card-header {
-  padding: 16px 22px;
-  border-bottom: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.card-body { padding: 20px 22px; }
-
-/* ── FORM PANEL ── */
-.form-panel {
-  background: white;
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  margin-bottom: 20px;
-  overflow: hidden;
-  animation: slideDown 0.2s ease;
-}
-
-@keyframes slideDown { from{opacity:0;transform:translateY(-8px)} to{opacity:1;transform:translateY(0)} }
-
-.form-panel-header {
-  padding: 14px 20px;
-  background: var(--navy);
-  color: white;
-  font-size: 13px;
-  font-weight: 600;
-  font-family: 'Syne', sans-serif;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.form-panel-body { padding: 22px; }
-
-.form-grid {
-  display: grid;
-  gap: 14px;
-}
-
-.form-grid-2 { grid-template-columns: 1fr 1fr; }
-.form-grid-3 { grid-template-columns: 1fr 1fr 1fr; }
-
-.form-group { display: flex; flex-direction: column; gap: 5px; }
-
-.form-label {
-  font-size: 11.5px;
-  font-weight: 600;
-  color: var(--muted);
-  letter-spacing: 0.4px;
-  text-transform: uppercase;
-}
 
-.form-input {
-  border: 1.5px solid var(--border);
-  border-radius: 7px;
-  padding: 9px 13px;
-  font-size: 13.5px;
-  font-family: 'DM Sans', sans-serif;
-  color: var(--text);
-  background: white;
-  transition: border-color 0.15s, box-shadow 0.15s;
-  outline: none;
-  width: 100%;
+:root{
+  --text:#1d1d1f;
+  --muted:#6e6e73;
+  --border:#e5e5e7;
+  --primary:#0071e3;
+  --primary-hover:#0062c7;
+  --primary-bg:rgba(0,113,227,0.08);
+  --green:#34c759;
+  --green-bg:rgba(52,199,89,0.1);
+  --red:#ff3b30;
+  --red-bg:rgba(255,59,48,0.1);
+  --amber:#ff9f0a;
+  --amber-bg:rgba(255,159,10,0.1);
+  --bg:#f5f5f7;
+  --card:#ffffff;
+  --glass:rgba(255,255,255,0.82);
+  --sidebar-w:230px;
+}
+
+*{ box-sizing:border-box; margin:0; padding:0; }
+
+body{
+  font-family:"Google Sans",system-ui,-apple-system,sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  -webkit-font-smoothing:antialiased;
+  display:flex;
+  min-height:100vh;
+}
+
+/* ─── SIDEBAR ─── */
+.sidebar{
+  width:var(--sidebar-w);
+  background:var(--card);
+  border-right:1px solid var(--border);
+  position:fixed;
+  top:0; left:0;
+  height:100vh;
+  display:flex;
+  flex-direction:column;
+  z-index:200;
+}
+
+.sidebar-brand{
+  padding:22px 22px 16px;
+  border-bottom:1px solid var(--border);
+}
+
+.sidebar-brand strong{
+  font-size:1.35rem;
+  letter-spacing:-0.03em;
+  color:var(--text);
+}
+
+.sidebar-brand p{
+  font-size:0.74rem;
+  color:var(--muted);
+  margin-top:3px;
+}
+
+.sidebar-nav{
+  flex:1;
+  padding:14px 12px;
+  display:flex;
+  flex-direction:column;
+  gap:2px;
+  overflow-y:auto;
+}
+
+.nav-section{
+  font-size:0.67rem;
+  font-weight:600;
+  letter-spacing:0.06em;
+  text-transform:uppercase;
+  color:var(--muted);
+  padding:10px 10px 4px;
+  margin-top:4px;
+}
+
+.nav-item{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:10px 12px;
+  border-radius:10px;
+  cursor:pointer;
+  font-size:0.875rem;
+  font-weight:500;
+  color:var(--muted);
+  transition:all 0.15s;
+  position:relative;
+  border:none;
+  background:none;
+  width:100%;
+  text-align:left;
+  font-family:"Google Sans",sans-serif;
+}
+
+.nav-item:hover{ background:#f5f5f7; color:var(--text); }
+
+.nav-item.active{
+  background:var(--primary-bg);
+  color:var(--primary);
+  font-weight:600;
+}
+
+.nav-ico{ font-size:1rem; width:20px; text-align:center; flex-shrink:0; }
+
+.nav-pill{
+  margin-left:auto;
+  background:var(--primary);
+  color:white;
+  font-size:0.68rem;
+  font-weight:700;
+  padding:2px 7px;
+  border-radius:20px;
+  display:none;
+}
+.nav-pill.show{ display:inline; }
+
+.sidebar-footer{
+  padding:14px 12px;
+  border-top:1px solid var(--border);
+}
+
+.logout-btn{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  padding:10px 12px;
+  border-radius:10px;
+  cursor:pointer;
+  font-size:0.875rem;
+  font-weight:500;
+  color:var(--muted);
+  text-decoration:none;
+  transition:all 0.15s;
+}
+
+.logout-btn:hover{ background:#fff0ef; color:var(--red); }
+
+/* ─── MAIN ─── */
+.main-wrap{
+  margin-left:var(--sidebar-w);
+  flex:1;
+  display:flex;
+  flex-direction:column;
+  min-height:100vh;
+}
+
+.topbar{
+  height:58px;
+  background:var(--glass);
+  backdrop-filter:blur(14px);
+  -webkit-backdrop-filter:blur(14px);
+  border-bottom:1px solid var(--border);
+  position:sticky;
+  top:0;
+  z-index:100;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 30px;
+}
+
+.topbar-title{ font-size:1.02rem; font-weight:600; color:var(--text); }
+.topbar-sub{ font-size:0.75rem; color:var(--muted); margin-top:1px; }
+
+.topbar-right{ display:flex; align-items:center; gap:10px; }
+
+.live-badge{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  background:var(--green-bg);
+  color:#1a7f34;
+  font-size:0.72rem;
+  font-weight:700;
+  padding:5px 11px;
+  border-radius:20px;
+  letter-spacing:0.04em;
+}
+
+.live-dot{
+  width:6px; height:6px;
+  border-radius:50%;
+  background:var(--green);
+  animation:blink 1.5s infinite;
+}
+
+@keyframes blink{ 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+/* ─── CONTENT ─── */
+.page-content{ padding:28px 30px; flex:1; }
+
+.page{ display:none; animation:fadeUp 0.22s ease; }
+.page.active{ display:block; }
+@keyframes fadeUp{ from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
+
+/* ─── STAT GRID ─── */
+.stat-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:16px;
+  margin-bottom:26px;
+}
+
+.stat-card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:20px 22px;
+  position:relative;
+  overflow:hidden;
+  transition:box-shadow 0.2s,transform 0.2s;
+  box-shadow:0 2px 8px rgba(0,0,0,0.04);
+}
+
+.stat-card:hover{ box-shadow:0 10px 28px rgba(0,0,0,0.08); transform:translateY(-2px); }
+
+.stat-card::after{
+  content:'';
+  position:absolute;
+  top:0; left:0; right:0;
+  height:3px;
+  border-radius:18px 18px 0 0;
+}
+
+.stat-card.blue::after{ background:linear-gradient(90deg,#0071e3,#34aadc); }
+.stat-card.green::after{ background:linear-gradient(90deg,#1a7f34,#34c759); }
+.stat-card.amber::after{ background:linear-gradient(90deg,#c77b00,#ff9f0a); }
+.stat-card.red::after{ background:linear-gradient(90deg,#c0392b,#ff3b30); }
+
+.stat-ico{ font-size:1.6rem; margin-bottom:10px; }
+
+.stat-val{
+  font-size:1.9rem;
+  font-weight:700;
+  letter-spacing:-0.03em;
+  line-height:1;
+  color:var(--text);
+}
+
+.stat-label{ font-size:0.78rem; color:var(--muted); margin-top:5px; }
+
+/* ─── SECTION ─── */
+.sec-hd{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-bottom:16px;
+}
+
+.sec-title{ font-size:1rem; font-weight:600; color:var(--text); }
+.sec-sub{ font-size:0.76rem; color:var(--muted); margin-top:2px; }
+
+/* ─── CARD ─── */
+.card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:16px;
+  overflow:hidden;
+  box-shadow:0 2px 8px rgba(0,0,0,0.04);
+}
+
+.card-hd{
+  padding:15px 22px;
+  border-bottom:1px solid var(--border);
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
 }
-
-.form-input:focus {
-  border-color: var(--blue2);
-  box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
-}
-
-.form-input::placeholder { color: #b0bec5; }
-
-select.form-input { cursor: pointer; }
-
-.form-actions {
-  margin-top: 18px;
-  display: flex;
-  gap: 10px;
-  align-items: center;
-}
-
-/* ── TABLE ── */
-.table-wrap { overflow-x: auto; }
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-thead tr { background: var(--surface2); }
-
-th {
-  text-align: left;
-  font-size: 11px;
-  font-weight: 700;
-  color: var(--muted);
-  padding: 11px 16px;
-  letter-spacing: 0.7px;
-  text-transform: uppercase;
-  border-bottom: 1px solid var(--border);
-}
-
-td {
-  padding: 13px 16px;
-  font-size: 13.5px;
-  border-bottom: 1px solid #f1f5f9;
-  color: var(--text);
-  vertical-align: middle;
-}
-
-tr:last-child td { border-bottom: none; }
-tr:hover td { background: #fafcff; }
-
-/* ── AVATAR ── */
-.student-avatar {
-  width: 36px; height: 36px;
-  border-radius: 50%;
-  object-fit: cover;
-  border: 2px solid var(--border);
-}
-
-.avatar-placeholder {
-  width: 36px; height: 36px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, #dbeafe, #bfdbfe);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--blue2);
-  border: 2px solid var(--border);
-}
-
-/* ── BADGES ── */
-.badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 5px;
-  padding: 3px 10px;
-  border-radius: 20px;
-  font-size: 11.5px;
-  font-weight: 600;
-}
-
-.badge-pending { background: #fef3c7; color: #92400e; }
-.badge-approved { background: #d1fae5; color: #065f46; }
-.badge-rejected { background: #fee2e2; color: #991b1b; }
-.badge-room { background: #ede9fe; color: #5b21b6; }
-.badge-bed { background: #e0f2fe; color: #075985; }
-.badge-shift { background: #fce7f3; color: #9d174d; }
-
-/* ── EMPTY STATE ── */
-.empty-state {
-  text-align: center;
-  padding: 50px 20px;
-  color: var(--muted);
-}
-
-.empty-state .icon { font-size: 40px; margin-bottom: 12px; opacity: 0.4; }
-.empty-state p { font-size: 13.5px; }
-
-/* ── TOAST ── */
-#toast-container {
-  position: fixed;
-  top: 20px;
-  right: 20px;
-  z-index: 9999;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.toast {
-  background: var(--navy);
-  color: white;
-  padding: 13px 18px;
-  border-radius: 9px;
-  font-size: 13px;
-  font-weight: 500;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  animation: toastIn 0.25s ease;
-  min-width: 260px;
-  max-width: 340px;
-}
-
-.toast.success { border-left: 4px solid var(--green); }
-.toast.error { border-left: 4px solid var(--red); }
-.toast.info { border-left: 4px solid var(--blue2); }
-
-@keyframes toastIn { from{opacity:0;transform:translateX(20px)} to{opacity:1;transform:translateX(0)} }
-@keyframes toastOut { from{opacity:1;transform:translateX(0)} to{opacity:0;transform:translateX(20px)} }
-
-/* ── ACTIVITY FEED ── */
-.activity-list { display: flex; flex-direction: column; gap: 0; }
-
-.activity-item {
-  display: flex;
-  align-items: flex-start;
-  gap: 13px;
-  padding: 13px 0;
-  border-bottom: 1px solid #f1f5f9;
-}
-
-.activity-item:last-child { border-bottom: none; }
-
-.activity-dot {
-  width: 8px; height: 8px;
-  border-radius: 50%;
-  margin-top: 5px;
-  flex-shrink: 0;
-}
-
-.activity-dot.green { background: var(--green); }
-.activity-dot.blue { background: var(--blue2); }
-.activity-dot.amber { background: var(--accent); }
-.activity-dot.red { background: var(--red); }
-
-.activity-text { font-size: 13px; color: var(--text); line-height: 1.4; }
-.activity-time { font-size: 11px; color: var(--muted); margin-top: 3px; }
-
-/* ── ROOM GRID ── */
-.room-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-  gap: 14px;
-}
-
-.room-card {
-  background: white;
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  overflow: hidden;
-  transition: box-shadow 0.2s;
-}
-
-.room-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.07); }
-
-.room-card-header {
-  background: var(--navy);
-  color: white;
-  padding: 12px 16px;
-  font-family: 'Syne', sans-serif;
-  font-weight: 700;
-  font-size: 14px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.room-card-body { padding: 14px 16px; }
-
-.bed-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 6px 0;
-  border-bottom: 1px solid #f1f5f9;
-  font-size: 13px;
-}
-
-.bed-row:last-child { border-bottom: none; }
-.bed-label { font-weight: 600; color: var(--muted); font-size: 11px; text-transform: uppercase; }
-.bed-name { color: var(--text); }
-
-/* ── SECURITY CARD ── */
-.security-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-  gap: 16px;
-}
-
-.security-card {
-  background: white;
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  padding: 20px;
-  display: flex;
-  align-items: center;
-  gap: 16px;
-  transition: box-shadow 0.2s;
-}
-
-.security-card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.07); }
-
-.security-avatar {
-  width: 50px; height: 50px;
-  border-radius: 12px;
-  background: linear-gradient(135deg, var(--navy), var(--blue));
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 18px;
-  flex-shrink: 0;
-}
-
-.security-info .name {
-  font-weight: 600;
-  font-size: 14px;
-}
-
-.security-info .username {
-  font-size: 11.5px;
-  color: var(--muted);
-  margin-top: 2px;
-}
-
-.security-info .shift {
-  margin-top: 8px;
-}
-
-/* ── LOADING SPINNER ── */
-.spinner {
-  display: inline-block;
-  width: 16px; height: 16px;
-  border: 2px solid rgba(255,255,255,0.3);
-  border-top-color: white;
-  border-radius: 50%;
-  animation: spin 0.7s linear infinite;
-}
-
-@keyframes spin { to { transform: rotate(360deg); } }
-
-/* ── RESPONSIVE ── */
-@media (max-width: 1100px) {
-  .stats-grid { grid-template-columns: repeat(2, 1fr); }
-  .form-grid-3 { grid-template-columns: 1fr 1fr; }
+
+.card-title{ font-size:0.9rem; font-weight:600; }
+.card-body{ padding:22px; }
+
+/* ─── FORM PANEL ─── */
+.form-panel{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:16px;
+  margin-bottom:18px;
+  overflow:hidden;
+  box-shadow:0 6px 20px rgba(0,0,0,0.07);
+  animation:slideDown 0.2s ease;
+}
+
+@keyframes slideDown{ from{opacity:0;transform:translateY(-8px)} to{opacity:1;transform:translateY(0)} }
+
+.form-ph{
+  background:linear-gradient(135deg,#0071e3 0%,#34aadc 100%);
+  color:white;
+  padding:14px 22px;
+  font-size:0.88rem;
+  font-weight:600;
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+
+.form-pb{ padding:22px; }
+
+.fg{ display:grid; gap:14px; }
+.fg-2{ grid-template-columns:1fr 1fr; }
+.fg-3{ grid-template-columns:1fr 1fr 1fr; }
+
+.fgroup{ display:flex; flex-direction:column; gap:5px; }
+
+.flabel{
+  font-size:0.73rem;
+  font-weight:600;
+  color:var(--muted);
+  letter-spacing:0.03em;
+}
+
+.finput{
+  padding:11px 14px;
+  border:1px solid var(--border);
+  border-radius:10px;
+  font-size:0.88rem;
+  font-family:"Google Sans",sans-serif;
+  color:var(--text);
+  background:#fafafa;
+  outline:none;
+  transition:all 0.18s;
+  width:100%;
+}
+
+.finput:focus{
+  border-color:var(--primary);
+  background:white;
+  box-shadow:0 0 0 4px rgba(0,113,227,0.12);
+}
+
+.finput::placeholder{ color:#b0b7be; }
+select.finput{ cursor:pointer; }
+
+.f-actions{ display:flex; gap:10px; margin-top:18px; }
+
+/* ─── BUTTONS ─── */
+.btn{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  padding:10px 18px;
+  border-radius:22px;
+  font-size:0.862rem;
+  font-weight:600;
+  cursor:pointer;
+  border:none;
+  font-family:"Google Sans",sans-serif;
+  transition:all 0.18s;
+  line-height:1;
+}
+
+.btn-p{ background:var(--primary); color:white; }
+.btn-p:hover{ background:var(--primary-hover); box-shadow:0 4px 14px rgba(0,113,227,0.3); transform:translateY(-1px); }
+
+.btn-g{ background:white; color:var(--text); border:1px solid var(--border); }
+.btn-g:hover{ background:var(--bg); }
+
+.btn-sm{ padding:6px 13px; font-size:0.78rem; border-radius:16px; }
+
+.btn-ok{ background:var(--green); color:white; }
+.btn-ok:hover{ background:#28a745; }
+
+.btn-no{ background:var(--red); color:white; }
+.btn-no:hover{ background:#c0392b; }
+
+.btn:disabled{ opacity:0.5; cursor:not-allowed; transform:none !important; }
+
+/* ─── SPINNER ─── */
+.sp{
+  width:13px; height:13px;
+  border:2px solid rgba(255,255,255,0.3);
+  border-top-color:white;
+  border-radius:50%;
+  animation:spin 0.65s linear infinite;
+  display:inline-block;
+}
+@keyframes spin{ to{ transform:rotate(360deg); } }
+
+/* ─── TABLE ─── */
+.tw{ overflow-x:auto; }
+table{ width:100%; border-collapse:collapse; }
+thead tr{ background:#f9f9fb; }
+
+th{
+  text-align:left;
+  font-size:0.71rem;
+  font-weight:600;
+  color:var(--muted);
+  padding:10px 16px;
+  letter-spacing:0.05em;
+  text-transform:uppercase;
+  border-bottom:1px solid var(--border);
+  white-space:nowrap;
+}
+
+td{
+  padding:13px 16px;
+  font-size:0.875rem;
+  border-bottom:1px solid #f2f2f4;
+  vertical-align:middle;
+}
+
+tr:last-child td{ border-bottom:none; }
+tr:hover td{ background:#fafafa; }
+
+/* ─── AVATAR ─── */
+.ava{
+  width:36px; height:36px;
+  border-radius:50%;
+  object-fit:cover;
+  border:1.5px solid var(--border);
+  display:block;
+  background:var(--bg);
+}
+
+.ava-init{
+  width:36px; height:36px;
+  border-radius:50%;
+  background:linear-gradient(135deg,#e8f0fe,#c5d9f9);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:700;
+  font-size:0.85rem;
+  color:var(--primary);
+  border:1.5px solid var(--border);
+  flex-shrink:0;
+}
+
+/* ─── BADGE ─── */
+.badge{
+  display:inline-flex;
+  align-items:center;
+  gap:3px;
+  padding:3px 9px;
+  border-radius:20px;
+  font-size:0.74rem;
+  font-weight:600;
+  white-space:nowrap;
+}
+
+.bp{ background:var(--amber-bg); color:#854d00; }
+.ba{ background:var(--green-bg); color:#1a7f34; }
+.br{ background:var(--red-bg); color:#c0392b; }
+.broom{ background:var(--primary-bg); color:#004a9f; }
+.bbed{ background:#f3f0ff; color:#5b21b6; }
+.bshift{ background:#fff0e6; color:#8a3a00; }
+
+/* ─── CHIPS ─── */
+.chips{ display:flex; gap:8px; margin-bottom:16px; }
+
+.chip{
+  padding:6px 14px;
+  border-radius:20px;
+  font-size:0.8rem;
+  font-weight:600;
+  cursor:pointer;
+  border:1px solid var(--border);
+  background:white;
+  color:var(--muted);
+  font-family:"Google Sans",sans-serif;
+  transition:all 0.15s;
+}
+
+.chip.active{ background:var(--primary); color:white; border-color:var(--primary); }
+
+/* ─── ROOM CARDS ─── */
+.room-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(198px,1fr)); gap:14px; }
+
+.room-card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:14px;
+  overflow:hidden;
+  transition:box-shadow 0.2s,transform 0.2s;
+  box-shadow:0 2px 6px rgba(0,0,0,0.04);
+}
+
+.room-card:hover{ box-shadow:0 8px 22px rgba(0,0,0,0.08); transform:translateY(-2px); }
+
+.rch{
+  background:linear-gradient(135deg,#0071e3,#34aadc);
+  color:white;
+  padding:12px 16px;
+  font-weight:700;
+  font-size:0.9rem;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+}
+
+.rch span{ font-size:0.7rem; opacity:0.85; font-weight:500; }
+.rcb{ padding:12px 14px; }
+
+.brow{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:5px 0;
+  border-bottom:1px solid #f2f2f4;
+  font-size:0.82rem;
+}
+
+.brow:last-child{ border-bottom:none; }
+.bk{ font-weight:700; font-size:0.7rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.04em; }
+
+/* ─── GUARD CARDS ─── */
+.guard-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(238px,1fr)); gap:14px; }
+
+.guard-card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:18px;
+  display:flex;
+  align-items:center;
+  gap:14px;
+  transition:box-shadow 0.2s,transform 0.2s;
+  box-shadow:0 2px 6px rgba(0,0,0,0.04);
+}
+
+.guard-card:hover{ box-shadow:0 8px 22px rgba(0,0,0,0.08); transform:translateY(-2px); }
+
+.guard-ico{
+  width:46px; height:46px;
+  border-radius:12px;
+  background:linear-gradient(135deg,#1d1d1f,#3a3a3c);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:1.2rem;
+  flex-shrink:0;
+}
+
+.g-name{ font-weight:600; font-size:0.9rem; }
+.g-user{ font-size:0.75rem; color:var(--muted); margin-top:2px; }
+.g-shift{ margin-top:7px; }
+
+/* ─── ACTIVITY ─── */
+.a-feed{ display:flex; flex-direction:column; }
+
+.a-item{
+  display:flex;
+  gap:12px;
+  padding:12px 0;
+  border-bottom:1px solid #f2f2f4;
+}
+
+.a-item:last-child{ border-bottom:none; }
+
+.a-dot{
+  width:8px; height:8px;
+  border-radius:50%;
+  margin-top:4px;
+  flex-shrink:0;
+}
+
+.a-dot.pending{ background:var(--amber); }
+.a-dot.approved{ background:var(--green); }
+.a-dot.rejected{ background:var(--red); }
+
+.a-txt{ font-size:0.85rem; line-height:1.45; }
+.a-meta{ font-size:0.74rem; color:var(--muted); margin-top:3px; }
+
+/* ─── EMPTY ─── */
+.empty{ text-align:center; padding:46px 20px; color:var(--muted); }
+.ei{ font-size:2.4rem; margin-bottom:10px; opacity:0.35; }
+.et{ font-size:0.95rem; font-weight:600; color:var(--text); margin-bottom:4px; }
+.es{ font-size:0.82rem; }
+
+/* ─── TOAST ─── */
+#tb{
+  position:fixed;
+  top:18px; right:20px;
+  z-index:9999;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+
+.toast{
+  background:var(--text);
+  color:white;
+  padding:12px 16px;
+  border-radius:12px;
+  font-size:0.84rem;
+  font-weight:500;
+  display:flex;
+  align-items:center;
+  gap:9px;
+  min-width:240px;
+  max-width:340px;
+  box-shadow:0 4px 20px rgba(0,0,0,0.18);
+  animation:toastIn 0.2s ease;
+}
+
+.toast.success{ border-left:4px solid var(--green); }
+.toast.error  { border-left:4px solid var(--red); }
+.toast.info   { border-left:4px solid var(--primary); }
+
+@keyframes toastIn { from{opacity:0;transform:translateX(18px)} to{opacity:1;transform:translateX(0)} }
+@keyframes toastOut{ from{opacity:1} to{opacity:0;transform:translateX(18px)} }
+
+@media(max-width:1100px){
+  .stat-grid{ grid-template-columns:repeat(2,1fr); }
+  .fg-3{ grid-template-columns:1fr 1fr; }
 }
 </style>
 </head>
 <body>
 
-<!-- TOAST CONTAINER -->
-<div id="toast-container"></div>
+<div id="tb"></div>
 
-<!-- SIDEBAR -->
+<!-- ══ SIDEBAR ══ -->
 <aside class="sidebar">
   <div class="sidebar-brand">
-    <div class="logo-badge">
-      <div class="logo-icon">🏛️</div>
-      <h1>HostelOS</h1>
-    </div>
+    <strong>In&Out</strong>
     <p>Warden Control Panel</p>
   </div>
 
   <nav class="sidebar-nav">
-    <div class="nav-label">Overview</div>
-    <div class="nav-item active" onclick="showPage('dashboard',this)">
-      <span class="ico">📊</span> Dashboard
-    </div>
+    <div class="nav-section">Overview</div>
+    <button class="nav-item active" onclick="showPage('dashboard',this)">
+      <span class="nav-ico">📊</span> Dashboard
+    </button>
 
-    <div class="nav-label">Management</div>
-    <div class="nav-item" onclick="showPage('students',this)">
-      <span class="ico">🎓</span> Students
-    </div>
-    <div class="nav-item" onclick="showPage('rooms',this)">
-      <span class="ico">🏠</span> Rooms
-    </div>
-    <div class="nav-item" onclick="showPage('requests',this)">
-      <span class="ico">📋</span> Leave Requests
-      <span class="nav-badge" id="sidebarBadge" style="display:none">0</span>
-    </div>
+    <div class="nav-section">Management</div>
+    <button class="nav-item" onclick="showPage('students',this)">
+      <span class="nav-ico">🎓</span> Students
+    </button>
+    <button class="nav-item" onclick="showPage('rooms',this)">
+      <span class="nav-ico">🏠</span> Rooms
+    </button>
+    <button class="nav-item" onclick="showPage('requests',this)">
+      <span class="nav-ico">📋</span> Leave Requests
+      <span class="nav-pill" id="sidebarPill">0</span>
+    </button>
 
-    <div class="nav-label">Staff</div>
-    <div class="nav-item" onclick="showPage('security',this)">
-      <span class="ico">🛡️</span> Security Staff
-    </div>
+    <div class="nav-section">Staff</div>
+    <button class="nav-item" onclick="showPage('security',this)">
+      <span class="nav-ico">🛡️</span> Security Staff
+    </button>
   </nav>
 
   <div class="sidebar-footer">
@@ -798,620 +662,570 @@ tr:hover td { background: #fafcff; }
   </div>
 </aside>
 
-<!-- TOPBAR -->
-<div style="margin-left:var(--sidebar-w); display:flex; flex-direction:column; flex:1;">
-<div class="topbar">
-  <div class="topbar-left">
+<!-- ══ MAIN ══ -->
+<div class="main-wrap">
+  <div class="topbar">
     <div>
-      <div class="page-title" id="topbarTitle">Dashboard</div>
-      <div class="breadcrumb">HostelOS / <span id="topbarSub">Overview</span></div>
+      <div class="topbar-title" id="ttitle">Dashboard</div>
+      <div class="topbar-sub" id="tsub">In&Out / Overview</div>
     </div>
-  </div>
-  <div class="topbar-right">
-    <div class="pulse-dot"></div>
-    <span class="live-label">LIVE</span>
-    <div class="admin-chip">
-      <div class="admin-avatar">W</div>
-      Warden
-    </div>
-  </div>
-</div>
-
-<!-- PAGES -->
-<div class="page-content">
-
-<!-- ════ DASHBOARD ════ -->
-<div id="dashboardPage" class="page active">
-  <div class="stats-grid">
-    <div class="stat-card blue">
-      <span class="stat-icon">🎓</span>
-      <div class="stat-value" id="statStudents">—</div>
-      <div class="stat-label">Total Students</div>
-      <div class="stat-sub" id="statStudentsSub">Loading...</div>
-    </div>
-    <div class="stat-card green">
-      <span class="stat-icon">🏠</span>
-      <div class="stat-value" id="statRooms">—</div>
-      <div class="stat-label">Total Rooms</div>
-      <div class="stat-sub" id="statRoomsSub">Loading...</div>
-    </div>
-    <div class="stat-card amber">
-      <span class="stat-icon">⏳</span>
-      <div class="stat-value" id="statPending">—</div>
-      <div class="stat-label">Pending Requests</div>
-      <div class="stat-sub" id="statPendingSub">Awaiting review</div>
-    </div>
-    <div class="stat-card red">
-      <span class="stat-icon">🛡️</span>
-      <div class="stat-value" id="statSecurity">—</div>
-      <div class="stat-label">Security Staff</div>
-      <div class="stat-sub" id="statSecuritySub">Loading...</div>
+    <div class="topbar-right">
+      <div class="live-badge"><div class="live-dot"></div>LIVE</div>
+      <div style="font-size:0.76rem;color:var(--muted);" id="clk">—</div>
     </div>
   </div>
 
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
-    <div class="card">
-      <div class="card-header">
+  <div class="page-content">
+
+    <!-- ── DASHBOARD ── -->
+    <div id="dashboardPage" class="page active">
+      <div class="stat-grid">
+        <div class="stat-card blue">
+          <div class="stat-ico">🎓</div>
+          <div class="stat-val" id="dS">—</div>
+          <div class="stat-label">Total Students</div>
+        </div>
+        <div class="stat-card green">
+          <div class="stat-ico">🏠</div>
+          <div class="stat-val" id="dR">—</div>
+          <div class="stat-label">Rooms</div>
+        </div>
+        <div class="stat-card amber">
+          <div class="stat-ico">⏳</div>
+          <div class="stat-val" id="dP">—</div>
+          <div class="stat-label">Pending Requests</div>
+        </div>
+        <div class="stat-card red">
+          <div class="stat-ico">🛡️</div>
+          <div class="stat-val" id="dG">—</div>
+          <div class="stat-label">Security Staff</div>
+        </div>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+        <div class="card">
+          <div class="card-hd">
+            <div>
+              <div class="card-title">Recent Leave Requests</div>
+              <div style="font-size:0.74rem;color:var(--muted);margin-top:2px;">Latest activity</div>
+            </div>
+            <div class="live-badge"><div class="live-dot"></div>Live</div>
+          </div>
+          <div style="padding:0 22px;">
+            <div id="dashFeed" class="a-feed">
+              <div class="empty"><div class="ei">📋</div><p>No requests yet</p></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-hd"><div class="card-title">Quick Actions</div></div>
+          <div class="card-body" style="display:flex;flex-direction:column;gap:10px;">
+            <button class="btn btn-p" style="justify-content:flex-start;border-radius:10px;" onclick="showPage('students',document.querySelectorAll('.nav-item')[1]);openPanel('sPanel')">➕ Add New Student</button>
+            <button class="btn btn-g" style="justify-content:flex-start;border-radius:10px;" onclick="showPage('rooms',document.querySelectorAll('.nav-item')[2]);openPanel('rPanel')">🏠 Create Room</button>
+            <button class="btn btn-g" style="justify-content:flex-start;border-radius:10px;" onclick="showPage('security',document.querySelectorAll('.nav-item')[4]);openPanel('gPanel')">🛡️ Add Security Staff</button>
+            <button class="btn btn-g" style="justify-content:flex-start;border-radius:10px;" onclick="showPage('requests',document.querySelectorAll('.nav-item')[3])">📋 Review Leave Requests</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── STUDENTS ── -->
+    <div id="studentsPage" class="page">
+      <div class="sec-hd">
         <div>
-          <div class="section-title">Recent Leave Requests</div>
-          <div class="section-sub">Latest activity — auto-refreshing</div>
+          <div class="sec-title">Student Directory</div>
+          <div class="sec-sub">All enrolled hostel students — from Firebase</div>
         </div>
-        <div style="display:flex;gap:5px;align-items:center;font-size:11px;color:var(--green);font-weight:600;">
-          <div class="pulse-dot"></div> Live
+        <button class="btn btn-p" onclick="togglePanel('sPanel')">＋ Add Student</button>
+      </div>
+
+      <div class="form-panel" id="sPanel" style="display:none;">
+        <div class="form-ph">🎓 Register New Student</div>
+        <div class="form-pb">
+          <form id="studentForm">
+            <div class="fg fg-2">
+              <div class="fgroup">
+                <label class="flabel">Username</label>
+                <input class="finput" name="username" placeholder="e.g. john_doe_2024" required>
+              </div>
+              <div class="fgroup">
+                <label class="flabel">Password</label>
+                <input class="finput" name="password" type="password" placeholder="Initial password" required>
+              </div>
+              <div class="fgroup">
+                <label class="flabel">Full Name</label>
+                <input class="finput" name="name" placeholder="e.g. John Doe" required>
+              </div>
+              <div class="fgroup">
+                <label class="flabel">Room Number</label>
+                <input class="finput" name="room" placeholder="e.g. 204" required>
+              </div>
+              <div class="fgroup">
+                <label class="flabel">Bed Assignment</label>
+                <select class="finput" name="bed">
+                  <option value="A">Bed A</option>
+                  <option value="B">Bed B</option>
+                  <option value="C">Bed C</option>
+                  <option value="D">Bed D</option>
+                  <option value="E">Bed E</option>
+                </select>
+              </div>
+              <div class="fgroup">
+                <label class="flabel">Photo (optional)</label>
+                <input class="finput" type="file" id="photoFile" accept="image/*">
+                <input type="hidden" name="photo" id="photoB64">
+              </div>
+            </div>
+            <div class="f-actions">
+              <button type="submit" class="btn btn-p" id="sBtnSub">✓ Register Student</button>
+              <button type="button" class="btn btn-g" onclick="togglePanel('sPanel')">Cancel</button>
+            </div>
+          </form>
         </div>
       </div>
-      <div class="card-body" style="padding:0 22px;">
-        <div id="dashActivity" class="activity-list">
-          <div class="empty-state"><div class="icon">📋</div><p>No requests yet</p></div>
+
+      <div class="card">
+        <div class="card-hd">
+          <div class="card-title">All Students</div>
+          <span id="sCount" style="font-size:0.76rem;color:var(--muted);">0 enrolled</span>
+        </div>
+        <div class="tw">
+          <table>
+            <thead><tr>
+              <th>Photo</th><th>Name</th><th>Username</th><th>Room</th><th>Bed</th>
+            </tr></thead>
+            <tbody id="sTbody">
+              <tr><td colspan="5"><div class="empty"><div class="ei">🎓</div><div class="et">No students yet</div></div></td></tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
 
-    <div class="card">
-      <div class="card-header">
+    <!-- ── ROOMS ── -->
+    <div id="roomsPage" class="page">
+      <div class="sec-hd">
         <div>
-          <div class="section-title">Quick Actions</div>
-          <div class="section-sub">Common tasks</div>
+          <div class="sec-title">Room Management</div>
+          <div class="sec-sub">Configure rooms and bed assignments</div>
+        </div>
+        <button class="btn btn-p" onclick="togglePanel('rPanel')">＋ Create Room</button>
+      </div>
+
+      <div class="form-panel" id="rPanel" style="display:none;">
+        <div class="form-ph">🏠 New Room Configuration</div>
+        <div class="form-pb">
+          <form id="roomForm">
+            <div class="fg fg-3">
+              <div class="fgroup" style="grid-column:1/-1;">
+                <label class="flabel">Room Number</label>
+                <input class="finput" name="room_number" placeholder="e.g. 101" required>
+              </div>
+              <div class="fgroup">
+                <label class="flabel">Bed A</label>
+                <input class="finput" name="bedA" placeholder="Occupant name or blank">
+              </div>
+              <div class="fgroup">
+                <label class="flabel">Bed B</label>
+                <input class="finput" name="bedB" placeholder="Occupant name or blank">
+              </div>
+              <div class="fgroup">
+                <label class="flabel">Bed C</label>
+                <input class="finput" name="bedC" placeholder="Optional">
+              </div>
+              <div class="fgroup">
+                <label class="flabel">Bed D</label>
+                <input class="finput" name="bedD" placeholder="Optional">
+              </div>
+              <div class="fgroup">
+                <label class="flabel">Bed E</label>
+                <input class="finput" name="bedE" placeholder="Optional">
+              </div>
+            </div>
+            <div class="f-actions">
+              <button type="submit" class="btn btn-p">✓ Create Room</button>
+              <button type="button" class="btn btn-g" onclick="togglePanel('rPanel')">Cancel</button>
+            </div>
+          </form>
         </div>
       </div>
-      <div class="card-body" style="display:flex;flex-direction:column;gap:10px;">
-        <button class="btn btn-primary" style="justify-content:flex-start;" onclick="showPage('students', document.querySelectorAll('.nav-item')[1]); toggle('studentFormBox')">
-          <span>➕</span> Add New Student
-        </button>
-        <button class="btn btn-ghost" style="justify-content:flex-start;" onclick="showPage('rooms', document.querySelectorAll('.nav-item')[2]); toggle('roomFormBox')">
-          <span>🏠</span> Create New Room
-        </button>
-        <button class="btn btn-ghost" style="justify-content:flex-start;" onclick="showPage('security', document.querySelectorAll('.nav-item')[4]); toggle('securityFormBox')">
-          <span>🛡️</span> Add Security Staff
-        </button>
-        <button class="btn btn-ghost" style="justify-content:flex-start;" onclick="showPage('requests', document.querySelectorAll('.nav-item')[3])">
-          <span>📋</span> Review Leave Requests
-        </button>
+
+      <div id="rGrid" class="room-grid">
+        <div style="grid-column:1/-1;"><div class="empty"><div class="ei">🏠</div><div class="et">No rooms yet</div><div class="es">Create your first room above</div></div></div>
       </div>
     </div>
-  </div>
-</div>
 
-<!-- ════ STUDENTS ════ -->
-<div id="studentsPage" class="page">
-  <div class="section-header">
-    <div>
-      <div class="section-title">Student Directory</div>
-      <div class="section-sub">Manage enrolled hostel students</div>
-    </div>
-    <button class="btn btn-primary" onclick="toggle('studentFormBox')">
-      <span>＋</span> Add Student
-    </button>
-  </div>
-
-  <div id="studentFormBox" class="form-panel" style="display:none;">
-    <div class="form-panel-header">🎓 New Student Registration</div>
-    <div class="form-panel-body">
-      <form id="studentForm">
-        <div class="form-grid form-grid-2">
-          <div class="form-group">
-            <label class="form-label">Username</label>
-            <input class="form-input" name="username" placeholder="e.g. john_doe" required>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Password</label>
-            <input class="form-input" name="password" type="password" placeholder="Set initial password" required>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Full Name</label>
-            <input class="form-input" name="name" placeholder="e.g. John Doe" required>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Room Number</label>
-            <input class="form-input" name="room" placeholder="e.g. 101" required>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Bed Assignment</label>
-            <select class="form-input" name="bed">
-              <option value="A">Bed A</option>
-              <option value="B">Bed B</option>
-              <option value="C">Bed C</option>
-              <option value="D">Bed D</option>
-              <option value="E">Bed E</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Photo (optional)</label>
-            <input class="form-input" type="file" id="photoFile" accept="image/*">
-            <input type="hidden" name="photo" id="photoBase64">
-          </div>
+    <!-- ── REQUESTS ── -->
+    <div id="requestsPage" class="page">
+      <div class="sec-hd">
+        <div>
+          <div class="sec-title">Leave Requests</div>
+          <div class="sec-sub">Review and action student exit applications</div>
         </div>
-        <div class="form-actions">
-          <button type="submit" class="btn btn-blue" id="studentSubmitBtn">
-            <span>✓</span> Register Student
-          </button>
-          <button type="button" class="btn btn-ghost" onclick="toggle('studentFormBox')">Cancel</button>
+        <div style="display:flex;align-items:center;gap:7px;font-size:0.76rem;color:#1a7f34;font-weight:600;">
+          <div class="live-dot"></div> Auto-updates every 4s
         </div>
-      </form>
-    </div>
-  </div>
+      </div>
 
-  <div class="card">
-    <div class="card-header">
-      <div class="section-title" style="font-size:13px;">All Students</div>
-      <span id="studentCountBadge" class="badge badge-room">0 enrolled</span>
-    </div>
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th>Student</th>
-            <th>Username</th>
-            <th>Room</th>
-            <th>Bed</th>
-          </tr>
-        </thead>
-        <tbody id="studentsTable">
-          <tr><td colspan="4"><div class="empty-state"><div class="icon">🎓</div><p>No students registered</p></div></td></tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-</div>
+      <div class="chips" id="reqChips">
+        <button class="chip active" onclick="setFilter('all',this)">All</button>
+        <button class="chip" onclick="setFilter('pending',this)">⏳ Pending</button>
+        <button class="chip" onclick="setFilter('approved',this)">✅ Approved</button>
+        <button class="chip" onclick="setFilter('rejected',this)">❌ Rejected</button>
+      </div>
 
-<!-- ════ ROOMS ════ -->
-<div id="roomsPage" class="page">
-  <div class="section-header">
-    <div>
-      <div class="section-title">Room Management</div>
-      <div class="section-sub">Configure and assign hostel rooms</div>
-    </div>
-    <button class="btn btn-primary" onclick="toggle('roomFormBox')">
-      <span>＋</span> Create Room
-    </button>
-  </div>
-
-  <div id="roomFormBox" class="form-panel" style="display:none;">
-    <div class="form-panel-header">🏠 New Room Configuration</div>
-    <div class="form-panel-body">
-      <form id="roomForm">
-        <div class="form-grid form-grid-3">
-          <div class="form-group" style="grid-column:1/-1;">
-            <label class="form-label">Room Number</label>
-            <input class="form-input" name="room_number" placeholder="e.g. 101" required>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Bed A — Occupant</label>
-            <input class="form-input" name="bedA" placeholder="Student name or ID">
-          </div>
-          <div class="form-group">
-            <label class="form-label">Bed B — Occupant</label>
-            <input class="form-input" name="bedB" placeholder="Student name or ID">
-          </div>
-          <div class="form-group">
-            <label class="form-label">Bed C — Occupant</label>
-            <input class="form-input" name="bedC" placeholder="Leave blank if unoccupied">
-          </div>
-          <div class="form-group">
-            <label class="form-label">Bed D — Occupant</label>
-            <input class="form-input" name="bedD" placeholder="Leave blank if unoccupied">
-          </div>
-          <div class="form-group">
-            <label class="form-label">Bed E — Occupant</label>
-            <input class="form-input" name="bedE" placeholder="Leave blank if unoccupied">
-          </div>
+      <div class="card">
+        <div class="tw">
+          <table>
+            <thead><tr>
+              <th>Student</th><th>Room</th><th>Reason</th><th>Status</th><th>Actions</th>
+            </tr></thead>
+            <tbody id="reqTbody">
+              <tr><td colspan="5"><div class="empty"><div class="ei">📋</div><div class="et">No requests</div></div></td></tr>
+            </tbody>
+          </table>
         </div>
-        <div class="form-actions">
-          <button type="submit" class="btn btn-blue">
-            <span>✓</span> Create Room
-          </button>
-          <button type="button" class="btn btn-ghost" onclick="toggle('roomFormBox')">Cancel</button>
+      </div>
+    </div>
+
+    <!-- ── SECURITY ── -->
+    <div id="securityPage" class="page">
+      <div class="sec-hd">
+        <div>
+          <div class="sec-title">Security Personnel</div>
+          <div class="sec-sub">Hostel security staff — from Firebase</div>
         </div>
-      </form>
-    </div>
-  </div>
+        <button class="btn btn-p" onclick="togglePanel('gPanel')">＋ Add Staff</button>
+      </div>
 
-  <div id="roomsGrid" class="room-grid">
-    <div style="grid-column:1/-1;"><div class="empty-state"><div class="icon">🏠</div><p>No rooms configured yet</p></div></div>
-  </div>
-</div>
-
-<!-- ════ REQUESTS ════ -->
-<div id="requestsPage" class="page">
-  <div class="section-header">
-    <div>
-      <div class="section-title">Leave Requests</div>
-      <div class="section-sub">Review and action student leave applications</div>
-    </div>
-    <div style="display:flex;align-items:center;gap:8px;">
-      <div class="pulse-dot"></div>
-      <span style="font-size:12px;color:var(--green);font-weight:600;">Auto-refreshing every 4s</span>
-    </div>
-  </div>
-
-  <div style="display:flex;gap:12px;margin-bottom:18px;" id="requestFilters">
-    <button class="btn btn-primary btn-sm" onclick="filterRequests('all',this)">All</button>
-    <button class="btn btn-ghost btn-sm" onclick="filterRequests('pending',this)">⏳ Pending</button>
-    <button class="btn btn-ghost btn-sm" onclick="filterRequests('approved',this)">✅ Approved</button>
-    <button class="btn btn-ghost btn-sm" onclick="filterRequests('rejected',this)">❌ Rejected</button>
-  </div>
-
-  <div class="card">
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th>Student</th>
-            <th>Room</th>
-            <th>Reason</th>
-            <th>Status</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody id="requestsTable">
-          <tr><td colspan="5"><div class="empty-state"><div class="icon">📋</div><p>No leave requests</p></div></td></tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
-</div>
-
-<!-- ════ SECURITY ════ -->
-<div id="securityPage" class="page">
-  <div class="section-header">
-    <div>
-      <div class="section-title">Security Staff</div>
-      <div class="section-sub">Manage hostel security personnel</div>
-    </div>
-    <button class="btn btn-primary" onclick="toggle('securityFormBox')">
-      <span>＋</span> Add Staff
-    </button>
-  </div>
-
-  <div id="securityFormBox" class="form-panel" style="display:none;">
-    <div class="form-panel-header">🛡️ Add Security Personnel</div>
-    <div class="form-panel-body">
-      <form id="securityForm">
-        <div class="form-grid form-grid-2">
-          <div class="form-group">
-            <label class="form-label">Username</label>
-            <input class="form-input" name="username" placeholder="e.g. guard_001" required>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Password</label>
-            <input class="form-input" name="password" type="password" placeholder="Set initial password" required>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Full Name</label>
-            <input class="form-input" name="name" placeholder="e.g. Ramesh Kumar" required>
-          </div>
-          <div class="form-group">
-            <label class="form-label">Shift</label>
-            <select class="form-input" name="shift">
-              <option value="morning">🌅 Morning Shift (6AM–2PM)</option>
-              <option value="afternoon">☀️ Afternoon Shift (2PM–10PM)</option>
-              <option value="night">🌙 Night Shift (10PM–6AM)</option>
-            </select>
-          </div>
+      <div class="form-panel" id="gPanel" style="display:none;">
+        <div class="form-ph">🛡️ Add Security Personnel</div>
+        <div class="form-pb">
+          <form id="secForm">
+            <div class="fg fg-2">
+              <div class="fgroup">
+                <label class="flabel">Username</label>
+                <input class="finput" name="username" placeholder="e.g. guard_01" required>
+              </div>
+              <div class="fgroup">
+                <label class="flabel">Password</label>
+                <input class="finput" name="password" type="password" placeholder="Initial password" required>
+              </div>
+              <div class="fgroup">
+                <label class="flabel">Full Name</label>
+                <input class="finput" name="name" placeholder="e.g. Ramesh Kumar" required>
+              </div>
+              <div class="fgroup">
+                <label class="flabel">Shift</label>
+                <select class="finput" name="shift">
+                  <option value="morning">🌅 Morning (6AM – 2PM)</option>
+                  <option value="afternoon">☀️ Afternoon (2PM – 10PM)</option>
+                  <option value="night">🌙 Night (10PM – 6AM)</option>
+                </select>
+              </div>
+            </div>
+            <div class="f-actions">
+              <button type="submit" class="btn btn-p">✓ Add Personnel</button>
+              <button type="button" class="btn btn-g" onclick="togglePanel('gPanel')">Cancel</button>
+            </div>
+          </form>
         </div>
-        <div class="form-actions">
-          <button type="submit" class="btn btn-blue">
-            <span>✓</span> Add Personnel
-          </button>
-          <button type="button" class="btn btn-ghost" onclick="toggle('securityFormBox')">Cancel</button>
-        </div>
-      </form>
+      </div>
+
+      <div id="gGrid" class="guard-grid">
+        <div style="grid-column:1/-1;"><div class="empty"><div class="ei">🛡️</div><div class="et">No security staff yet</div></div></div>
+      </div>
     </div>
-  </div>
 
-  <div id="securityGrid" class="security-grid">
-    <div style="grid-column:1/-1;"><div class="empty-state"><div class="icon">🛡️</div><p>No security staff added</p></div></div>
-  </div>
-</div>
-
-</div><!-- /page-content -->
-</div><!-- /main wrapper -->
+  </div><!-- /page-content -->
+</div><!-- /main-wrap -->
 
 <script>
-/* ════════════ STATE ════════════ */
-let allRequests = [];
-let currentFilter = 'all';
-const pageTitles = {
-  dashboard: ['Dashboard','Overview'],
-  students: ['Students','Directory'],
-  rooms: ['Rooms','Floor Plan'],
-  requests: ['Leave Requests','Approvals'],
-  security: ['Security Staff','Personnel']
+/* ═══ STATE ═══ */
+let allReqs = [];
+let reqFilter = 'all';
+const SHIFTS = { morning:'🌅 Morning (6AM–2PM)', afternoon:'☀️ Afternoon (2PM–10PM)', night:'🌙 Night (10PM–6AM)' };
+const META = {
+  dashboard: ['Dashboard','In&Out / Overview'],
+  students:  ['Students','In&Out / Directory'],
+  rooms:     ['Rooms','In&Out / Floor Plan'],
+  requests:  ['Leave Requests','In&Out / Approvals'],
+  security:  ['Security Staff','In&Out / Personnel'],
 };
 
-/* ════════════ PAGE NAV ════════════ */
-function showPage(page, el) {
-  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.getElementById(page + 'Page').classList.add('active');
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  if (el) el.classList.add('active');
-  const [title, sub] = pageTitles[page] || [page, ''];
-  document.getElementById('topbarTitle').textContent = title;
-  document.getElementById('topbarSub').textContent = sub;
-  if (page === 'students') loadStudents();
-  if (page === 'rooms') loadRooms();
-  if (page === 'security') loadSecurity();
+/* ═══ CLOCK ═══ */
+setInterval(()=>{
+  document.getElementById('clk').textContent =
+    new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:true});
+},1000);
+
+/* ═══ NAV ═══ */
+function showPage(p, el){
+  document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
+  document.getElementById(p+'Page').classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(x=>x.classList.remove('active'));
+  if(el) el.classList.add('active');
+  const [t,s] = META[p]||[p,''];
+  document.getElementById('ttitle').textContent = t;
+  document.getElementById('tsub').textContent = s;
+  if(p==='students') loadStudents();
+  if(p==='rooms')    loadRooms();
+  if(p==='security') loadSecurity();
 }
 
-/* ════════════ TOGGLE ════════════ */
-function toggle(id) {
-  const el = document.getElementById(id);
-  el.style.display = el.style.display === 'none' ? 'block' : 'none';
+/* ═══ PANELS ═══ */
+function togglePanel(id){
+  const el=document.getElementById(id);
+  el.style.display = el.style.display==='none' ? 'block' : 'none';
+}
+function openPanel(id){ document.getElementById(id).style.display='block'; }
+
+/* ═══ TOAST ═══ */
+function toast(msg,type='info'){
+  const i={success:'✅',error:'❌',info:'ℹ️'};
+  const el=document.createElement('div');
+  el.className=`toast ${type}`;
+  el.innerHTML=`<span>${i[type]}</span><span>${msg}</span>`;
+  document.getElementById('tb').appendChild(el);
+  setTimeout(()=>{ el.style.animation='toastOut 0.2s ease forwards'; setTimeout(()=>el.remove(),220); },3400);
 }
 
-/* ════════════ TOAST ════════════ */
-function toast(msg, type = 'info') {
-  const icons = { success:'✅', error:'❌', info:'ℹ️' };
-  const t = document.createElement('div');
-  t.className = `toast ${type}`;
-  t.innerHTML = `<span>${icons[type]||'ℹ️'}</span><span>${msg}</span>`;
-  document.getElementById('toast-container').appendChild(t);
-  setTimeout(() => {
-    t.style.animation = 'toastOut 0.25s ease forwards';
-    setTimeout(() => t.remove(), 300);
-  }, 3500);
-}
-
-/* ════════════ IMAGE ENCODE ════════════ */
-document.addEventListener('change', e => {
-  if (e.target.id === 'photoFile') {
-    const reader = new FileReader();
-    reader.onload = () => { document.getElementById('photoBase64').value = reader.result.split(',')[1]; };
-    reader.readAsDataURL(e.target.files[0]);
+/* ═══ PHOTO ENCODE ═══ */
+document.addEventListener('change',e=>{
+  if(e.target.id==='photoFile'){
+    const r=new FileReader();
+    r.onload=()=>{ document.getElementById('photoB64').value=r.result.split(',')[1]; };
+    r.readAsDataURL(e.target.files[0]);
   }
 });
 
-/* ════════════ STUDENTS ════════════ */
-async function loadStudents() {
-  const res = await fetch('/api/students');
-  const data = await res.json();
-  document.getElementById('statStudents').textContent = data.length;
-  document.getElementById('statStudentsSub').textContent = data.length + ' active enrollments';
-  document.getElementById('studentCountBadge').textContent = data.length + ' enrolled';
+/* ═══ STUDENTS ═══ */
+// Route: GET /api/students  (requires warden session)
+async function loadStudents(){
+  try{
+    const res=await fetch('/api/students');
+    const data=await res.json();
+    document.getElementById('dS').textContent=data.length;
+    document.getElementById('sCount').textContent=data.length+' enrolled';
 
-  const box = document.getElementById('studentsTable');
-  if (!data.length) {
-    box.innerHTML = '<tr><td colspan="4"><div class="empty-state"><div class="icon">🎓</div><p>No students registered yet</p></div></td></tr>';
-    return;
-  }
-  box.innerHTML = data.map(s => `
-    <tr>
-      <td style="display:flex;align-items:center;gap:12px;">
-        ${s.photo
-          ? `<img src="data:image/png;base64,${s.photo}" class="student-avatar">`
-          : `<div class="avatar-placeholder">${(s.name||'?')[0].toUpperCase()}</div>`}
-        <span style="font-weight:600;">${s.name||'—'}</span>
-      </td>
-      <td style="color:var(--muted);font-size:12.5px;">@${s.username||'—'}</td>
-      <td><span class="badge badge-room">Room ${s.room||'—'}</span></td>
-      <td><span class="badge badge-bed">Bed ${s.bed||'—'}</span></td>
-    </tr>
-  `).join('');
+    const body=document.getElementById('sTbody');
+    if(!data.length){
+      body.innerHTML=`<tr><td colspan="5"><div class="empty"><div class="ei">🎓</div><div class="et">No students registered</div></div></td></tr>`;
+      return;
+    }
+
+    body.innerHTML=data.map(s=>{
+      // Photo: backend returns raw base64 string (no data URL prefix)
+      const avatarHtml = s.photo
+        ? `<img class="ava" src="data:image/jpeg;base64,${s.photo}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" alt="${s.name||''}">
+           <div class="ava-init" style="display:none;">${(s.name||s.username||'?')[0].toUpperCase()}</div>`
+        : `<div class="ava-init">${(s.name||s.username||'?')[0].toUpperCase()}</div>`;
+      return `<tr>
+        <td><div style="display:flex;align-items:center;">${avatarHtml}</div></td>
+        <td style="font-weight:600;">${s.name||'—'}</td>
+        <td style="color:var(--muted);font-size:0.82rem;">@${s.username||'—'}</td>
+        <td><span class="badge broom">Room ${s.room||'—'}</span></td>
+        <td><span class="badge bbed">Bed ${s.bed||'—'}</span></td>
+      </tr>`;
+    }).join('');
+  }catch(e){ console.error(e); }
 }
 
-document.getElementById('studentForm').onsubmit = async e => {
+// Route: POST /api/add_student  (FormData: username, password, name, room, bed, photo)
+document.getElementById('studentForm').onsubmit=async e=>{
   e.preventDefault();
-  const btn = document.getElementById('studentSubmitBtn');
-  btn.innerHTML = '<span class="spinner"></span> Registering...';
-  btn.disabled = true;
-  try {
-    const fd = new FormData(document.getElementById('studentForm'));
-    const res = await fetch('/api/add_student', { method: 'POST', body: fd });
-    if (res.ok) {
-      toast('Student registered successfully!', 'success');
+  const btn=document.getElementById('sBtnSub');
+  btn.innerHTML='<span class="sp"></span> Registering…'; btn.disabled=true;
+  try{
+    const fd=new FormData(document.getElementById('studentForm'));
+    const res=await fetch('/api/add_student',{method:'POST',body:fd});
+    if(res.ok){
+      toast('Student registered!','success');
       document.getElementById('studentForm').reset();
-      document.getElementById('photoBase64').value = '';
-      toggle('studentFormBox');
+      document.getElementById('photoB64').value='';
+      togglePanel('sPanel');
       loadStudents();
     } else {
-      const err = await res.json();
-      toast(err.detail || 'Failed to register student', 'error');
+      const err=await res.json().catch(()=>({}));
+      toast(err.detail||'Failed to register','error');
     }
-  } catch { toast('Network error', 'error'); }
-  btn.innerHTML = '<span>✓</span> Register Student';
-  btn.disabled = false;
+  }catch{ toast('Network error','error'); }
+  btn.innerHTML='✓ Register Student'; btn.disabled=false;
 };
 
-/* ════════════ ROOMS ════════════ */
-async function loadRooms() {
-  const res = await fetch('/api/rooms');
-  const data = await res.json();
-  document.getElementById('statRooms').textContent = data.length;
-  document.getElementById('statRoomsSub').textContent = data.length + ' rooms configured';
+/* ═══ ROOMS ═══ */
+// Route: GET /api/rooms  (open)
+async function loadRooms(){
+  try{
+    const res=await fetch('/api/rooms');
+    const data=await res.json();
+    document.getElementById('dR').textContent=data.length;
 
-  const grid = document.getElementById('roomsGrid');
-  if (!data.length) {
-    grid.innerHTML = '<div style="grid-column:1/-1;"><div class="empty-state"><div class="icon">🏠</div><p>No rooms configured yet</p></div></div>';
-    return;
-  }
-  grid.innerHTML = data.map(r => {
-    const beds = ['A','B','C','D','E'].map(b => r[b] ? `
-      <div class="bed-row">
-        <span class="bed-label">Bed ${b}</span>
-        <span class="bed-name">${r[b]}</span>
-      </div>` : '').join('');
-    const occupied = ['A','B','C','D','E'].filter(b => r[b]).length;
-    return `
-      <div class="room-card">
-        <div class="room-card-header">
-          Room ${r.room}
-          <span style="font-size:11px;opacity:0.7;">${occupied}/5</span>
-        </div>
-        <div class="room-card-body">
-          ${beds || '<div style="font-size:12px;color:var(--muted);text-align:center;padding:8px 0;">All beds vacant</div>'}
-        </div>
+    const grid=document.getElementById('rGrid');
+    if(!data.length){
+      grid.innerHTML=`<div style="grid-column:1/-1;"><div class="empty"><div class="ei">🏠</div><div class="et">No rooms configured</div></div></div>`;
+      return;
+    }
+    grid.innerHTML=data.map(r=>{
+      const beds=['A','B','C','D','E'];
+      const occ=beds.filter(b=>r[b]).length;
+      const rows=beds.map(b=>`
+        <div class="brow">
+          <span class="bk">Bed ${b}</span>
+          <span>${r[b]||'<span style="color:#d1d5db;">Vacant</span>'}</span>
+        </div>`).join('');
+      return `<div class="room-card">
+        <div class="rch">Room ${r.room} <span>${occ}/5 occupied</span></div>
+        <div class="rcb">${rows}</div>
       </div>`;
-  }).join('');
+    }).join('');
+  }catch(e){ console.error(e); }
 }
 
-document.getElementById('roomForm').onsubmit = async e => {
+// Route: POST /api/create_room  (JSON body)
+document.getElementById('roomForm').onsubmit=async e=>{
   e.preventDefault();
-  const data = Object.fromEntries(new FormData(document.getElementById('roomForm')));
-  const res = await fetch('/api/create_room', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(data)
-  });
-  if (res.ok) {
-    toast('Room created successfully!', 'success');
-    document.getElementById('roomForm').reset();
-    toggle('roomFormBox');
-    loadRooms();
-  } else { toast('Failed to create room', 'error'); }
+  const data=Object.fromEntries(new FormData(document.getElementById('roomForm')));
+  // bedA and bedB are required in the Pydantic model (non-optional) but we send empty string if blank
+  if(!data.bedA) data.bedA='';
+  if(!data.bedB) data.bedB='';
+  try{
+    const res=await fetch('/api/create_room',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(data)
+    });
+    if(res.ok){
+      toast('Room created!','success');
+      document.getElementById('roomForm').reset();
+      togglePanel('rPanel');
+      loadRooms();
+    } else { toast('Failed to create room','error'); }
+  }catch{ toast('Network error','error'); }
 };
 
-/* ════════════ REQUESTS ════════════ */
-async function loadRequests() {
-  try {
-    const res = await fetch('/api/requests');
-    const data = await res.json();
+/* ═══ REQUESTS ═══ */
+// Route: GET /api/requests  (requires warden session)
+async function loadRequests(){
+  try{
+    const res=await fetch('/api/requests');
+    const data=await res.json();
+    const prevPending=allReqs.filter(r=>r.status==='pending').length;
+    allReqs=data;
+    const pending=data.filter(r=>r.status==='pending').length;
 
-    const prevPending = allRequests.filter(r => r.status === 'pending').length;
-    allRequests = data;
-    const pending = data.filter(r => r.status === 'pending').length;
-
-    // Notify if new request came in
-    if (pending > prevPending && prevPending >= 0 && document.hidden !== undefined) {
-      toast(`New leave request received!`, 'info');
+    if(prevPending>=0 && pending>prevPending && prevPending>=0){
+      toast('New leave request received!','info');
     }
 
-    document.getElementById('statPending').textContent = pending;
-    const badge = document.getElementById('sidebarBadge');
-    if (pending > 0) {
-      badge.style.display = 'inline';
-      badge.textContent = pending;
-    } else {
-      badge.style.display = 'none';
-    }
+    document.getElementById('dP').textContent=pending;
+    const pill=document.getElementById('sidebarPill');
+    pending>0 ? (pill.textContent=pending, pill.classList.add('show')) : pill.classList.remove('show');
 
-    renderRequests();
-    renderDashActivity(data);
-  } catch {}
+    renderReqs();
+    renderDashFeed(data);
+  }catch(e){ console.error(e); }
 }
 
-function renderRequests() {
-  const filtered = currentFilter === 'all' ? allRequests : allRequests.filter(r => r.status === currentFilter);
-  const box = document.getElementById('requestsTable');
-  if (!filtered.length) {
-    box.innerHTML = `<tr><td colspan="5"><div class="empty-state"><div class="icon">📋</div><p>No ${currentFilter} requests</p></div></td></tr>`;
-    return;
-  }
-  box.innerHTML = filtered.map(r => `
-    <tr>
-      <td style="font-weight:600;">${r.student||'—'}</td>
-      <td><span class="badge badge-room">Room ${r.room||'—'}</span></td>
-      <td style="max-width:200px;font-size:13px;color:var(--muted);">${r.reason||'—'}</td>
-      <td><span class="badge badge-${r.status}">${statusEmoji(r.status)} ${capitalize(r.status)}</span></td>
-      <td>
-        ${r.status === 'pending' ? `
-          <button class="btn btn-success btn-sm" onclick="handleRequest('${r.id}','approve')">✓ Approve</button>
-          <button class="btn btn-danger btn-sm" style="margin-left:6px;" onclick="handleRequest('${r.id}','reject')">✗ Reject</button>
-        ` : `<span style="font-size:12px;color:var(--muted);">—</span>`}
-      </td>
-    </tr>
-  `).join('');
+function setFilter(f, btn){
+  reqFilter=f;
+  document.querySelectorAll('#reqChips .chip').forEach(c=>c.classList.remove('active'));
+  btn.classList.add('active');
+  renderReqs();
 }
 
-function renderDashActivity(data) {
-  const box = document.getElementById('dashActivity');
-  if (!data.length) {
-    box.innerHTML = '<div class="empty-state"><div class="icon">📋</div><p>No requests yet</p></div>';
+function renderReqs(){
+  const filtered=reqFilter==='all' ? allReqs : allReqs.filter(r=>r.status===reqFilter);
+  const body=document.getElementById('reqTbody');
+  if(!filtered.length){
+    body.innerHTML=`<tr><td colspan="5"><div class="empty"><div class="ei">📋</div><div class="et">No ${reqFilter==='all'?'':reqFilter} requests</div></div></td></tr>`;
     return;
   }
-  const recent = data.slice(-5).reverse();
-  box.innerHTML = recent.map(r => `
-    <div class="activity-item">
-      <div class="activity-dot ${r.status === 'pending' ? 'amber' : r.status === 'approved' ? 'green' : 'red'}"></div>
+  body.innerHTML=filtered.map(r=>`<tr>
+    <td style="font-weight:600;">${r.student||'—'}</td>
+    <td><span class="badge broom">Room ${r.room||'—'}</span></td>
+    <td style="max-width:200px;font-size:0.82rem;color:var(--muted);">${r.reason||'—'}</td>
+    <td><span class="badge ${r.status==='pending'?'bp':r.status==='approved'?'ba':'br'}">${sIcon(r.status)} ${cap(r.status)}</span></td>
+    <td>
+      ${r.status==='pending'
+        ? `<button class="btn btn-ok btn-sm" onclick="actReq('${r.id}','approve')">✓ Approve</button>
+           <button class="btn btn-no btn-sm" style="margin-left:6px;" onclick="actReq('${r.id}','reject')">✗ Reject</button>`
+        : `<span style="font-size:0.78rem;color:var(--muted);">—</span>`}
+    </td>
+  </tr>`).join('');
+}
+
+// Routes: POST /api/approve/{id}  POST /api/reject/{id}
+async function actReq(id, action){
+  const url=action==='approve' ? `/api/approve/${id}` : `/api/reject/${id}`;
+  const res=await fetch(url,{method:'POST'});
+  if(res.ok){ toast(`Request ${action}d`,'success'); loadRequests(); }
+  else { toast('Action failed','error'); }
+}
+
+function renderDashFeed(data){
+  const box=document.getElementById('dashFeed');
+  if(!data.length){
+    box.innerHTML='<div class="empty" style="padding:28px 0;"><div class="ei">📋</div><p>No requests yet</p></div>';
+    return;
+  }
+  const recent=[...data].slice(-6).reverse();
+  box.innerHTML=recent.map(r=>`
+    <div class="a-item">
+      <div class="a-dot ${r.status}"></div>
       <div>
-        <div class="activity-text"><strong>${r.student}</strong> — ${r.reason||'Leave request'}</div>
-        <div class="activity-time">${capitalize(r.status)} · Room ${r.room}</div>
+        <div class="a-txt"><strong>${r.student||'—'}</strong> — ${r.reason||'Leave request'}</div>
+        <div class="a-meta">${cap(r.status)} · Room ${r.room||'—'}</div>
       </div>
-    </div>
-  `).join('');
+    </div>`).join('');
 }
 
-function filterRequests(f, btn) {
-  currentFilter = f;
-  document.querySelectorAll('#requestFilters .btn').forEach(b => { b.className = 'btn btn-ghost btn-sm'; });
-  btn.className = 'btn btn-primary btn-sm';
-  renderRequests();
+/* ═══ SECURITY ═══ */
+// Route: GET /api/security_staff  (requires warden session)
+async function loadSecurity(){
+  try{
+    const res=await fetch('/api/security_staff');
+    const data=await res.json();
+    document.getElementById('dG').textContent=data.length;
+
+    const grid=document.getElementById('gGrid');
+    if(!data.length){
+      grid.innerHTML=`<div style="grid-column:1/-1;"><div class="empty"><div class="ei">🛡️</div><div class="et">No security staff yet</div></div></div>`;
+      return;
+    }
+    grid.innerHTML=data.map(g=>`
+      <div class="guard-card">
+        <div class="guard-ico">🛡️</div>
+        <div>
+          <div class="g-name">${g.name||'—'}</div>
+          <div class="g-user">@${g.username||'—'}</div>
+          <div class="g-shift"><span class="badge bshift">${SHIFTS[g.shift]||g.shift||'—'}</span></div>
+        </div>
+      </div>`).join('');
+  }catch(e){ console.error(e); }
 }
 
-async function handleRequest(id, action) {
-  const url = action === 'approve' ? `/api/approve/${id}` : `/api/reject/${id}`;
-  const res = await fetch(url, { method: 'POST' });
-  if (res.ok) {
-    toast(`Request ${action}d successfully`, 'success');
-    loadRequests();
-  } else { toast('Action failed', 'error'); }
-}
-
-/* ════════════ SECURITY ════════════ */
-async function loadSecurity() {
-  const res = await fetch('/api/security_staff');
-  const data = await res.json();
-  document.getElementById('statSecurity').textContent = data.length;
-  document.getElementById('statSecuritySub').textContent = data.length + ' personnel on duty';
-
-  const grid = document.getElementById('securityGrid');
-  if (!data.length) {
-    grid.innerHTML = '<div style="grid-column:1/-1;"><div class="empty-state"><div class="icon">🛡️</div><p>No security staff added</p></div></div>';
-    return;
-  }
-  const shiftLabels = {
-    morning: '🌅 Morning (6AM–2PM)',
-    afternoon: '☀️ Afternoon (2PM–10PM)',
-    night: '🌙 Night (10PM–6AM)'
-  };
-  grid.innerHTML = data.map(g => `
-    <div class="security-card">
-      <div class="security-avatar">🛡️</div>
-      <div class="security-info">
-        <div class="name">${g.name||'—'}</div>
-        <div class="username">@${g.username||'—'}</div>
-        <div class="shift"><span class="badge badge-shift">${shiftLabels[g.shift] || g.shift || 'Unassigned'}</span></div>
-      </div>
-    </div>
-  `).join('');
-}
-
-document.getElementById('securityForm').onsubmit = async e => {
+// Route: POST /api/add_security  (FormData: username, password, name, shift)
+document.getElementById('secForm').onsubmit=async e=>{
   e.preventDefault();
-  const fd = new FormData(document.getElementById('securityForm'));
-  const res = await fetch('/api/add_security', { method: 'POST', body: fd });
-  if (res.ok) {
-    toast('Security staff added!', 'success');
-    document.getElementById('securityForm').reset();
-    toggle('securityFormBox');
-    loadSecurity();
-  } else { toast('Failed to add staff', 'error'); }
+  const fd=new FormData(document.getElementById('secForm'));
+  try{
+    const res=await fetch('/api/add_security',{method:'POST',body:fd});
+    if(res.ok){
+      toast('Security staff added!','success');
+      document.getElementById('secForm').reset();
+      togglePanel('gPanel');
+      loadSecurity();
+    } else { toast('Failed to add staff','error'); }
+  }catch{ toast('Network error','error'); }
 };
 
-/* ════════════ HELPERS ════════════ */
-function capitalize(s) { return s ? s[0].toUpperCase() + s.slice(1) : ''; }
-function statusEmoji(s) { return { pending:'⏳', approved:'✅', rejected:'❌' }[s] || ''; }
+/* ═══ HELPERS ═══ */
+function cap(s){ return s?s[0].toUpperCase()+s.slice(1):''; }
+function sIcon(s){ return {pending:'⏳',approved:'✅',rejected:'❌'}[s]||''; }
 
-/* ════════════ INIT ════════════ */
+/* ═══ INIT ═══ */
 loadStudents();
 loadRooms();
 loadRequests();
