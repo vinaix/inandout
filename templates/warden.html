@@ -3,1234 +3,1094 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>In&Out — Warden Dashboard</title>
-<link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<title>In&Out — Warden</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Google+Sans+Text:wght@400;500&family=Google+Sans:wght@400;500;600;700&family=Google+Sans+Display:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-
-:root{
-  --text:#1d1d1f;
-  --muted:#6e6e73;
-  --border:#e5e5e7;
-  --primary:#0071e3;
-  --primary-hover:#0062c7;
-  --primary-bg:rgba(0,113,227,0.08);
-  --green:#34c759;
-  --green-bg:rgba(52,199,89,0.1);
-  --red:#ff3b30;
-  --red-bg:rgba(255,59,48,0.1);
-  --amber:#ff9f0a;
-  --amber-bg:rgba(255,159,10,0.1);
-  --bg:#f5f5f7;
-  --card:#ffffff;
-  --glass:rgba(255,255,255,0.82);
-  --sidebar-w:230px;
+:root {
+  --p:#1a73e8;--pc:#d3e3fd;--ps:#1557b0;
+  --s:#1e6e48;--sc:#c4eed0;
+  --e:#c5221f;--ec:#fad2cf;
+  --sur:#f8faff;--sur1:#edf1fd;--sur2:#e8eaf3;
+  --on:#191c20;--onv:#44474f;--out:#74777f;--outv:#c4c6d0;
+  --shd:rgba(0,0,0,0.07);
+  --sw:256px;--th:64px;
+  --rsm:8px;--rmd:12px;--rlg:16px;--rxl:24px;--rf:100px;
 }
-
-*{ box-sizing:border-box; margin:0; padding:0; }
-
-body{
-  font-family:"Google Sans",system-ui,-apple-system,sans-serif;
-  background:var(--bg);
-  color:var(--text);
-  -webkit-font-smoothing:antialiased;
-  display:flex;
-  min-height:100vh;
-}
-
-/* ─── SIDEBAR ─── */
-.sidebar{
-  width:var(--sidebar-w);
-  background:var(--card);
-  border-right:1px solid var(--border);
-  position:fixed;
-  top:0; left:0;
-  height:100vh;
-  display:flex;
-  flex-direction:column;
-  z-index:200;
-}
-
-.sidebar-brand{
-  padding:22px 22px 16px;
-  border-bottom:1px solid var(--border);
-}
-
-.sidebar-brand strong{
-  font-size:1.35rem;
-  letter-spacing:-0.03em;
-  color:var(--text);
-}
-
-.sidebar-brand p{
-  font-size:0.74rem;
-  color:var(--muted);
-  margin-top:3px;
-}
-
-.sidebar-nav{
-  flex:1;
-  padding:14px 12px;
-  display:flex;
-  flex-direction:column;
-  gap:2px;
-  overflow-y:auto;
-}
-
-.nav-section{
-  font-size:0.67rem;
-  font-weight:600;
-  letter-spacing:0.06em;
-  text-transform:uppercase;
-  color:var(--muted);
-  padding:10px 10px 4px;
-  margin-top:4px;
-}
-
-.nav-item{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  padding:10px 12px;
-  border-radius:10px;
-  cursor:pointer;
-  font-size:0.875rem;
-  font-weight:500;
-  color:var(--muted);
-  transition:all 0.15s;
-  position:relative;
-  border:none;
-  background:none;
-  width:100%;
-  text-align:left;
-  font-family:"Google Sans",sans-serif;
-}
-
-.nav-item:hover{ background:#f5f5f7; color:var(--text); }
-
-.nav-item.active{
-  background:var(--primary-bg);
-  color:var(--primary);
-  font-weight:600;
-}
-
-.nav-ico{ font-size:1rem; width:20px; text-align:center; flex-shrink:0; }
-
-.nav-pill{
-  margin-left:auto;
-  background:var(--primary);
-  color:white;
-  font-size:0.68rem;
-  font-weight:700;
-  padding:2px 7px;
-  border-radius:20px;
-  display:none;
-}
-.nav-pill.show{ display:inline; }
-
-.sidebar-footer{
-  padding:14px 12px;
-  border-top:1px solid var(--border);
-}
-
-.logout-btn{
-  display:flex;
-  align-items:center;
-  gap:10px;
-  padding:10px 12px;
-  border-radius:10px;
-  cursor:pointer;
-  font-size:0.875rem;
-  font-weight:500;
-  color:var(--muted);
-  text-decoration:none;
-  transition:all 0.15s;
-}
-
-.logout-btn:hover{ background:#fff0ef; color:var(--red); }
-
-/* ─── MAIN ─── */
-.main-wrap{
-  margin-left:var(--sidebar-w);
-  flex:1;
-  display:flex;
-  flex-direction:column;
-  min-height:100vh;
-}
-
-.topbar{
-  height:58px;
-  background:var(--glass);
-  backdrop-filter:blur(14px);
-  -webkit-backdrop-filter:blur(14px);
-  border-bottom:1px solid var(--border);
-  position:sticky;
-  top:0;
-  z-index:100;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:0 30px;
-}
-
-.topbar-title{ font-size:1.02rem; font-weight:600; color:var(--text); }
-.topbar-sub{ font-size:0.75rem; color:var(--muted); margin-top:1px; }
-
-.topbar-right{ display:flex; align-items:center; gap:10px; }
-
-.live-badge{
-  display:inline-flex;
-  align-items:center;
-  gap:6px;
-  background:var(--green-bg);
-  color:#1a7f34;
-  font-size:0.72rem;
-  font-weight:700;
-  padding:5px 11px;
-  border-radius:20px;
-  letter-spacing:0.04em;
-}
-
-.live-dot{
-  width:6px; height:6px;
-  border-radius:50%;
-  background:var(--green);
-  animation:blink 1.5s infinite;
-}
-
-@keyframes blink{ 0%,100%{opacity:1} 50%{opacity:0.3} }
-
-/* ─── CONTENT ─── */
-.page-content{ padding:28px 30px; flex:1; }
-
-.page{ display:none; animation:fadeUp 0.22s ease; }
-.page.active{ display:block; }
-@keyframes fadeUp{ from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:translateY(0)} }
-
-/* ─── STAT GRID ─── */
-.stat-grid{
-  display:grid;
-  grid-template-columns:repeat(4,1fr);
-  gap:16px;
-  margin-bottom:26px;
-}
-
-.stat-card{
-  background:var(--card);
-  border:1px solid var(--border);
-  border-radius:18px;
-  padding:20px 22px;
-  position:relative;
-  overflow:hidden;
-  transition:box-shadow 0.2s,transform 0.2s;
-  box-shadow:0 2px 8px rgba(0,0,0,0.04);
-}
-
-.stat-card:hover{ box-shadow:0 10px 28px rgba(0,0,0,0.08); transform:translateY(-2px); }
-
-.stat-card::after{
-  content:'';
-  position:absolute;
-  top:0; left:0; right:0;
-  height:3px;
-  border-radius:18px 18px 0 0;
-}
-
-.stat-card.blue::after{ background:linear-gradient(90deg,#0071e3,#34aadc); }
-.stat-card.green::after{ background:linear-gradient(90deg,#1a7f34,#34c759); }
-.stat-card.amber::after{ background:linear-gradient(90deg,#c77b00,#ff9f0a); }
-.stat-card.red::after{ background:linear-gradient(90deg,#c0392b,#ff3b30); }
-
-.stat-ico{ font-size:1.6rem; margin-bottom:10px; }
-
-.stat-val{
-  font-size:1.9rem;
-  font-weight:700;
-  letter-spacing:-0.03em;
-  line-height:1;
-  color:var(--text);
-}
-
-.stat-label{ font-size:0.78rem; color:var(--muted); margin-top:5px; }
-
-/* ─── SECTION ─── */
-.sec-hd{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  margin-bottom:16px;
-}
-
-.sec-title{ font-size:1rem; font-weight:600; color:var(--text); }
-.sec-sub{ font-size:0.76rem; color:var(--muted); margin-top:2px; }
-
-/* ─── CARD ─── */
-.card{
-  background:var(--card);
-  border:1px solid var(--border);
-  border-radius:16px;
-  overflow:hidden;
-  box-shadow:0 2px 8px rgba(0,0,0,0.04);
-}
-
-.card-hd{
-  padding:15px 22px;
-  border-bottom:1px solid var(--border);
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-}
-
-.card-title{ font-size:0.9rem; font-weight:600; }
-.card-body{ padding:22px; }
-
-/* ─── FORM PANEL ─── */
-.form-panel{
-  background:var(--card);
-  border:1px solid var(--border);
-  border-radius:16px;
-  margin-bottom:18px;
-  overflow:hidden;
-  box-shadow:0 6px 20px rgba(0,0,0,0.07);
-  animation:slideDown 0.2s ease;
-}
-
-@keyframes slideDown{ from{opacity:0;transform:translateY(-8px)} to{opacity:1;transform:translateY(0)} }
-
-.form-ph{
-  background:linear-gradient(135deg,#0071e3 0%,#34aadc 100%);
-  color:white;
-  padding:14px 22px;
-  font-size:0.88rem;
-  font-weight:600;
-  display:flex;
-  align-items:center;
-  gap:8px;
-}
-
-.form-pb{ padding:22px; }
-
-.fg{ display:grid; gap:14px; }
-.fg-2{ grid-template-columns:1fr 1fr; }
-.fg-3{ grid-template-columns:1fr 1fr 1fr; }
-
-.fgroup{ display:flex; flex-direction:column; gap:5px; }
-
-.flabel{
-  font-size:0.73rem;
-  font-weight:600;
-  color:var(--muted);
-  letter-spacing:0.03em;
-}
-
-.finput{
-  padding:11px 14px;
-  border:1px solid var(--border);
-  border-radius:10px;
-  font-size:0.88rem;
-  font-family:"Google Sans",sans-serif;
-  color:var(--text);
-  background:#fafafa;
-  outline:none;
-  transition:all 0.18s;
-  width:100%;
-}
-
-.finput:focus{
-  border-color:var(--primary);
-  background:white;
-  box-shadow:0 0 0 4px rgba(0,113,227,0.12);
-}
-
-.finput::placeholder{ color:#b0b7be; }
-select.finput{ cursor:pointer; }
-
-.f-actions{ display:flex; gap:10px; margin-top:18px; }
-
-/* ─── BUTTONS ─── */
-.btn{
-  display:inline-flex;
-  align-items:center;
-  gap:6px;
-  padding:10px 18px;
-  border-radius:22px;
-  font-size:0.862rem;
-  font-weight:600;
-  cursor:pointer;
-  border:none;
-  font-family:"Google Sans",sans-serif;
-  transition:all 0.18s;
-  line-height:1;
-}
-
-.btn-p{ background:var(--primary); color:white; }
-.btn-p:hover{ background:var(--primary-hover); box-shadow:0 4px 14px rgba(0,113,227,0.3); transform:translateY(-1px); }
-
-.btn-g{ background:white; color:var(--text); border:1px solid var(--border); }
-.btn-g:hover{ background:var(--bg); }
-
-.btn-sm{ padding:6px 13px; font-size:0.78rem; border-radius:16px; }
-
-.btn-ok{ background:var(--green); color:white; }
-.btn-ok:hover{ background:#28a745; }
-
-.btn-no{ background:var(--red); color:white; }
-.btn-no:hover{ background:#c0392b; }
-
-.btn:disabled{ opacity:0.5; cursor:not-allowed; transform:none !important; }
-
-/* ─── SPINNER ─── */
-.sp{
-  width:13px; height:13px;
-  border:2px solid rgba(255,255,255,0.3);
-  border-top-color:white;
-  border-radius:50%;
-  animation:spin 0.65s linear infinite;
-  display:inline-block;
-}
-@keyframes spin{ to{ transform:rotate(360deg); } }
-
-/* ─── TABLE ─── */
-.tw{ overflow-x:auto; }
-table{ width:100%; border-collapse:collapse; }
-thead tr{ background:#f9f9fb; }
-
-th{
-  text-align:left;
-  font-size:0.71rem;
-  font-weight:600;
-  color:var(--muted);
-  padding:10px 16px;
-  letter-spacing:0.05em;
-  text-transform:uppercase;
-  border-bottom:1px solid var(--border);
-  white-space:nowrap;
-}
-
-td{
-  padding:13px 16px;
-  font-size:0.875rem;
-  border-bottom:1px solid #f2f2f4;
-  vertical-align:middle;
-}
-
-tr:last-child td{ border-bottom:none; }
-tr:hover td{ background:#fafafa; }
-
-/* ─── AVATAR ─── */
-.ava{
-  width:36px; height:36px;
-  border-radius:50%;
-  object-fit:cover;
-  border:1.5px solid var(--border);
-  display:block;
-  background:var(--bg);
-}
-
-.ava-init{
-  width:36px; height:36px;
-  border-radius:50%;
-  background:linear-gradient(135deg,#e8f0fe,#c5d9f9);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-weight:700;
-  font-size:0.85rem;
-  color:var(--primary);
-  border:1.5px solid var(--border);
-  flex-shrink:0;
-}
-
-/* ─── BADGE ─── */
-.badge{
-  display:inline-flex;
-  align-items:center;
-  gap:3px;
-  padding:3px 9px;
-  border-radius:20px;
-  font-size:0.74rem;
-  font-weight:600;
-  white-space:nowrap;
-}
-
-.bp{ background:var(--amber-bg); color:#854d00; }
-.ba{ background:var(--green-bg); color:#1a7f34; }
-.br{ background:var(--red-bg); color:#c0392b; }
-.broom{ background:var(--primary-bg); color:#004a9f; }
-.bbed{ background:#f3f0ff; color:#5b21b6; }
-.bshift{ background:#fff0e6; color:#8a3a00; }
-
-/* ─── CHIPS ─── */
-.chips{ display:flex; gap:8px; margin-bottom:16px; }
-
-.chip{
-  padding:6px 14px;
-  border-radius:20px;
-  font-size:0.8rem;
-  font-weight:600;
-  cursor:pointer;
-  border:1px solid var(--border);
-  background:white;
-  color:var(--muted);
-  font-family:"Google Sans",sans-serif;
-  transition:all 0.15s;
-}
-
-.chip.active{ background:var(--primary); color:white; border-color:var(--primary); }
-
-/* ─── ROOM CARDS ─── */
-.room-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(198px,1fr)); gap:14px; }
-
-.room-card{
-  background:var(--card);
-  border:1px solid var(--border);
-  border-radius:14px;
-  overflow:hidden;
-  transition:box-shadow 0.2s,transform 0.2s;
-  box-shadow:0 2px 6px rgba(0,0,0,0.04);
-}
-
-.room-card:hover{ box-shadow:0 8px 22px rgba(0,0,0,0.08); transform:translateY(-2px); }
-
-.rch{
-  background:linear-gradient(135deg,#0071e3,#34aadc);
-  color:white;
-  padding:12px 16px;
-  font-weight:700;
-  font-size:0.9rem;
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-}
-
-.rch span{ font-size:0.7rem; opacity:0.85; font-weight:500; }
-.rcb{ padding:12px 14px; }
-
-.brow{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:5px 0;
-  border-bottom:1px solid #f2f2f4;
-  font-size:0.82rem;
-}
-
-.brow:last-child{ border-bottom:none; }
-.bk{ font-weight:700; font-size:0.7rem; color:var(--muted); text-transform:uppercase; letter-spacing:0.04em; }
-
-/* ─── GUARD CARDS ─── */
-.guard-grid{ display:grid; grid-template-columns:repeat(auto-fill,minmax(238px,1fr)); gap:14px; }
-
-.guard-card{
-  background:var(--card);
-  border:1px solid var(--border);
-  border-radius:14px;
-  padding:18px;
-  display:flex;
-  align-items:center;
-  gap:14px;
-  transition:box-shadow 0.2s,transform 0.2s;
-  box-shadow:0 2px 6px rgba(0,0,0,0.04);
-}
-
-.guard-card:hover{ box-shadow:0 8px 22px rgba(0,0,0,0.08); transform:translateY(-2px); }
-
-.guard-ico{
-  width:46px; height:46px;
-  border-radius:12px;
-  background:linear-gradient(135deg,#1d1d1f,#3a3a3c);
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  font-size:1.2rem;
-  flex-shrink:0;
-}
-
-.g-name{ font-weight:600; font-size:0.9rem; }
-.g-user{ font-size:0.75rem; color:var(--muted); margin-top:2px; }
-.g-shift{ margin-top:7px; }
-
-/* ─── ACTIVITY ─── */
-.a-feed{ display:flex; flex-direction:column; }
-
-.a-item{
-  display:flex;
-  gap:12px;
-  padding:12px 0;
-  border-bottom:1px solid #f2f2f4;
-}
-
-.a-item:last-child{ border-bottom:none; }
-
-.a-dot{
-  width:8px; height:8px;
-  border-radius:50%;
-  margin-top:4px;
-  flex-shrink:0;
-}
-
-.a-dot.pending{ background:var(--amber); }
-.a-dot.approved{ background:var(--green); }
-.a-dot.rejected{ background:var(--red); }
-
-.a-txt{ font-size:0.85rem; line-height:1.45; }
-.a-meta{ font-size:0.74rem; color:var(--muted); margin-top:3px; }
-
-/* ─── EMPTY ─── */
-.empty{ text-align:center; padding:46px 20px; color:var(--muted); }
-.ei{ font-size:2.4rem; margin-bottom:10px; opacity:0.35; }
-.et{ font-size:0.95rem; font-weight:600; color:var(--text); margin-bottom:4px; }
-.es{ font-size:0.82rem; }
-
-/* ─── TOAST ─── */
-#tb{
-  position:fixed;
-  top:18px; right:20px;
-  z-index:9999;
-  display:flex;
-  flex-direction:column;
-  gap:8px;
-}
-
-.toast{
-  background:var(--text);
-  color:white;
-  padding:12px 16px;
-  border-radius:12px;
-  font-size:0.84rem;
-  font-weight:500;
-  display:flex;
-  align-items:center;
-  gap:9px;
-  min-width:240px;
-  max-width:340px;
-  box-shadow:0 4px 20px rgba(0,0,0,0.18);
-  animation:toastIn 0.2s ease;
-}
-
-.toast.success{ border-left:4px solid var(--green); }
-.toast.error  { border-left:4px solid var(--red); }
-.toast.info   { border-left:4px solid var(--primary); }
-
-@keyframes toastIn { from{opacity:0;transform:translateX(18px)} to{opacity:1;transform:translateX(0)} }
-@keyframes toastOut{ from{opacity:1} to{opacity:0;transform:translateX(18px)} }
-
-@media(max-width:1100px){
-  .stat-grid{ grid-template-columns:repeat(2,1fr); }
-  .fg-3{ grid-template-columns:1fr 1fr; }
-}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Google Sans Text','Google Sans',sans-serif;background:var(--sur);color:var(--on);display:flex;min-height:100vh;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--outv);border-radius:3px}
+
+/* SIDEBAR */
+.sb{width:var(--sw);background:var(--sur1);position:fixed;top:0;left:0;bottom:0;display:flex;flex-direction:column;z-index:300;border-right:1px solid var(--outv)}
+.sb-hd{padding:18px 20px 14px;display:flex;align-items:center;gap:14px;border-bottom:1px solid var(--outv)}
+.logo{width:40px;height:40px;background:var(--p);border-radius:var(--rmd);display:flex;align-items:center;justify-content:center;font-size:1.3rem;flex-shrink:0;box-shadow:0 2px 8px rgba(26,115,232,.3)}
+.app-t{font-family:'Google Sans Display',sans-serif;font-size:1.15rem;font-weight:600}
+.app-r{font-size:.7rem;color:var(--onv);font-weight:500;letter-spacing:.04em;margin-top:2px}
+.nav{flex:1;padding:10px 12px;overflow-y:auto;display:flex;flex-direction:column;gap:2px}
+.ns{font-size:.68rem;font-weight:600;color:var(--out);letter-spacing:.08em;text-transform:uppercase;padding:12px 16px 5px;margin-top:4px}
+.ni{display:flex;align-items:center;gap:12px;padding:11px 16px;border-radius:var(--rf);cursor:pointer;font-size:.875rem;font-weight:500;color:var(--onv);background:none;border:none;width:100%;text-align:left;font-family:'Google Sans Text',sans-serif;transition:background .15s,color .15s;position:relative}
+.ni:hover{background:var(--sur2);color:var(--on)}
+.ni.active{background:var(--pc);color:var(--p);font-weight:600}
+.ni-ico{font-size:1.05rem;flex-shrink:0}
+.nb{margin-left:auto;background:var(--e);color:#fff;font-size:.68rem;font-weight:700;min-width:20px;height:20px;border-radius:10px;display:none;align-items:center;justify-content:center;padding:0 5px}
+.nb.show{display:flex}
+.sb-ft{padding:12px;border-top:1px solid var(--outv)}
+.lo{display:flex;align-items:center;gap:12px;padding:11px 16px;border-radius:var(--rf);cursor:pointer;font-size:.875rem;font-weight:500;color:var(--onv);text-decoration:none;transition:background .15s,color .15s;font-family:'Google Sans Text',sans-serif}
+.lo:hover{background:var(--ec);color:var(--e)}
+
+/* MAIN */
+.mw{margin-left:var(--sw);flex:1;display:flex;flex-direction:column;min-height:100vh}
+
+/* TOPBAR */
+.tb{height:var(--th);background:rgba(248,250,255,.93);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--outv);position:sticky;top:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:0 32px}
+.tb-l{display:flex;flex-direction:column}
+.tb-t{font-family:'Google Sans Display',sans-serif;font-size:1.05rem;font-weight:600}
+.tb-s{font-size:.72rem;color:var(--onv);margin-top:2px}
+.tb-r{display:flex;align-items:center;gap:12px}
+.live{display:inline-flex;align-items:center;gap:6px;background:var(--sc);color:var(--s);font-size:.72rem;font-weight:700;padding:6px 12px;border-radius:var(--rf);letter-spacing:.05em}
+.ld{width:7px;height:7px;border-radius:50%;background:var(--s);animation:blink 1.6s infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+.clk{font-size:.78rem;font-weight:600;color:var(--onv);background:var(--sur2);padding:6px 14px;border-radius:var(--rf)}
+
+/* CONTENT */
+.ca{padding:28px 32px;flex:1}
+.pg{display:none;animation:fu .22s cubic-bezier(.2,0,0,1)}
+.pg.active{display:block}
+@keyframes fu{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* PAGE HEADER */
+.ph{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px}
+.ph-t{font-family:'Google Sans Display',sans-serif;font-size:1.5rem;font-weight:600}
+.ph-s{font-size:.8rem;color:var(--onv);margin-top:4px}
+.ph-a{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+
+/* STAT GRID */
+.sgrid{display:grid;grid-template-columns:repeat(6,1fr);gap:14px;margin-bottom:28px}
+.sc{background:var(--sur1);border:1px solid var(--outv);border-radius:var(--rxl);padding:20px 22px;position:relative;overflow:hidden;cursor:default;transition:box-shadow .2s,transform .2s}
+.sc:hover{box-shadow:0 4px 20px var(--shd);transform:translateY(-2px)}
+.sc-tin{position:absolute;top:0;right:0;width:70px;height:70px;border-radius:50%;transform:translate(18px,-18px);opacity:.16}
+.sc.c1 .sc-tin{background:var(--p)}.sc.c2 .sc-tin{background:#1e6e48}.sc.c3 .sc-tin{background:#e37400}
+.sc.c4 .sc-tin{background:var(--e)}.sc.c5 .sc-tin{background:#6750a4}.sc.c6 .sc-tin{background:#006a6a}
+.sc-ico{width:42px;height:42px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:1.25rem;margin-bottom:12px}
+.sc.c1 .sc-ico{background:var(--pc)}.sc.c2 .sc-ico{background:var(--sc)}.sc.c3 .sc-ico{background:#fce8b2}
+.sc.c4 .sc-ico{background:var(--ec)}.sc.c5 .sc-ico{background:#e8def8}.sc.c6 .sc-ico{background:#ccecec}
+.sv{font-family:'Google Sans Display',sans-serif;font-size:1.9rem;font-weight:700;letter-spacing:-.04em;line-height:1}
+.sl{font-size:.77rem;color:var(--onv);margin-top:5px;font-weight:500}
+
+/* CARD */
+.card{background:#fff;border:1px solid var(--outv);border-radius:var(--rxl);overflow:hidden;box-shadow:0 1px 4px var(--shd)}
+.ch{padding:17px 22px 15px;border-bottom:1px solid var(--outv);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.ct{font-family:'Google Sans',sans-serif;font-size:.93rem;font-weight:600}
+.cs{font-size:.73rem;color:var(--onv);margin-top:3px}
+.cb{padding:22px}
+
+/* EXPAND PANEL */
+.ep{background:#fff;border:1px solid var(--p);border-radius:var(--rxl);overflow:hidden;margin-bottom:20px;box-shadow:0 2px 12px rgba(26,115,232,.12);animation:sd .2s cubic-bezier(.2,0,0,1)}
+@keyframes sd{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
+.eh{background:linear-gradient(135deg,var(--p),#4285f4);color:#fff;padding:15px 22px;font-family:'Google Sans',sans-serif;font-size:.9rem;font-weight:600;display:flex;align-items:center;gap:10px}
+.eb{padding:22px}
+
+/* FORMS */
+.fg{display:grid;gap:14px}.fg2{grid-template-columns:1fr 1fr}.fg3{grid-template-columns:1fr 1fr 1fr}.fg4{grid-template-columns:1fr 1fr 1fr 1fr}.full{grid-column:1/-1}
+.fg label{font-size:.71rem;font-weight:600;color:var(--onv);letter-spacing:.04em;text-transform:uppercase;display:block;margin-bottom:5px}
+.fi{padding:11px 14px;border:1.5px solid var(--outv);border-radius:var(--rmd);font-size:.875rem;font-family:'Google Sans Text',sans-serif;color:var(--on);background:var(--sur);outline:none;transition:all .18s;width:100%}
+.fi:focus{border-color:var(--p);background:#fff;box-shadow:0 0 0 3px rgba(26,115,232,.1)}
+.fi::placeholder{color:var(--out)}
+select.fi{cursor:pointer}
+textarea.fi{resize:vertical}
+.fa{display:flex;gap:10px;margin-top:18px;padding-top:16px;border-top:1px solid var(--outv)}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:10px 20px;border-radius:var(--rf);font-size:.86rem;font-weight:600;cursor:pointer;border:none;font-family:'Google Sans',sans-serif;transition:all .18s;line-height:1}
+.bf{background:var(--p);color:#fff}.bf:hover{background:var(--ps);box-shadow:0 2px 10px rgba(26,115,232,.3)}
+.bt{background:var(--pc);color:var(--p)}.bt:hover{background:#c2d7fa}
+.bo{background:transparent;color:var(--p);border:1.5px solid var(--outv)}.bo:hover{background:var(--sur1);border-color:var(--p)}
+.bd{background:var(--ec);color:var(--e)}.bd:hover{background:#ffc5c3}
+.bsuc{background:var(--sc);color:var(--s)}.bsuc:hover{background:#b0e7c0}
+.bsm{padding:6px 13px;font-size:.775rem}
+.btn:disabled{opacity:.45;pointer-events:none}
+.sp{width:13px;height:13px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* TABLE */
+.tw{overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+thead tr{background:var(--sur2)}
+th{text-align:left;font-size:.69rem;font-weight:600;color:var(--onv);padding:10px 16px;letter-spacing:.06em;text-transform:uppercase;border-bottom:1px solid var(--outv);white-space:nowrap}
+td{padding:13px 16px;font-size:.875rem;border-bottom:1px solid var(--outv);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--sur)}
+
+/* AVATAR */
+.av{width:36px;height:36px;border-radius:50%;object-fit:cover;border:2px solid var(--outv)}
+.avi{width:36px;height:36px;border-radius:50%;background:var(--pc);display:flex;align-items:center;justify-content:center;font-family:'Google Sans',sans-serif;font-weight:700;font-size:.83rem;color:var(--p);flex-shrink:0}
+
+/* FILTER CHIPS */
+.fb{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
+.fc{padding:7px 16px;border-radius:var(--rf);font-size:.8rem;font-weight:600;cursor:pointer;border:1.5px solid var(--outv);background:#fff;color:var(--onv);font-family:'Google Sans',sans-serif;transition:all .15s}
+.fc.active{background:var(--pc);color:var(--p);border-color:var(--pc)}
+.fc:hover:not(.active){background:var(--sur2);border-color:var(--out)}
+
+/* BADGE */
+.bge{display:inline-flex;align-items:center;gap:3px;padding:3px 9px;border-radius:var(--rf);font-size:.72rem;font-weight:600;white-space:nowrap}
+.pend{background:#fce8b2;color:#7d4e00}.appr{background:var(--sc);color:var(--s)}.rejt{background:var(--ec);color:var(--e)}
+.broom{background:var(--pc);color:var(--p)}.bbed{background:#e8def8;color:#4a0080}
+.bshift{background:#fce8d5;color:#8a3700}.bact{background:var(--sc);color:var(--s)}.bsus{background:var(--ec);color:var(--e)}
+.bopen{background:#fce8b2;color:#7d4e00}.bres{background:var(--sc);color:var(--s)}
+.burg{background:var(--ec);color:var(--e)}.binfo{background:var(--pc);color:var(--p)}.bnorm{background:var(--sur2);color:var(--onv)}
+
+/* ROOM CARDS */
+.rgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(205px,1fr));gap:14px}
+.rcard{background:#fff;border:1px solid var(--outv);border-radius:var(--rxl);overflow:hidden;transition:box-shadow .2s,transform .2s;box-shadow:0 1px 3px var(--shd)}
+.rcard:hover{box-shadow:0 8px 24px var(--shd);transform:translateY(-2px)}
+.rh{background:linear-gradient(135deg,var(--p),#4285f4);color:#fff;padding:13px 16px;font-family:'Google Sans',sans-serif;font-weight:700;font-size:.9rem;display:flex;align-items:center;justify-content:space-between}
+.rhs{font-size:.7rem;opacity:.85;font-weight:500}
+.rb{padding:12px 14px}
+.br{display:flex;align-items:center;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--outv);font-size:.82rem}
+.br:last-child{border-bottom:none}
+.bk{font-weight:700;font-size:.68rem;color:var(--onv);text-transform:uppercase;letter-spacing:.04em}
+.bv{color:var(--out);font-style:italic}
+.rf2{padding:9px 14px;border-top:1px solid var(--outv);display:flex;align-items:center}
+.obar{height:4px;background:var(--outv);border-radius:2px;flex:1;margin-right:8px;overflow:hidden}
+.ofill{height:100%;background:var(--p);border-radius:2px;transition:width .4s}
+
+/* GUARD CARDS */
+.ggrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(255px,1fr));gap:14px}
+.gcard{background:#fff;border:1px solid var(--outv);border-radius:var(--rxl);padding:20px;display:flex;gap:14px;align-items:flex-start;box-shadow:0 1px 3px var(--shd);transition:box-shadow .2s,transform .2s}
+.gcard:hover{box-shadow:0 6px 20px var(--shd);transform:translateY(-2px)}
+.gico{width:46px;height:46px;border-radius:var(--rmd);background:linear-gradient(135deg,#3c4043,#5f6368);display:flex;align-items:center;justify-content:center;font-size:1.25rem;flex-shrink:0}
+.gn{font-family:'Google Sans',sans-serif;font-weight:600;font-size:.92rem}
+.gu{font-size:.75rem;color:var(--onv);margin-top:2px}
+.gm{margin-top:8px;display:flex;gap:6px;flex-wrap:wrap}
+
+/* ACTIVITY FEED */
+.af{display:flex;flex-direction:column}
+.ai{display:flex;gap:13px;padding:12px 0;border-bottom:1px solid var(--outv)}
+.ai:last-child{border-bottom:none}
+.ad{width:9px;height:9px;border-radius:50%;margin-top:5px;flex-shrink:0}
+.ad.pending{background:#e37400}.ad.approved{background:var(--s)}.ad.rejected{background:var(--e)}
+.at{font-size:.85rem;line-height:1.5}
+.am{font-size:.74rem;color:var(--onv);margin-top:3px}
+
+/* EMPTY */
+.es{text-align:center;padding:48px 24px;color:var(--onv)}
+.ei{font-size:2.6rem;margin-bottom:12px;opacity:.28}
+.ett{font-family:'Google Sans',sans-serif;font-size:.98rem;font-weight:600;color:var(--on);margin-bottom:5px}
+.ess{font-size:.82rem}
+
+/* TOAST */
+#tb{position:fixed;top:20px;right:22px;z-index:9999;display:flex;flex-direction:column;gap:8px;pointer-events:none}
+.toast{background:var(--on);color:#fff;padding:12px 17px;border-radius:var(--rlg);font-size:.84rem;font-weight:500;display:flex;align-items:center;gap:10px;min-width:250px;max-width:360px;box-shadow:0 4px 24px rgba(0,0,0,.2);animation:tin .22s cubic-bezier(.2,0,0,1);pointer-events:all}
+.toast.success{border-left:4px solid var(--s)}.toast.error{border-left:4px solid var(--e)}.toast.info{border-left:4px solid var(--p)}
+@keyframes tin{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
+@keyframes tout{from{opacity:1;transform:translateX(0)}to{opacity:0;transform:translateX(20px)}}
+
+/* MODAL */
+.mo{position:fixed;inset:0;background:rgba(0,0,0,.32);z-index:500;display:none;align-items:center;justify-content:center;backdrop-filter:blur(3px)}
+.mo.open{display:flex;animation:fi .18s}
+@keyframes fi{from{opacity:0}to{opacity:1}}
+.md{background:#fff;border-radius:28px;width:480px;max-width:96vw;box-shadow:0 16px 48px rgba(0,0,0,.2);animation:mi .22s cubic-bezier(.2,0,0,1);overflow:hidden}
+@keyframes mi{from{opacity:0;transform:scale(.94)}to{opacity:1;transform:scale(1)}}
+.mh{padding:22px 26px 16px;border-bottom:1px solid var(--outv)}
+.mtt{font-family:'Google Sans Display',sans-serif;font-size:1.1rem;font-weight:600}
+.mb{padding:18px 26px 22px}
+.mac{padding:10px 26px 18px;display:flex;justify-content:flex-end;gap:10px}
+
+/* SEARCH */
+.sw{position:relative;display:flex;align-items:center;background:var(--sur2);border-radius:var(--rf);border:1px solid var(--outv);padding:0 14px;transition:border-color .18s,box-shadow .18s}
+.sw:focus-within{border-color:var(--p);box-shadow:0 0 0 3px rgba(26,115,232,.1);background:#fff}
+.si{border:none;background:none;outline:none;font-size:.875rem;font-family:'Google Sans Text',sans-serif;color:var(--on);width:100%;padding:9px 0}
+.si::placeholder{color:var(--out)}
+
+/* LOOKUP RESULT */
+.lr{display:flex;align-items:center;gap:16px;padding:16px;background:var(--pc);border-radius:var(--rlg);margin-top:14px}
+.lr-n{font-family:'Google Sans',sans-serif;font-weight:700;font-size:1rem}
+.lr-s{font-size:.78rem;color:var(--onv);margin-top:3px}
+
+/* DASH 2COL */
+.d2{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:22px}
+
+/* NOTICE CARD */
+.nc{background:#fff;border:1px solid var(--outv);border-radius:var(--rxl);overflow:hidden;box-shadow:0 1px 3px var(--shd)}
+.nc+.nc{margin-top:14px}
+.ncb{padding:22px}
+.nc-meta{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.nc-t{font-family:'Google Sans',sans-serif;font-weight:700;font-size:1rem;margin-bottom:6px}
+.nc-body{font-size:.875rem;color:var(--onv);line-height:1.6;white-space:pre-line}
+
+@media(max-width:1300px){.sgrid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:1000px){.sgrid{grid-template-columns:repeat(2,1fr)}.d2{grid-template-columns:1fr}.fg3,.fg4{grid-template-columns:1fr 1fr}.fg2{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
-
 <div id="tb"></div>
 
-<!-- ══ SIDEBAR ══ -->
-<aside class="sidebar">
-  <div class="sidebar-brand">
-    <strong>In&Out</strong>
-    <p>Warden Control Panel</p>
+<!-- MODALS -->
+<div class="mo" id="delMo">
+  <div class="md">
+    <div class="mh"><div class="mtt">⚠️ Delete Student</div></div>
+    <div class="mb"><p style="font-size:.9rem;color:var(--onv);line-height:1.6">Delete <strong id="delName">this student</strong>? Their account will be removed and archived.</p></div>
+    <div class="mac">
+      <button class="btn bo bsm" onclick="cm('delMo')">Cancel</button>
+      <button class="btn bd bsm" onclick="confirmDel()">🗑 Delete</button>
+    </div>
   </div>
+</div>
 
-  <nav class="sidebar-nav">
-    <div class="nav-section">Overview</div>
-    <button class="nav-item active" onclick="showPage('dashboard',this)">
-      <span class="nav-ico">📊</span> Dashboard
-    </button>
+<div class="mo" id="resMo">
+  <div class="md">
+    <div class="mh"><div class="mtt">✅ Resolve Complaint</div></div>
+    <div class="mb"><div class="fg"><label>Resolution Note</label><textarea class="fi" id="resNote" rows="3" placeholder="Describe how the issue was resolved…"></textarea></div></div>
+    <div class="mac">
+      <button class="btn bo bsm" onclick="cm('resMo')">Cancel</button>
+      <button class="btn bsuc bsm" onclick="confirmRes()">✓ Resolve</button>
+    </div>
+  </div>
+</div>
 
-    <div class="nav-section">Management</div>
-    <button class="nav-item" onclick="showPage('students',this)">
-      <span class="nav-ico">🎓</span> Students
-    </button>
-    <button class="nav-item" onclick="showPage('rooms',this)">
-      <span class="nav-ico">🏠</span> Rooms
-    </button>
-    <button class="nav-item" onclick="showPage('requests',this)">
-      <span class="nav-ico">📋</span> Leave Requests
-      <span class="nav-pill" id="sidebarPill">0</span>
-    </button>
+<div class="mo" id="actMo">
+  <div class="md">
+    <div class="mh"><div class="mtt" id="actMoT">Action</div></div>
+    <div class="mb"><div class="fg"><label>Warden Note (optional)</label><textarea class="fi" id="actNote" rows="2" placeholder="Add a note for the student…"></textarea></div></div>
+    <div class="mac">
+      <button class="btn bo bsm" onclick="cm('actMo')">Cancel</button>
+      <button class="btn bsm" id="actMoBtn">Confirm</button>
+    </div>
+  </div>
+</div>
 
-    <div class="nav-section">Staff</div>
-    <button class="nav-item" onclick="showPage('security',this)">
-      <span class="nav-ico">🛡️</span> Security Staff
-    </button>
+<!-- SIDEBAR -->
+<aside class="sb">
+  <div class="sb-hd">
+    <div class="logo">🏠</div>
+    <div><div class="app-t">In&amp;Out</div><div class="app-r">Warden Dashboard</div></div>
+  </div>
+  <nav class="nav">
+    <div class="ns">Overview</div>
+    <button class="ni active" onclick="sp('dashboard',this)"><span class="ni-ico">📊</span>Dashboard</button>
+    <div class="ns">Management</div>
+    <button class="ni" onclick="sp('students',this)"><span class="ni-ico">🎓</span>Students</button>
+    <button class="ni" onclick="sp('rooms',this)"><span class="ni-ico">🏠</span>Rooms &amp; Beds</button>
+    <button class="ni" onclick="sp('requests',this)"><span class="ni-ico">📋</span>Leave Requests<span class="nb" id="pb">0</span></button>
+    <button class="ni" onclick="sp('complaints',this)"><span class="ni-ico">🔧</span>Complaints<span class="nb" id="cb2">0</span></button>
+    <div class="ns">Communication</div>
+    <button class="ni" onclick="sp('announcements',this)"><span class="ni-ico">📢</span>Announcements</button>
+    <button class="ni" onclick="sp('notices',this)"><span class="ni-ico">📌</span>Notices</button>
+    <div class="ns">Finance &amp; Records</div>
+    <button class="ni" onclick="sp('fees',this)"><span class="ni-ico">💳</span>Fee Records</button>
+    <button class="ni" onclick="sp('attendance',this)"><span class="ni-ico">✅</span>Attendance</button>
+    <button class="ni" onclick="sp('visitors',this)"><span class="ni-ico">👥</span>Visitors</button>
+    <div class="ns">Staff</div>
+    <button class="ni" onclick="sp('security',this)"><span class="ni-ico">🛡️</span>Security Staff</button>
+    <button class="ni" onclick="sp('logs',this)"><span class="ni-ico">🔍</span>Audit Logs</button>
   </nav>
-
-  <div class="sidebar-footer">
-    <a href="/logout" class="logout-btn">
-      <span>🚪</span> Sign Out
-    </a>
-  </div>
+  <div class="sb-ft"><a href="/logout" class="lo"><span>🚪</span>Sign Out</a></div>
 </aside>
 
-<!-- ══ MAIN ══ -->
-<div class="main-wrap">
-  <div class="topbar">
-    <div>
-      <div class="topbar-title" id="ttitle">Dashboard</div>
-      <div class="topbar-sub" id="tsub">In&Out / Overview</div>
+<!-- MAIN -->
+<div class="mw">
+  <div class="tb">
+    <div class="tb-l">
+      <div class="tb-t" id="ttl">Dashboard</div>
+      <div class="tb-s" id="tsu">In&amp;Out / Overview</div>
     </div>
-    <div class="topbar-right">
-      <div class="live-badge"><div class="live-dot"></div>LIVE</div>
-      <div style="font-size:0.76rem;color:var(--muted);" id="clk">—</div>
+    <div class="tb-r">
+      <div class="live"><div class="ld"></div>LIVE</div>
+      <div class="clk" id="clk">—</div>
     </div>
   </div>
 
-  <div class="page-content">
+  <div class="ca">
 
-    <!-- ── DASHBOARD ── -->
-    <div id="dashboardPage" class="page active">
-      <div class="stat-grid">
-        <div class="stat-card blue">
-          <div class="stat-ico">🎓</div>
-          <div class="stat-val" id="dS">—</div>
-          <div class="stat-label">Total Students</div>
-        </div>
-        <div class="stat-card green">
-          <div class="stat-ico">🏠</div>
-          <div class="stat-val" id="dR">—</div>
-          <div class="stat-label">Rooms</div>
-        </div>
-        <div class="stat-card amber">
-          <div class="stat-ico">⏳</div>
-          <div class="stat-val" id="dP">—</div>
-          <div class="stat-label">Pending Requests</div>
-        </div>
-        <div class="stat-card red">
-          <div class="stat-ico">🛡️</div>
-          <div class="stat-val" id="dG">—</div>
-          <div class="stat-label">Security Staff</div>
+    <!-- DASHBOARD -->
+    <div id="dashboardPage" class="pg active">
+      <div class="ph">
+        <div>
+          <div class="ph-t">Good day, Warden 👋</div>
+          <div style="font-size:.82rem;color:var(--onv);margin-top:4px;">Here's the hostel overview.</div>
         </div>
       </div>
-
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+      <div class="sgrid">
+        <div class="sc c1"><div class="sc-tin"></div><div class="sc-ico">🎓</div><div class="sv" id="dS">—</div><div class="sl">Total Students</div></div>
+        <div class="sc c2"><div class="sc-tin"></div><div class="sc-ico">🏠</div><div class="sv" id="dR">—</div><div class="sl">Total Rooms</div></div>
+        <div class="sc c3"><div class="sc-tin"></div><div class="sc-ico">⏳</div><div class="sv" id="dP">—</div><div class="sl">Pending Requests</div></div>
+        <div class="sc c4"><div class="sc-tin"></div><div class="sc-ico">🔧</div><div class="sv" id="dC">—</div><div class="sl">Open Complaints</div></div>
+        <div class="sc c5"><div class="sc-tin"></div><div class="sc-ico">🛡️</div><div class="sv" id="dG">—</div><div class="sl">Security Staff</div></div>
+        <div class="sc c6"><div class="sc-tin"></div><div class="sc-ico">👥</div><div class="sv" id="dV">—</div><div class="sl">Visitors Today</div></div>
+      </div>
+      <div class="d2">
         <div class="card">
-          <div class="card-hd">
-            <div>
-              <div class="card-title">Recent Leave Requests</div>
-              <div style="font-size:0.74rem;color:var(--muted);margin-top:2px;">Latest activity</div>
-            </div>
-            <div class="live-badge"><div class="live-dot"></div>Live</div>
-          </div>
-          <div style="padding:0 22px;">
-            <div id="dashFeed" class="a-feed">
-              <div class="empty"><div class="ei">📋</div><p>No requests yet</p></div>
-            </div>
-          </div>
+          <div class="ch"><div><div class="ct">Recent Leave Requests</div><div class="cs">Latest activity</div></div><div class="live" style="font-size:.7rem;padding:5px 10px;"><div class="ld"></div>Live</div></div>
+          <div style="padding:0 22px 4px;"><div id="dashFeed" class="af"></div></div>
         </div>
-
         <div class="card">
-          <div class="card-hd"><div class="card-title">Quick Actions</div></div>
-          <div class="card-body" style="display:flex;flex-direction:column;gap:10px;">
-            <button class="btn btn-p" style="justify-content:flex-start;border-radius:10px;" onclick="showPage('students',document.querySelectorAll('.nav-item')[1]);openPanel('sPanel')">➕ Add New Student</button>
-            <button class="btn btn-g" style="justify-content:flex-start;border-radius:10px;" onclick="showPage('rooms',document.querySelectorAll('.nav-item')[2]);openPanel('rPanel')">🏠 Create Room</button>
-            <button class="btn btn-g" style="justify-content:flex-start;border-radius:10px;" onclick="showPage('security',document.querySelectorAll('.nav-item')[4]);openPanel('gPanel')">🛡️ Add Security Staff</button>
-            <button class="btn btn-g" style="justify-content:flex-start;border-radius:10px;" onclick="showPage('requests',document.querySelectorAll('.nav-item')[3])">📋 Review Leave Requests</button>
+          <div class="ch"><div class="ct">Quick Actions</div></div>
+          <div class="cb" style="display:flex;flex-direction:column;gap:10px;">
+            <button class="btn bf" style="justify-content:flex-start;border-radius:12px;" onclick="sp('students',document.querySelectorAll('.ni')[1]);tp('sPanel')">➕ Register New Student</button>
+            <button class="btn bt" style="justify-content:flex-start;border-radius:12px;" onclick="sp('rooms',document.querySelectorAll('.ni')[2]);tp('rPanel')">🏠 Create Room</button>
+            <button class="btn bt" style="justify-content:flex-start;border-radius:12px;" onclick="sp('announcements',document.querySelectorAll('.ni')[6]);tp('annPanel')">📢 Post Announcement</button>
+            <button class="btn bo" style="justify-content:flex-start;border-radius:12px;" onclick="sp('requests',document.querySelectorAll('.ni')[3])">📋 Review Pending Requests</button>
+            <button class="btn bo" style="justify-content:flex-start;border-radius:12px;" onclick="sp('fees',document.querySelectorAll('.ni')[8])">💳 Record Fee Payment</button>
           </div>
         </div>
       </div>
     </div>
 
-    <!-- ── STUDENTS ── -->
-    <div id="studentsPage" class="page">
-      <div class="sec-hd">
-        <div>
-          <div class="sec-title">Student Directory</div>
-          <div class="sec-sub">All enrolled hostel students — from Firebase</div>
+    <!-- STUDENTS -->
+    <div id="studentsPage" class="pg">
+      <div class="ph">
+        <div><div class="ph-t">Student Directory</div><div class="ph-s" id="sCountLbl">—</div></div>
+        <div class="ph-a">
+          <div class="sw" style="width:210px;"><span style="color:var(--out);margin-right:8px;">🔍</span><input class="si" id="sSrch" placeholder="Search…" oninput="filterSt(this.value)"></div>
+          <button class="btn bt" onclick="loadStudents()">↻</button>
+          <button class="btn bf" onclick="tp('sPanel')">＋ Add Student</button>
         </div>
-        <button class="btn btn-p" onclick="togglePanel('sPanel')">＋ Add Student</button>
       </div>
-
-      <div class="form-panel" id="sPanel" style="display:none;">
-        <div class="form-ph">🎓 Register New Student</div>
-        <div class="form-pb">
+      <div class="ep" id="sPanel" style="display:none;">
+        <div class="eh">🎓 Register New Student</div>
+        <div class="eb">
           <form id="studentForm">
-            <div class="fg fg-2">
-              <div class="fgroup">
-                <label class="flabel">Username</label>
-                <input class="finput" name="username" placeholder="e.g. john_doe_2024" required>
-              </div>
-              <div class="fgroup">
-                <label class="flabel">Password</label>
-                <input class="finput" name="password" type="password" placeholder="Initial password" required>
-              </div>
-              <div class="fgroup">
-                <label class="flabel">Full Name</label>
-                <input class="finput" name="name" placeholder="e.g. John Doe" required>
-              </div>
-              <div class="fgroup">
-                <label class="flabel">Room Number</label>
-                <input class="finput" name="room" placeholder="e.g. 204" required>
-              </div>
-              <div class="fgroup">
-                <label class="flabel">Bed Assignment</label>
-                <select class="finput" name="bed">
-                  <option value="A">Bed A</option>
-                  <option value="B">Bed B</option>
-                  <option value="C">Bed C</option>
-                  <option value="D">Bed D</option>
-                  <option value="E">Bed E</option>
-                </select>
-              </div>
-              <div class="fgroup">
-                <label class="flabel">Photo (optional)</label>
-                <input class="finput" type="file" id="photoFile" accept="image/*">
-                <input type="hidden" name="photo" id="photoB64">
-              </div>
+            <div class="fg fg3">
+              <div><label>Username</label><input class="fi" name="username" placeholder="e.g. john_2024" required></div>
+              <div><label>Password</label><input class="fi" name="password" type="password" placeholder="Initial password" required></div>
+              <div><label>Full Name</label><input class="fi" name="name" placeholder="John Doe" required></div>
+              <div><label>Room Number</label><input class="fi" name="room" placeholder="e.g. 303" required></div>
+              <div><label>Bed</label><select class="fi" name="bed"><option value="A">Bed A</option><option value="B">Bed B</option><option value="C">Bed C</option><option value="D">Bed D</option><option value="E">Bed E</option></select></div>
+              <div><label>Phone</label><input class="fi" name="phone" placeholder="+91 9000000000"></div>
+              <div><label>Email</label><input class="fi" name="email" type="email" placeholder="john@email.com"></div>
+              <div><label>Guardian Name</label><input class="fi" name="guardian_name" placeholder="Parent/Guardian"></div>
+              <div><label>Guardian Phone</label><input class="fi" name="guardian_phone" placeholder="+91 9000000000"></div>
+              <div><label>Photo</label><input class="fi" type="file" id="photoFile" accept="image/*"><input type="hidden" name="photo" id="photoB64"></div>
             </div>
-            <div class="f-actions">
-              <button type="submit" class="btn btn-p" id="sBtnSub">✓ Register Student</button>
-              <button type="button" class="btn btn-g" onclick="togglePanel('sPanel')">Cancel</button>
+            <div class="fa">
+              <button type="submit" class="btn bf" id="sBtnSub">✓ Register Student</button>
+              <button type="button" class="btn bo" onclick="tp('sPanel')">Cancel</button>
             </div>
           </form>
         </div>
       </div>
-
       <div class="card">
-        <div class="card-hd">
-          <div class="card-title">All Students</div>
-          <span id="sCount" style="font-size:0.76rem;color:var(--muted);">0 enrolled</span>
+        <div class="ch">
+          <div class="ct">All Students</div>
+          <div class="fb" style="margin-bottom:0;">
+            <button class="fc active" onclick="setSS('',this)">All</button>
+            <button class="fc" onclick="setSS('active',this)">Active</button>
+            <button class="fc" onclick="setSS('suspended',this)">Suspended</button>
+          </div>
         </div>
-        <div class="tw">
-          <table>
-            <thead><tr>
-              <th>Photo</th><th>Name</th><th>Username</th><th>Room</th><th>Bed</th>
-            </tr></thead>
-            <tbody id="sTbody">
-              <tr><td colspan="5"><div class="empty"><div class="ei">🎓</div><div class="et">No students yet</div></div></td></tr>
-            </tbody>
-          </table>
-        </div>
+        <div class="tw"><table>
+          <thead><tr><th>Student</th><th>Username</th><th>Room</th><th>Bed</th><th>Phone</th><th>Guardian</th><th>Status</th><th>Actions</th></tr></thead>
+          <tbody id="sTbody"><tr><td colspan="8"><div class="es"><div class="ei">🎓</div><div class="ett">No students yet</div></div></td></tr></tbody>
+        </table></div>
       </div>
     </div>
 
-    <!-- ── ROOMS ── -->
-    <div id="roomsPage" class="page">
-      <div class="sec-hd">
-        <div>
-          <div class="sec-title">Room Management</div>
-          <div class="sec-sub">Configure rooms and bed assignments</div>
-        </div>
-        <button class="btn btn-p" onclick="togglePanel('rPanel')">＋ Create Room</button>
+    <!-- ROOMS -->
+    <div id="roomsPage" class="pg">
+      <div class="ph">
+        <div><div class="ph-t">Rooms &amp; Bed Map</div><div class="ph-s">Full occupancy view with live data</div></div>
+        <div class="ph-a"><button class="btn bt" onclick="loadRooms()">↻ Refresh</button><button class="btn bf" onclick="tp('rPanel')">＋ Create Room</button></div>
       </div>
-
-      <div class="form-panel" id="rPanel" style="display:none;">
-        <div class="form-ph">🏠 New Room Configuration</div>
-        <div class="form-pb">
+      <div class="ep" id="rPanel" style="display:none;">
+        <div class="eh">🏠 New Room Configuration</div>
+        <div class="eb">
           <form id="roomForm">
-            <div class="fg fg-3">
-              <div class="fgroup" style="grid-column:1/-1;">
-                <label class="flabel">Room Number</label>
-                <input class="finput" name="room_number" placeholder="e.g. 101" required>
-              </div>
-              <div class="fgroup">
-                <label class="flabel">Bed A</label>
-                <input class="finput" name="bedA" placeholder="Occupant name or blank">
-              </div>
-              <div class="fgroup">
-                <label class="flabel">Bed B</label>
-                <input class="finput" name="bedB" placeholder="Occupant name or blank">
-              </div>
-              <div class="fgroup">
-                <label class="flabel">Bed C</label>
-                <input class="finput" name="bedC" placeholder="Optional">
-              </div>
-              <div class="fgroup">
-                <label class="flabel">Bed D</label>
-                <input class="finput" name="bedD" placeholder="Optional">
-              </div>
-              <div class="fgroup">
-                <label class="flabel">Bed E</label>
-                <input class="finput" name="bedE" placeholder="Optional">
-              </div>
+            <div class="fg fg3">
+              <div><label>Room Number</label><input class="fi" name="room_number" placeholder="e.g. 303" required></div>
+              <div><label>Floor</label><input class="fi" name="floor" placeholder="e.g. 3"></div>
+              <div><label>Block</label><input class="fi" name="block" placeholder="e.g. A"></div>
+              <div><label>Bed A Label</label><input class="fi" name="bedA" value="Single"></div>
+              <div><label>Bed B Label</label><input class="fi" name="bedB" value="Single"></div>
+              <div><label>Bed C (optional)</label><input class="fi" name="bedC" placeholder="Leave blank if not needed"></div>
+              <div><label>Bed D (optional)</label><input class="fi" name="bedD" placeholder="Leave blank if not needed"></div>
+              <div><label>Bed E (optional)</label><input class="fi" name="bedE" placeholder="Leave blank if not needed"></div>
             </div>
-            <div class="f-actions">
-              <button type="submit" class="btn btn-p">✓ Create Room</button>
-              <button type="button" class="btn btn-g" onclick="togglePanel('rPanel')">Cancel</button>
+            <div class="fa">
+              <button type="submit" class="btn bf">✓ Create Room</button>
+              <button type="button" class="btn bo" onclick="tp('rPanel')">Cancel</button>
             </div>
           </form>
         </div>
       </div>
-
-      <div id="rGrid" class="room-grid">
-        <div style="grid-column:1/-1;"><div class="empty"><div class="ei">🏠</div><div class="et">No rooms yet</div><div class="es">Create your first room above</div></div></div>
+      <!-- Lookup -->
+      <div class="card" style="margin-bottom:20px;">
+        <div class="ch"><div class="ct">🔍 Room + Bed Lookup</div></div>
+        <div class="cb">
+          <div class="fg fg3" style="align-items:flex-end;">
+            <div><label>Room Number</label><input class="fi" id="lkRoom" placeholder="e.g. 303"></div>
+            <div><label>Bed Code</label><select class="fi" id="lkBed"><option>A</option><option>B</option><option>C</option><option>D</option><option>E</option></select></div>
+            <button class="btn bf" style="height:42px;border-radius:var(--rmd);" onclick="lookupRB()">Look Up</button>
+          </div>
+          <div id="lkRes"></div>
+        </div>
       </div>
+      <div id="rGrid" class="rgrid"></div>
     </div>
 
-    <!-- ── REQUESTS ── -->
-    <div id="requestsPage" class="page">
-      <div class="sec-hd">
-        <div>
-          <div class="sec-title">Leave Requests</div>
-          <div class="sec-sub">Review and action student exit applications</div>
-        </div>
-        <div style="display:flex;align-items:center;gap:7px;font-size:0.76rem;color:#1a7f34;font-weight:600;">
-          <div class="live-dot"></div> Auto-updates every 4s
-        </div>
+    <!-- REQUESTS -->
+    <div id="requestsPage" class="pg">
+      <div class="ph">
+        <div><div class="ph-t">Leave Requests</div><div class="ph-s">Review and action student exit applications</div></div>
+        <div class="ph-a"><div class="live" style="font-size:.72rem;"><div class="ld"></div>Auto 4s</div><button class="btn bt" onclick="loadRequests()">↻</button></div>
       </div>
-
-      <div class="chips" id="reqChips">
-        <button class="chip active" onclick="setFilter('all',this)">All</button>
-        <button class="chip" onclick="setFilter('pending',this)">⏳ Pending</button>
-        <button class="chip" onclick="setFilter('approved',this)">✅ Approved</button>
-        <button class="chip" onclick="setFilter('rejected',this)">❌ Rejected</button>
+      <div class="fb" id="reqChips">
+        <button class="fc active" onclick="setRF('all',this)">All</button>
+        <button class="fc" onclick="setRF('pending',this)">⏳ Pending</button>
+        <button class="fc" onclick="setRF('approved',this)">✅ Approved</button>
+        <button class="fc" onclick="setRF('rejected',this)">❌ Rejected</button>
       </div>
-
-      <div class="card">
-        <div class="tw">
-          <table>
-            <thead><tr>
-              <th>Student</th><th>Room</th><th>Reason</th><th>Status</th><th>Actions</th>
-            </tr></thead>
-            <tbody id="reqTbody">
-              <tr><td colspan="5"><div class="empty"><div class="ei">📋</div><div class="et">No requests</div></div></td></tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
+      <div class="card"><div class="tw"><table>
+        <thead><tr><th>Student</th><th>Room / Bed</th><th>Reason</th><th>Dates</th><th>Status</th><th>Warden Note</th><th>Actions</th></tr></thead>
+        <tbody id="reqTbody"></tbody>
+      </table></div></div>
     </div>
 
-    <!-- ── SECURITY ── -->
-    <div id="securityPage" class="page">
-      <div class="sec-hd">
-        <div>
-          <div class="sec-title">Security Personnel</div>
-          <div class="sec-sub">Hostel security staff — from Firebase</div>
-        </div>
-        <button class="btn btn-p" onclick="togglePanel('gPanel')">＋ Add Staff</button>
+    <!-- COMPLAINTS -->
+    <div id="complaintsPage" class="pg">
+      <div class="ph">
+        <div><div class="ph-t">Complaints</div><div class="ph-s">Review and resolve student complaints</div></div>
+        <button class="btn bt" onclick="loadComplaints()">↻ Refresh</button>
       </div>
+      <div class="fb" id="compChips">
+        <button class="fc active" onclick="setCF('all',this)">All</button>
+        <button class="fc" onclick="setCF('open',this)">🔴 Open</button>
+        <button class="fc" onclick="setCF('resolved',this)">✅ Resolved</button>
+        <button class="fc" onclick="setCF('maintenance',this)">🔧 Maintenance</button>
+        <button class="fc" onclick="setCF('food',this)">🍽️ Food</button>
+        <button class="fc" onclick="setCF('security',this)">🛡️ Security</button>
+      </div>
+      <div class="card"><div class="tw"><table>
+        <thead><tr><th>Student</th><th>Room</th><th>Category</th><th>Description</th><th>Status</th><th>Raised</th><th>Action</th></tr></thead>
+        <tbody id="compTbody"></tbody>
+      </table></div></div>
+    </div>
 
-      <div class="form-panel" id="gPanel" style="display:none;">
-        <div class="form-ph">🛡️ Add Security Personnel</div>
-        <div class="form-pb">
+    <!-- ANNOUNCEMENTS -->
+    <div id="announcementsPage" class="pg">
+      <div class="ph">
+        <div><div class="ph-t">Announcements</div><div class="ph-s">Broadcast messages to all hostel members</div></div>
+        <button class="btn bf" onclick="tp('annPanel')">＋ New</button>
+      </div>
+      <div class="ep" id="annPanel" style="display:none;">
+        <div class="eh">📢 Create Announcement</div>
+        <div class="eb">
+          <form id="annForm">
+            <div class="fg fg2">
+              <div class="full"><label>Title</label><input class="fi" name="title" placeholder="Announcement title…" required></div>
+              <div class="full"><label>Message</label><textarea class="fi" name="message" rows="3" placeholder="Write your message…" required></textarea></div>
+              <div><label>Priority</label><select class="fi" name="priority"><option value="info">ℹ️ Info</option><option value="normal">📝 Normal</option><option value="urgent">🚨 Urgent</option></select></div>
+            </div>
+            <div class="fa">
+              <button type="submit" class="btn bf">📢 Post</button>
+              <button type="button" class="btn bo" onclick="tp('annPanel')">Cancel</button>
+            </div>
+          </form>
+        </div>
+      </div>
+      <div id="annList"></div>
+    </div>
+
+    <!-- NOTICES -->
+    <div id="noticesPage" class="pg">
+      <div class="ph">
+        <div><div class="ph-t">Notices</div><div class="ph-s">Role-targeted notice board</div></div>
+        <button class="btn bf" onclick="tp('noticePanel')">＋ Post Notice</button>
+      </div>
+      <div class="ep" id="noticePanel" style="display:none;">
+        <div class="eh">📌 Post Notice</div>
+        <div class="eb">
+          <form id="noticeForm">
+            <div class="fg fg2">
+              <div class="full"><label>Title</label><input class="fi" name="title" placeholder="Notice title…" required></div>
+              <div class="full"><label>Body</label><textarea class="fi" name="body" rows="3" placeholder="Notice content…" required></textarea></div>
+              <div><label>Target Audience</label><select class="fi" name="target_role"><option value="all">👥 All</option><option value="student">🎓 Students Only</option><option value="security">🛡️ Security Only</option></select></div>
+            </div>
+            <div class="fa">
+              <button type="submit" class="btn bf">📌 Post</button>
+              <button type="button" class="btn bo" onclick="tp('noticePanel')">Cancel</button>
+            </div>
+          </form>
+        </div>
+      </div>
+      <div id="noticeList"></div>
+    </div>
+
+    <!-- FEES -->
+    <div id="feesPage" class="pg">
+      <div class="ph">
+        <div><div class="ph-t">Fee Records</div><div class="ph-s">Track and record student fee payments</div></div>
+        <button class="btn bf" onclick="tp('feePanel')">＋ Record Payment</button>
+      </div>
+      <div class="ep" id="feePanel" style="display:none;">
+        <div class="eh">💳 Record Fee Payment</div>
+        <div class="eb">
+          <div class="fg fg4">
+            <div><label>Student Username</label><input class="fi" id="fU" placeholder="username"></div>
+            <div><label>Month</label><input class="fi" id="fM" type="month"></div>
+            <div><label>Amount (₹)</label><input class="fi" id="fA" type="number" placeholder="5000"></div>
+            <div><label>Description</label><input class="fi" id="fD" placeholder="Hostel fee…"></div>
+          </div>
+          <div class="fa">
+            <button class="btn bf" onclick="recordFee()">✓ Record</button>
+            <button class="btn bo" onclick="tp('feePanel')">Cancel</button>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;align-items:flex-end;">
+        <div><label style="font-size:.71rem;font-weight:600;color:var(--onv);letter-spacing:.04em;text-transform:uppercase;display:block;margin-bottom:5px;">Student</label><input class="fi" id="fFS" placeholder="Username…" style="width:200px;"></div>
+        <div><label style="font-size:.71rem;font-weight:600;color:var(--onv);letter-spacing:.04em;text-transform:uppercase;display:block;margin-bottom:5px;">Month</label><input class="fi" id="fFM" type="month" style="width:170px;"></div>
+        <button class="btn bt" onclick="loadFees()">Apply</button>
+        <button class="btn bo" onclick="document.getElementById('fFS').value='';document.getElementById('fFM').value='';loadFees()">Clear</button>
+      </div>
+      <div class="card"><div class="tw"><table>
+        <thead><tr><th>Student</th><th>Room</th><th>Month</th><th>Amount</th><th>Description</th><th>Paid At</th></tr></thead>
+        <tbody id="feeTbody"></tbody>
+      </table></div></div>
+    </div>
+
+    <!-- ATTENDANCE -->
+    <div id="attendancePage" class="pg">
+      <div class="ph">
+        <div><div class="ph-t">Attendance</div><div class="ph-s">Mark and view hostel attendance</div></div>
+        <button class="btn bf" onclick="tp('attPanel')">＋ Mark Attendance</button>
+      </div>
+      <div class="ep" id="attPanel" style="display:none;">
+        <div class="eh">✅ Mark Attendance</div>
+        <div class="eb">
+          <div class="fg fg4">
+            <div><label>Student Username</label><input class="fi" id="aU" placeholder="username"></div>
+            <div><label>Date</label><input class="fi" id="aD" type="date"></div>
+            <div><label>Status</label><select class="fi" id="aP"><option value="true">✅ Present</option><option value="false">❌ Absent</option></select></div>
+            <div><label>Note</label><input class="fi" id="aN" placeholder="Optional note…"></div>
+          </div>
+          <div class="fa">
+            <button class="btn bf" onclick="markAtt()">✓ Submit</button>
+            <button class="btn bo" onclick="tp('attPanel')">Cancel</button>
+          </div>
+        </div>
+      </div>
+      <div style="display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;align-items:flex-end;">
+        <div><label style="font-size:.71rem;font-weight:600;color:var(--onv);text-transform:uppercase;letter-spacing:.04em;display:block;margin-bottom:5px;">Student</label><input class="fi" id="aFS" placeholder="Username…" style="width:200px;"></div>
+        <div><label style="font-size:.71rem;font-weight:600;color:var(--onv);text-transform:uppercase;letter-spacing:.04em;display:block;margin-bottom:5px;">Date</label><input class="fi" id="aFD" type="date" style="width:185px;"></div>
+        <button class="btn bt" onclick="loadAtt()">Apply</button>
+        <button class="btn bo" onclick="document.getElementById('aFS').value='';document.getElementById('aFD').value='';loadAtt()">Clear</button>
+      </div>
+      <div class="card"><div class="tw"><table>
+        <thead><tr><th>Student</th><th>Room</th><th>Bed</th><th>Date</th><th>Status</th><th>Note</th></tr></thead>
+        <tbody id="attTbody"></tbody>
+      </table></div></div>
+    </div>
+
+    <!-- VISITORS -->
+    <div id="visitorsPage" class="pg">
+      <div class="ph">
+        <div><div class="ph-t">Visitor Log</div><div class="ph-s">All visitor check-in / check-out records</div></div>
+        <button class="btn bt" onclick="loadVisitors()">↻ Refresh</button>
+      </div>
+      <div class="card"><div class="tw"><table>
+        <thead><tr><th>Visitor</th><th>Phone</th><th>Student</th><th>Room</th><th>Purpose</th><th>Check In</th><th>Check Out</th></tr></thead>
+        <tbody id="visTbody"></tbody>
+      </table></div></div>
+    </div>
+
+    <!-- SECURITY -->
+    <div id="securityPage" class="pg">
+      <div class="ph">
+        <div><div class="ph-t">Security Staff</div><div class="ph-s">Hostel security personnel</div></div>
+        <div class="ph-a"><button class="btn bt" onclick="loadSecurity()">↻</button><button class="btn bf" onclick="tp('gPanel')">＋ Add Staff</button></div>
+      </div>
+      <div class="ep" id="gPanel" style="display:none;">
+        <div class="eh">🛡️ Add Security Personnel</div>
+        <div class="eb">
           <form id="secForm">
-            <div class="fg fg-2">
-              <div class="fgroup">
-                <label class="flabel">Username</label>
-                <input class="finput" name="username" placeholder="e.g. guard_01" required>
-              </div>
-              <div class="fgroup">
-                <label class="flabel">Password</label>
-                <input class="finput" name="password" type="password" placeholder="Initial password" required>
-              </div>
-              <div class="fgroup">
-                <label class="flabel">Full Name</label>
-                <input class="finput" name="name" placeholder="e.g. Ramesh Kumar" required>
-              </div>
-              <div class="fgroup">
-                <label class="flabel">Shift</label>
-                <select class="finput" name="shift">
-                  <option value="morning">🌅 Morning (6AM – 2PM)</option>
-                  <option value="afternoon">☀️ Afternoon (2PM – 10PM)</option>
-                  <option value="night">🌙 Night (10PM – 6AM)</option>
-                </select>
-              </div>
+            <div class="fg fg2">
+              <div><label>Username</label><input class="fi" name="username" placeholder="guard_01" required></div>
+              <div><label>Password</label><input class="fi" name="password" type="password" required></div>
+              <div><label>Full Name</label><input class="fi" name="name" placeholder="Ramesh Kumar" required></div>
+              <div><label>Phone</label><input class="fi" name="phone" placeholder="+91 9000000000"></div>
+              <div><label>Shift</label><select class="fi" name="shift"><option value="morning">🌅 Morning (6AM–2PM)</option><option value="afternoon">☀️ Afternoon (2PM–10PM)</option><option value="night">🌙 Night (10PM–6AM)</option></select></div>
             </div>
-            <div class="f-actions">
-              <button type="submit" class="btn btn-p">✓ Add Personnel</button>
-              <button type="button" class="btn btn-g" onclick="togglePanel('gPanel')">Cancel</button>
+            <div class="fa">
+              <button type="submit" class="btn bf">✓ Add</button>
+              <button type="button" class="btn bo" onclick="tp('gPanel')">Cancel</button>
             </div>
           </form>
         </div>
       </div>
-
-      <div id="gGrid" class="guard-grid">
-        <div style="grid-column:1/-1;"><div class="empty"><div class="ei">🛡️</div><div class="et">No security staff yet</div></div></div>
-      </div>
+      <div id="gGrid" class="ggrid"></div>
     </div>
 
-  </div><!-- /page-content -->
-</div><!-- /main-wrap -->
+    <!-- AUDIT LOGS -->
+    <div id="logsPage" class="pg">
+      <div class="ph">
+        <div><div class="ph-t">Audit Logs</div><div class="ph-s">Full trail of all warden and security actions</div></div>
+        <button class="btn bt" onclick="loadLogs()">↻ Refresh</button>
+      </div>
+      <div class="card"><div class="tw"><table>
+        <thead><tr><th>Action</th><th>Performed By</th><th>Target</th><th>Details</th><th>Timestamp</th></tr></thead>
+        <tbody id="logTbody"></tbody>
+      </table></div></div>
+    </div>
+
+  </div>
+</div>
 
 <script>
-/* ═══ STATE ═══ */
-let allReqs = [];
-let reqFilter = 'all';
-const SHIFTS = { morning:'🌅 Morning (6AM–2PM)', afternoon:'☀️ Afternoon (2PM–10PM)', night:'🌙 Night (10PM–6AM)' };
-const META = {
-  dashboard: ['Dashboard','In&Out / Overview'],
-  students:  ['Students','In&Out / Directory'],
-  rooms:     ['Rooms','In&Out / Floor Plan'],
-  requests:  ['Leave Requests','In&Out / Approvals'],
-  security:  ['Security Staff','In&Out / Personnel'],
+/* STATE */
+let allSt=[],allReqs=[],allComp=[];
+let rF='all',cF='all',ssF='';
+let pDel=null,pRes=null,pAct=null,pActT=null;
+
+const SHIFTS={morning:'🌅 Morning',afternoon:'☀️ Afternoon',night:'🌙 Night'};
+const PM={
+  dashboard:['Dashboard','In&Out / Overview'],
+  students:['Students','In&Out / Directory'],
+  rooms:['Rooms & Beds','In&Out / Floor Plan'],
+  requests:['Leave Requests','In&Out / Approvals'],
+  complaints:['Complaints','In&Out / Support'],
+  announcements:['Announcements','In&Out / Broadcast'],
+  notices:['Notices','In&Out / Notice Board'],
+  fees:['Fee Records','In&Out / Finance'],
+  attendance:['Attendance','In&Out / Records'],
+  visitors:['Visitor Log','In&Out / Gate'],
+  security:['Security Staff','In&Out / Personnel'],
+  logs:['Audit Logs','In&Out / Audit Trail'],
 };
 
-/* ═══ CLOCK ═══ */
+/* CLOCK */
 setInterval(()=>{
-  document.getElementById('clk').textContent =
+  document.getElementById('clk').textContent=
     new Date().toLocaleTimeString('en-IN',{hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:true});
 },1000);
 
-/* ═══ NAV ═══ */
-function showPage(p, el){
-  document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));
+/* NAV */
+function sp(p,el){
+  document.querySelectorAll('.pg').forEach(x=>x.classList.remove('active'));
   document.getElementById(p+'Page').classList.add('active');
-  document.querySelectorAll('.nav-item').forEach(x=>x.classList.remove('active'));
-  if(el) el.classList.add('active');
-  const [t,s] = META[p]||[p,''];
-  document.getElementById('ttitle').textContent = t;
-  document.getElementById('tsub').textContent = s;
-  if(p==='students') loadStudents();
-  if(p==='rooms')    loadRooms();
-  if(p==='security') loadSecurity();
+  document.querySelectorAll('.ni').forEach(x=>x.classList.remove('active'));
+  if(el)el.classList.add('active');
+  const[t,s]=PM[p]||[p,''];
+  document.getElementById('ttl').textContent=t;
+  document.getElementById('tsu').textContent=s;
+  const loaders={students:loadStudents,rooms:loadRooms,requests:loadRequests,complaints:loadComplaints,
+    announcements:loadAnn,notices:loadNotices,fees:loadFees,attendance:loadAtt,visitors:loadVisitors,
+    security:loadSecurity,logs:loadLogs};
+  if(loaders[p])loaders[p]();
 }
+function tp(id){const el=document.getElementById(id);el.style.display=el.style.display==='none'?'block':'none';}
 
-/* ═══ PANELS ═══ */
-function togglePanel(id){
-  const el=document.getElementById(id);
-  el.style.display = el.style.display==='none' ? 'block' : 'none';
-}
-function openPanel(id){ document.getElementById(id).style.display='block'; }
-
-/* ═══ TOAST ═══ */
+/* TOAST */
 function toast(msg,type='info'){
-  const i={success:'✅',error:'❌',info:'ℹ️'};
+  const ico={success:'✅',error:'❌',info:'ℹ️'};
   const el=document.createElement('div');
   el.className=`toast ${type}`;
-  el.innerHTML=`<span>${i[type]}</span><span>${msg}</span>`;
+  el.innerHTML=`<span>${ico[type]}</span><span>${msg}</span>`;
   document.getElementById('tb').appendChild(el);
-  setTimeout(()=>{ el.style.animation='toastOut 0.2s ease forwards'; setTimeout(()=>el.remove(),220); },3400);
+  setTimeout(()=>{el.style.animation='tout .22s ease forwards';setTimeout(()=>el.remove(),240);},3500);
 }
 
-/* ═══ PHOTO ENCODE ═══ */
+/* MODAL */
+function om(id){document.getElementById(id).classList.add('open');}
+function cm(id){document.getElementById(id).classList.remove('open');}
+
+/* PHOTO */
 document.addEventListener('change',e=>{
   if(e.target.id==='photoFile'){
-    const r=new FileReader();
-    r.onload=()=>{ document.getElementById('photoB64').value=r.result.split(',')[1]; };
-    r.readAsDataURL(e.target.files[0]);
+    const r=new FileReader();r.onload=()=>{document.getElementById('photoB64').value=r.result.split(',')[1];};r.readAsDataURL(e.target.files[0]);
   }
 });
 
-/* ═══ STUDENTS ═══ */
-// Route: GET /api/students  (requires warden session)
+/* HELPERS */
+function cap(s){return s?s[0].toUpperCase()+s.slice(1):'';}
+function sico(s){return{pending:'⏳',approved:'✅',rejected:'❌'}[s]||'';}
+function fdt(d){
+  if(!d)return'—';const s=String(d);if(!s||s==='None')return'—';
+  try{return new Date(s).toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'});}catch{return s.slice(0,10);}
+}
+function fdtm(d){
+  if(!d)return'—';const s=String(d);if(!s||s==='None')return'—';
+  try{return new Date(s).toLocaleString('en-IN',{day:'2-digit',month:'short',hour:'2-digit',minute:'2-digit'});}catch{return s.slice(0,16);}
+}
+function ava(name,photo,sz=36){
+  const i=(name||'?')[0].toUpperCase();
+  if(photo)return`<img class="av" src="data:image/jpeg;base64,${photo}" width="${sz}" height="${sz}" style="border-radius:50%;object-fit:cover;" onerror="this.outerHTML='<div class=\\'avi\\'>${i}</div>'">`;
+  return`<div class="avi" style="width:${sz}px;height:${sz}px;">${i}</div>`;
+}
+function badge(cls,txt){return`<span class="bge ${cls}">${txt}</span>`;}
+function updbadge(id,v){const el=document.getElementById(id);if(v>0){el.textContent=v;el.classList.add('show');}else el.classList.remove('show');}
+function emptyRow(cols,ico,txt){return`<tr><td colspan="${cols}"><div class="es"><div class="ei">${ico}</div><div class="ett">${txt}</div></div></td></tr>`;}
+
+/* DASHBOARD */
+async function loadDashboard(){
+  try{
+    const r=await fetch('/api/dashboard/stats');if(!r.ok)return;
+    const d=await r.json();
+    document.getElementById('dS').textContent=d.total_students??'—';
+    document.getElementById('dR').textContent=d.total_rooms??'—';
+    document.getElementById('dP').textContent=d.pending_leave_requests??'—';
+    document.getElementById('dC').textContent=d.open_complaints??'—';
+    document.getElementById('dG').textContent=d.total_security??'—';
+    document.getElementById('dV').textContent=d.today_visitors??'—';
+    updbadge('pb',d.pending_leave_requests||0);
+    updbadge('cb2',d.open_complaints||0);
+  }catch(e){console.error(e);}
+}
+
+/* STUDENTS */
 async function loadStudents(){
   try{
-    const res=await fetch('/api/students');
-    const data=await res.json();
-    document.getElementById('dS').textContent=data.length;
-    document.getElementById('sCount').textContent=data.length+' enrolled';
-
-    const body=document.getElementById('sTbody');
-    if(!data.length){
-      body.innerHTML=`<tr><td colspan="5"><div class="empty"><div class="ei">🎓</div><div class="et">No students registered</div></div></td></tr>`;
-      return;
-    }
-
-    body.innerHTML=data.map(s=>{
-      // Photo: backend returns raw base64 string (no data URL prefix)
-      const avatarHtml = s.photo
-        ? `<img class="ava" src="data:image/jpeg;base64,${s.photo}" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';" alt="${s.name||''}">
-           <div class="ava-init" style="display:none;">${(s.name||s.username||'?')[0].toUpperCase()}</div>`
-        : `<div class="ava-init">${(s.name||s.username||'?')[0].toUpperCase()}</div>`;
-      return `<tr>
-        <td><div style="display:flex;align-items:center;">${avatarHtml}</div></td>
-        <td style="font-weight:600;">${s.name||'—'}</td>
-        <td style="color:var(--muted);font-size:0.82rem;">@${s.username||'—'}</td>
-        <td><span class="badge broom">Room ${s.room||'—'}</span></td>
-        <td><span class="badge bbed">Bed ${s.bed||'—'}</span></td>
-      </tr>`;
-    }).join('');
-  }catch(e){ console.error(e); }
+    const url=ssF?`/api/students?status=${ssF}`:'/api/students';
+    const r=await fetch(url);allSt=await r.json();
+    document.getElementById('sCountLbl').textContent=`${allSt.length} enrolled`;
+    renderSt(allSt);
+  }catch(e){console.error(e);}
 }
-
-// Route: POST /api/add_student  (FormData: username, password, name, room, bed, photo)
-document.getElementById('studentForm').onsubmit=async e=>{
-  e.preventDefault();
-  const btn=document.getElementById('sBtnSub');
-  btn.innerHTML='<span class="sp"></span> Registering…'; btn.disabled=true;
-  try{
-    const fd=new FormData(document.getElementById('studentForm'));
-    const res=await fetch('/api/add_student',{method:'POST',body:fd});
-    if(res.ok){
-      toast('Student registered!','success');
-      document.getElementById('studentForm').reset();
-      document.getElementById('photoB64').value='';
-      togglePanel('sPanel');
-      loadStudents();
-    } else {
-      const err=await res.json().catch(()=>({}));
-      toast(err.detail||'Failed to register','error');
-    }
-  }catch{ toast('Network error','error'); }
-  btn.innerHTML='✓ Register Student'; btn.disabled=false;
-};
-
-/* ═══ ROOMS ═══ */
-// Route: GET /api/rooms  (open)
-async function loadRooms(){
-  try{
-    const res=await fetch('/api/rooms');
-    const data=await res.json();
-    document.getElementById('dR').textContent=data.length;
-
-    const grid=document.getElementById('rGrid');
-    if(!data.length){
-      grid.innerHTML=`<div style="grid-column:1/-1;"><div class="empty"><div class="ei">🏠</div><div class="et">No rooms configured</div></div></div>`;
-      return;
-    }
-    grid.innerHTML=data.map(r=>{
-      const beds=['A','B','C','D','E'];
-      const occ=beds.filter(b=>r[b]).length;
-      const rows=beds.map(b=>`
-        <div class="brow">
-          <span class="bk">Bed ${b}</span>
-          <span>${r[b]||'<span style="color:#d1d5db;">Vacant</span>'}</span>
-        </div>`).join('');
-      return `<div class="room-card">
-        <div class="rch">Room ${r.room} <span>${occ}/5 occupied</span></div>
-        <div class="rcb">${rows}</div>
-      </div>`;
-    }).join('');
-  }catch(e){ console.error(e); }
-}
-
-// Route: POST /api/create_room  (JSON body)
-document.getElementById('roomForm').onsubmit=async e=>{
-  e.preventDefault();
-  const data=Object.fromEntries(new FormData(document.getElementById('roomForm')));
-  // bedA and bedB are required in the Pydantic model (non-optional) but we send empty string if blank
-  if(!data.bedA) data.bedA='';
-  if(!data.bedB) data.bedB='';
-  try{
-    const res=await fetch('/api/create_room',{
-      method:'POST',
-      headers:{'Content-Type':'application/json'},
-      body:JSON.stringify(data)
-    });
-    if(res.ok){
-      toast('Room created!','success');
-      document.getElementById('roomForm').reset();
-      togglePanel('rPanel');
-      loadRooms();
-    } else { toast('Failed to create room','error'); }
-  }catch{ toast('Network error','error'); }
-};
-
-/* ═══ REQUESTS ═══ */
-// Route: GET /api/requests  (requires warden session)
-async function loadRequests(){
-  try{
-    const res=await fetch('/api/requests');
-    const data=await res.json();
-    const prevPending=allReqs.filter(r=>r.status==='pending').length;
-    allReqs=data;
-    const pending=data.filter(r=>r.status==='pending').length;
-
-    if(prevPending>=0 && pending>prevPending && prevPending>=0){
-      toast('New leave request received!','info');
-    }
-
-    document.getElementById('dP').textContent=pending;
-    const pill=document.getElementById('sidebarPill');
-    pending>0 ? (pill.textContent=pending, pill.classList.add('show')) : pill.classList.remove('show');
-
-    renderReqs();
-    renderDashFeed(data);
-  }catch(e){ console.error(e); }
-}
-
-function setFilter(f, btn){
-  reqFilter=f;
-  document.querySelectorAll('#reqChips .chip').forEach(c=>c.classList.remove('active'));
-  btn.classList.add('active');
-  renderReqs();
-}
-
-function renderReqs(){
-  const filtered=reqFilter==='all' ? allReqs : allReqs.filter(r=>r.status===reqFilter);
-  const body=document.getElementById('reqTbody');
-  if(!filtered.length){
-    body.innerHTML=`<tr><td colspan="5"><div class="empty"><div class="ei">📋</div><div class="et">No ${reqFilter==='all'?'':reqFilter} requests</div></div></td></tr>`;
-    return;
-  }
-  body.innerHTML=filtered.map(r=>`<tr>
-    <td style="font-weight:600;">${r.student||'—'}</td>
-    <td><span class="badge broom">Room ${r.room||'—'}</span></td>
-    <td style="max-width:200px;font-size:0.82rem;color:var(--muted);">${r.reason||'—'}</td>
-    <td><span class="badge ${r.status==='pending'?'bp':r.status==='approved'?'ba':'br'}">${sIcon(r.status)} ${cap(r.status)}</span></td>
-    <td>
-      ${r.status==='pending'
-        ? `<button class="btn btn-ok btn-sm" onclick="actReq('${r.id}','approve')">✓ Approve</button>
-           <button class="btn btn-no btn-sm" style="margin-left:6px;" onclick="actReq('${r.id}','reject')">✗ Reject</button>`
-        : `<span style="font-size:0.78rem;color:var(--muted);">—</span>`}
-    </td>
+function setSS(s,btn){ssF=s;document.querySelectorAll('#studentsPage .ch .fc').forEach(c=>c.classList.remove('active'));btn.classList.add('active');loadStudents();}
+function filterSt(q){if(!q){renderSt(allSt);return;}const ql=q.toLowerCase();renderSt(allSt.filter(s=>((s.name||'')+(s.username||'')+(s.room||'')+(s.phone||'')).toLowerCase().includes(ql)));}
+function renderSt(data){
+  const b=document.getElementById('sTbody');
+  if(!data.length){b.innerHTML=emptyRow(8,'🎓','No students found');return;}
+  b.innerHTML=data.map(s=>`<tr>
+    <td><div style="display:flex;align-items:center;gap:10px;">${ava(s.name,s.photo)}<div><div style="font-weight:600;font-size:.875rem;">${s.name||'—'}</div><div style="font-size:.72rem;color:var(--onv);">${s.email||''}</div></div></div></td>
+    <td style="color:var(--onv);font-size:.82rem;">@${s.username||'—'}</td>
+    <td>${badge('broom','Room '+(s.room||'—'))}</td>
+    <td>${badge('bbed','Bed '+(s.bed||'—'))}</td>
+    <td style="font-size:.82rem;">${s.phone||'—'}</td>
+    <td style="font-size:.82rem;">${s.guardian_name?`${s.guardian_name}<br><span style="color:var(--onv)">${s.guardian_phone||''}</span>`:'—'}</td>
+    <td>${badge(s.status==='active'?'bact':'bsus',cap(s.status||'active'))}</td>
+    <td><button class="btn bd bsm" onclick="pDel_fn('${s.username}','${(s.name||'').replace(/'/g,"\\'")}')">🗑</button></td>
   </tr>`).join('');
 }
 
-// Routes: POST /api/approve/{id}  POST /api/reject/{id}
-async function actReq(id, action){
-  const url=action==='approve' ? `/api/approve/${id}` : `/api/reject/${id}`;
-  const res=await fetch(url,{method:'POST'});
-  if(res.ok){ toast(`Request ${action}d`,'success'); loadRequests(); }
-  else { toast('Action failed','error'); }
+function pDel_fn(u,n){pDel=u;document.getElementById('delName').textContent=n;om('delMo');}
+async function confirmDel(){
+  if(!pDel)return;
+  const r=await fetch(`/api/student/${pDel}`,{method:'DELETE'});
+  cm('delMo');
+  if(r.ok){toast('Student deleted','success');loadStudents();loadDashboard();}
+  else{const e=await r.json().catch(()=>({}));toast(e.detail||'Delete failed','error');}
+  pDel=null;
 }
 
-function renderDashFeed(data){
-  const box=document.getElementById('dashFeed');
-  if(!data.length){
-    box.innerHTML='<div class="empty" style="padding:28px 0;"><div class="ei">📋</div><p>No requests yet</p></div>';
-    return;
-  }
-  const recent=[...data].slice(-6).reverse();
-  box.innerHTML=recent.map(r=>`
-    <div class="a-item">
-      <div class="a-dot ${r.status}"></div>
-      <div>
-        <div class="a-txt"><strong>${r.student||'—'}</strong> — ${r.reason||'Leave request'}</div>
-        <div class="a-meta">${cap(r.status)} · Room ${r.room||'—'}</div>
-      </div>
-    </div>`).join('');
+document.getElementById('studentForm').onsubmit=async e=>{
+  e.preventDefault();
+  const btn=document.getElementById('sBtnSub');
+  btn.innerHTML='<span class="sp"></span> Registering…';btn.disabled=true;
+  try{
+    const fd=new FormData(document.getElementById('studentForm'));
+    const r=await fetch('/api/add_student',{method:'POST',body:fd});
+    if(r.ok){toast('Student registered!','success');document.getElementById('studentForm').reset();document.getElementById('photoB64').value='';tp('sPanel');loadStudents();loadDashboard();}
+    else{const e=await r.json().catch(()=>({}));toast(e.detail||'Registration failed','error');}
+  }catch{toast('Network error','error');}
+  btn.innerHTML='✓ Register Student';btn.disabled=false;
+};
+
+/* ROOMS */
+async function loadRooms(){
+  try{
+    const r=await fetch('/api/rooms/occupancy');
+    if(!r.ok){await loadRoomsBasic();return;}
+    const data=await r.json();renderRoomsOcc(data);
+  }catch{await loadRoomsBasic();}
+}
+async function loadRoomsBasic(){
+  try{const r=await fetch('/api/rooms');const data=await r.json();renderRoomsBasic(data);}catch(e){console.error(e);}
+}
+function renderRoomsOcc(data){
+  const g=document.getElementById('rGrid');
+  if(!data.length){g.innerHTML=`<div style="grid-column:1/-1;"><div class="es"><div class="ei">🏠</div><div class="ett">No rooms configured</div></div></div>`;return;}
+  g.innerHTML=data.map(r=>{
+    const beds=Object.entries(r.beds||{});
+    const rows=beds.map(([c,o])=>`<div class="br"><span class="bk">Bed ${c}</span>${o?`<span style="font-weight:500;">${o.name||o.username}</span>`:`<span class="bv">Vacant</span>`}</div>`).join('');
+    const pct=r.total_beds>0?Math.round((r.occupied/r.total_beds)*100):0;
+    return`<div class="rcard"><div class="rh">Room ${r.room}<span class="rhs">${r.occupied}/${r.total_beds}</span></div><div class="rb">${rows||'<div style="color:var(--out);font-size:.8rem;padding:4px 0;">No beds</div>'}</div><div class="rf2"><div class="obar"><div class="ofill" style="width:${pct}%"></div></div><span style="font-size:.72rem;color:var(--onv);font-weight:600;">${pct}%</span></div></div>`;
+  }).join('');
+}
+function renderRoomsBasic(data){
+  const g=document.getElementById('rGrid');
+  if(!data.length){g.innerHTML=`<div style="grid-column:1/-1;"><div class="es"><div class="ei">🏠</div><div class="ett">No rooms configured</div></div></div>`;return;}
+  g.innerHTML=data.map(r=>{
+    const beds=['A','B','C','D','E'];
+    const rows=beds.filter(b=>r[b]!=null).map(b=>`<div class="br"><span class="bk">Bed ${b}</span>${r[b]?`<span style="font-weight:500;">${r[b]}</span>`:`<span class="bv">Vacant</span>`}</div>`).join('');
+    return`<div class="rcard"><div class="rh">Room ${r.room}</div><div class="rb">${rows}</div></div>`;
+  }).join('');
+}
+document.getElementById('roomForm').onsubmit=async e=>{
+  e.preventDefault();
+  const data=Object.fromEntries(new FormData(document.getElementById('roomForm')));
+  if(!data.bedA)data.bedA='Single';if(!data.bedB)data.bedB='Single';
+  const r=await fetch('/api/create_room',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
+  if(r.ok){toast('Room created!','success');document.getElementById('roomForm').reset();tp('rPanel');loadRooms();}
+  else toast('Failed','error');
+};
+async function lookupRB(){
+  const room=document.getElementById('lkRoom').value.trim();
+  const bed=document.getElementById('lkBed').value;
+  if(!room){toast('Enter room number','error');return;}
+  const r=await fetch(`/api/room/${room}/bed/${bed}`);
+  const box=document.getElementById('lkRes');
+  if(r.status===404){box.innerHTML=`<div class="es" style="padding:16px;"><div class="ei">🔍</div><div class="ett">No student in Room ${room} Bed ${bed}</div></div>`;return;}
+  if(!r.ok){box.innerHTML=`<p style="color:var(--e);font-size:.87rem;margin-top:12px;">Error looking up.</p>`;return;}
+  const s=await r.json();
+  box.innerHTML=`<div class="lr"><div>${ava(s.name,s.photo,48)}</div><div style="flex:1;"><div class="lr-n">${s.name||'—'}</div><div class="lr-s">@${s.username} · Room ${s.room} Bed ${s.bed}</div><div style="font-size:.78rem;margin-top:4px;">${s.phone||''} ${s.guardian_name?'· Guardian: '+s.guardian_name+' ('+s.guardian_phone+')':''}</div></div>${badge(s.status==='active'?'bact':'bsus',cap(s.status||'active'))}</div>`;
 }
 
-/* ═══ SECURITY ═══ */
-// Route: GET /api/security_staff  (requires warden session)
+/* REQUESTS */
+async function loadRequests(){
+  try{
+    const r=await fetch('/api/requests');const data=await r.json();
+    const pp=allReqs.filter(x=>x.status==='pending').length;allReqs=data;
+    const p=data.filter(x=>x.status==='pending').length;
+    if(pp>=0&&p>pp)toast('New leave request!','info');
+    updbadge('pb',p);document.getElementById('dP').textContent=p;
+    renderReqs();renderFeed(data);
+  }catch(e){console.error(e);}
+}
+function setRF(f,btn){rF=f;document.querySelectorAll('#reqChips .fc').forEach(c=>c.classList.remove('active'));btn.classList.add('active');renderReqs();}
+function renderReqs(){
+  const filtered=rF==='all'?allReqs:allReqs.filter(r=>r.status===rF);
+  const b=document.getElementById('reqTbody');
+  if(!filtered.length){b.innerHTML=emptyRow(7,'📋','No '+( rF==='all'?'':rF)+' requests');return;}
+  b.innerHTML=filtered.map(r=>`<tr>
+    <td><div style="display:flex;align-items:center;gap:10px;">${ava(r.student_name,r.photo)}<div><div style="font-weight:600;">${r.student_name||r.student||'—'}</div><div style="font-size:.72rem;color:var(--onv);">@${r.student||''}</div></div></div></td>
+    <td>${badge('broom','Room '+(r.room||'—'))} ${r.bed?badge('bbed','Bed '+r.bed):''}</td>
+    <td style="max-width:170px;font-size:.82rem;color:var(--onv);">${r.reason||'—'}</td>
+    <td style="font-size:.78rem;">${r.from_date?fdt(r.from_date)+' → '+fdt(r.to_date):fdtm(r.created)}</td>
+    <td>${badge(r.status==='pending'?'pend':r.status==='approved'?'appr':'rejt',sico(r.status)+' '+cap(r.status))}</td>
+    <td style="font-size:.78rem;color:var(--onv);max-width:130px;">${r.warden_note||'—'}</td>
+    <td>${r.status==='pending'?`<div style="display:flex;flex-direction:column;gap:4px;"><button class="btn bsuc bsm" onclick="oAct('${r.id}','approve')">✓</button><button class="btn bd bsm" onclick="oAct('${r.id}','reject')">✗</button></div>`:'<span style="color:var(--out);font-size:.76rem;">—</span>'}</td>
+  </tr>`).join('');
+}
+function oAct(id,type){
+  pAct=id;pActT=type;
+  document.getElementById('actMoT').textContent=type==='approve'?'✅ Approve Request':'❌ Reject Request';
+  document.getElementById('actNote').value='';
+  const btn=document.getElementById('actMoBtn');
+  btn.textContent=type==='approve'?'✓ Approve':'✗ Reject';
+  btn.className=`btn bsm ${type==='approve'?'bsuc':'bd'}`;
+  om('actMo');
+}
+async function doAct(){
+  if(!pAct||!pActT)return;
+  const note=document.getElementById('actNote').value;
+  const url=pActT==='approve'?`/api/approve/${pAct}`:`/api/reject/${pAct}`;
+  const fd=new FormData();if(note)fd.append('note',note);
+  const r=await fetch(url,{method:'POST',body:fd});
+  cm('actMo');
+  if(r.ok){toast(`Request ${pActT}d`,'success');loadRequests();loadDashboard();}
+  else toast('Action failed','error');
+  pAct=null;pActT=null;
+}
+document.getElementById('actMoBtn').onclick=doAct;
+function renderFeed(data){
+  const b=document.getElementById('dashFeed');
+  if(!data.length){b.innerHTML=`<div class="es" style="padding:24px 0;"><div class="ei">📋</div><div class="ett">No requests yet</div></div>`;return;}
+  b.innerHTML=[...data].reverse().slice(0,7).map(r=>`<div class="ai"><div class="ad ${r.status}"></div><div><div class="at"><strong>${r.student_name||r.student||'—'}</strong> — ${r.reason||'Leave request'}</div><div class="am">${cap(r.status)} · Room ${r.room||'—'}${r.bed?' Bed '+r.bed:''}</div></div></div>`).join('');
+}
+
+/* COMPLAINTS */
+async function loadComplaints(){
+  try{
+    const r=await fetch('/api/complaints');allComp=await r.json();
+    updbadge('cb2',allComp.filter(c=>c.status==='open').length);
+    renderComp();
+  }catch(e){console.error(e);}
+}
+function setCF(f,btn){cF=f;document.querySelectorAll('#compChips .fc').forEach(c=>c.classList.remove('active'));btn.classList.add('active');renderComp();}
+function renderComp(){
+  let data=allComp;
+  if(cF==='open'||cF==='resolved')data=allComp.filter(c=>c.status===cF);
+  else if(['maintenance','food','security','other'].includes(cF))data=allComp.filter(c=>c.category===cF);
+  const b=document.getElementById('compTbody');
+  if(!data.length){b.innerHTML=emptyRow(7,'🔧','No complaints found');return;}
+  b.innerHTML=data.map(c=>`<tr>
+    <td style="font-weight:600;">${c.student_name||c.student||'—'}</td>
+    <td>${badge('broom','Room '+(c.room||'—'))}</td>
+    <td>${badge('bnorm',cap(c.category||'other'))}</td>
+    <td style="max-width:190px;font-size:.82rem;">${c.description||'—'}</td>
+    <td>${badge(c.status==='open'?'bopen':'bres',(c.status==='open'?'🔴 ':'✅ ')+cap(c.status))}</td>
+    <td style="font-size:.78rem;">${fdtm(c.created)}</td>
+    <td>${c.status==='open'?`<button class="btn bsuc bsm" onclick="pRes_fn('${c.id}')">✓ Resolve</button>`:`<span style="font-size:.76rem;color:var(--onv);">${c.resolution_note||'—'}</span>`}</td>
+  </tr>`).join('');
+}
+function pRes_fn(id){pRes=id;document.getElementById('resNote').value='';om('resMo');}
+async function confirmRes(){
+  if(!pRes)return;
+  const note=document.getElementById('resNote').value;
+  if(!note.trim()){toast('Add resolution note','error');return;}
+  const fd=new FormData();fd.append('note',note);
+  const r=await fetch(`/api/complaints/${pRes}/resolve`,{method:'POST',body:fd});
+  cm('resMo');
+  if(r.ok){toast('Complaint resolved!','success');loadComplaints();loadDashboard();}
+  else toast('Failed','error');
+  pRes=null;
+}
+
+/* ANNOUNCEMENTS */
+async function loadAnn(){
+  try{
+    const r=await fetch('/api/announcements');const data=await r.json();
+    const list=document.getElementById('annList');
+    if(!data.length){list.innerHTML=`<div class="es"><div class="ei">📢</div><div class="ett">No announcements</div></div>`;return;}
+    list.innerHTML=data.map(a=>`<div class="nc"><div class="ncb"><div class="nc-meta">${badge(a.priority==='urgent'?'burg':a.priority==='info'?'binfo':'bnorm',(a.priority==='urgent'?'🚨':a.priority==='info'?'ℹ️':'📝')+' '+cap(a.priority))}<span style="font-size:.74rem;color:var(--onv);">${fdtm(a.created)}</span><button class="btn bd bsm" style="margin-left:auto;" onclick="delAnn('${a.id}')">🗑 Remove</button></div><div class="nc-t">${a.title}</div><div class="nc-body">${a.message}</div></div></div>`).join('');
+  }catch(e){console.error(e);}
+}
+document.getElementById('annForm').onsubmit=async e=>{
+  e.preventDefault();
+  const data=Object.fromEntries(new FormData(document.getElementById('annForm')));
+  const r=await fetch('/api/announcements',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
+  if(r.ok){toast('Announcement posted!','success');document.getElementById('annForm').reset();tp('annPanel');loadAnn();}
+  else toast('Failed','error');
+};
+async function delAnn(id){
+  const r=await fetch(`/api/announcements/${id}`,{method:'DELETE'});
+  if(r.ok){toast('Removed','success');loadAnn();}
+}
+
+/* NOTICES */
+async function loadNotices(){
+  try{
+    const r=await fetch('/api/notices');const data=await r.json();
+    const list=document.getElementById('noticeList');
+    if(!data.length){list.innerHTML=`<div class="es"><div class="ei">📌</div><div class="ett">No notices</div></div>`;return;}
+    list.innerHTML=data.map(n=>`<div class="nc"><div class="ncb"><div class="nc-meta"><span style="font-size:.74rem;color:var(--onv);">${fdtm(n.created)}</span></div><div class="nc-t">📌 ${n.title}</div><div class="nc-body">${n.body}</div></div></div>`).join('');
+  }catch(e){console.error(e);}
+}
+document.getElementById('noticeForm').onsubmit=async e=>{
+  e.preventDefault();
+  const data=Object.fromEntries(new FormData(document.getElementById('noticeForm')));
+  const r=await fetch('/api/notices',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)});
+  if(r.ok){toast('Notice posted!','success');document.getElementById('noticeForm').reset();tp('noticePanel');loadNotices();}
+  else toast('Failed','error');
+};
+
+/* FEES */
+async function loadFees(){
+  const s=document.getElementById('fFS').value.trim();
+  const m=document.getElementById('fFM').value;
+  let url='/api/fees?';if(s)url+=`student=${s}&`;if(m)url+=`month=${m}`;
+  try{
+    const r=await fetch(url);const data=await r.json();
+    const b=document.getElementById('feeTbody');
+    if(!data.length){b.innerHTML=emptyRow(6,'💳','No fee records');return;}
+    b.innerHTML=data.map(f=>`<tr>
+      <td style="font-weight:600;">${f.student_name||f.student_username||'—'}</td>
+      <td>${badge('broom',f.room?'Room '+f.room:'—')}</td>
+      <td>${f.month||'—'}</td>
+      <td style="font-weight:700;color:var(--s);">₹${(f.amount||0).toLocaleString()}</td>
+      <td style="font-size:.82rem;color:var(--onv);">${f.description||'—'}</td>
+      <td style="font-size:.78rem;">${fdtm(f.paid_at)}</td>
+    </tr>`).join('');
+  }catch(e){console.error(e);}
+}
+async function recordFee(){
+  const payload={student_username:document.getElementById('fU').value.trim(),month:document.getElementById('fM').value,amount:parseFloat(document.getElementById('fA').value),description:document.getElementById('fD').value.trim()};
+  if(!payload.student_username||!payload.month||isNaN(payload.amount)){toast('Fill all required fields','error');return;}
+  const r=await fetch('/api/fees',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+  if(r.ok){toast('Fee recorded!','success');['fU','fM','fA','fD'].forEach(id=>document.getElementById(id).value='');tp('feePanel');loadFees();}
+  else{const e=await r.json().catch(()=>({}));toast(e.detail||'Failed','error');}
+}
+
+/* ATTENDANCE */
+async function loadAtt(){
+  const s=document.getElementById('aFS').value.trim();
+  const d=document.getElementById('aFD').value;
+  let url='/api/attendance?';if(s)url+=`student=${s}&`;if(d)url+=`date=${d}`;
+  try{
+    const r=await fetch(url);const data=await r.json();
+    const b=document.getElementById('attTbody');
+    if(!data.length){b.innerHTML=emptyRow(6,'✅','No attendance records');return;}
+    b.innerHTML=data.map(a=>`<tr>
+      <td style="font-weight:600;">${a.student_name||a.student_username||'—'}</td>
+      <td>${badge('broom',a.room?'Room '+a.room:'—')}</td>
+      <td>${badge('bbed',a.bed?'Bed '+a.bed:'—')}</td>
+      <td>${a.date||'—'}</td>
+      <td>${badge(a.present?'bact':'bsus',a.present?'✅ Present':'❌ Absent')}</td>
+      <td style="font-size:.82rem;color:var(--onv);">${a.note||'—'}</td>
+    </tr>`).join('');
+  }catch(e){console.error(e);}
+}
+async function markAtt(){
+  const payload={student_username:document.getElementById('aU').value.trim(),date:document.getElementById('aD').value,present:document.getElementById('aP').value==='true',note:document.getElementById('aN').value.trim()};
+  if(!payload.student_username||!payload.date){toast('Fill student and date','error');return;}
+  const r=await fetch('/api/attendance',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+  if(r.ok){toast('Attendance marked!','success');tp('attPanel');loadAtt();}else toast('Failed','error');
+}
+
+/* VISITORS */
+async function loadVisitors(){
+  try{
+    const r=await fetch('/api/visitors');const data=await r.json();
+    const b=document.getElementById('visTbody');
+    if(!data.length){b.innerHTML=emptyRow(7,'👥','No visitor records');return;}
+    b.innerHTML=data.map(v=>`<tr>
+      <td style="font-weight:600;">${v.visitor_name||'—'}</td>
+      <td style="font-size:.82rem;">${v.visitor_phone||'—'}</td>
+      <td>${v.student_name||'—'}</td>
+      <td>${badge('broom',v.student_room?'Room '+v.student_room:'—')}</td>
+      <td style="font-size:.82rem;">${v.purpose||'—'}</td>
+      <td style="font-size:.78rem;">${fdtm(v.check_in)}</td>
+      <td style="font-size:.78rem;">${v.check_out&&v.check_out!=='None'?fdtm(v.check_out):'<span style="color:var(--s);font-weight:600;">Inside</span>'}</td>
+    </tr>`).join('');
+  }catch(e){console.error(e);}
+}
+
+/* SECURITY */
 async function loadSecurity(){
   try{
-    const res=await fetch('/api/security_staff');
-    const data=await res.json();
+    const r=await fetch('/api/security_staff');const data=await r.json();
     document.getElementById('dG').textContent=data.length;
-
-    const grid=document.getElementById('gGrid');
-    if(!data.length){
-      grid.innerHTML=`<div style="grid-column:1/-1;"><div class="empty"><div class="ei">🛡️</div><div class="et">No security staff yet</div></div></div>`;
-      return;
-    }
-    grid.innerHTML=data.map(g=>`
-      <div class="guard-card">
-        <div class="guard-ico">🛡️</div>
-        <div>
-          <div class="g-name">${g.name||'—'}</div>
-          <div class="g-user">@${g.username||'—'}</div>
-          <div class="g-shift"><span class="badge bshift">${SHIFTS[g.shift]||g.shift||'—'}</span></div>
-        </div>
-      </div>`).join('');
-  }catch(e){ console.error(e); }
+    const g=document.getElementById('gGrid');
+    if(!data.length){g.innerHTML=`<div style="grid-column:1/-1;"><div class="es"><div class="ei">🛡️</div><div class="ett">No security staff</div></div></div>`;return;}
+    g.innerHTML=data.map(gd=>`<div class="gcard">
+      <div class="gico">🛡️</div>
+      <div style="flex:1;">
+        <div class="gn">${gd.name||'—'}</div>
+        <div class="gu">@${gd.username||'—'}${gd.phone?' · '+gd.phone:''}</div>
+        <div class="gm">${badge('bshift',SHIFTS[gd.shift]||gd.shift||'—')}${gd.last_login&&gd.last_login!=='None'?badge('bnorm','Last: '+fdtm(gd.last_login)):''}</div>
+      </div>
+      <button class="btn bd bsm" onclick="delSec('${gd.username}')">🗑</button>
+    </div>`).join('');
+  }catch(e){console.error(e);}
 }
-
-// Route: POST /api/add_security  (FormData: username, password, name, shift)
+async function delSec(u){
+  if(!confirm(`Delete @${u}?`))return;
+  const r=await fetch(`/api/security/${u}`,{method:'DELETE'});
+  if(r.ok){toast('Removed','success');loadSecurity();}else toast('Failed','error');
+}
 document.getElementById('secForm').onsubmit=async e=>{
   e.preventDefault();
   const fd=new FormData(document.getElementById('secForm'));
-  try{
-    const res=await fetch('/api/add_security',{method:'POST',body:fd});
-    if(res.ok){
-      toast('Security staff added!','success');
-      document.getElementById('secForm').reset();
-      togglePanel('gPanel');
-      loadSecurity();
-    } else { toast('Failed to add staff','error'); }
-  }catch{ toast('Network error','error'); }
+  const r=await fetch('/api/add_security',{method:'POST',body:fd});
+  if(r.ok){toast('Staff added!','success');document.getElementById('secForm').reset();tp('gPanel');loadSecurity();}
+  else toast('Failed','error');
 };
 
-/* ═══ HELPERS ═══ */
-function cap(s){ return s?s[0].toUpperCase()+s.slice(1):''; }
-function sIcon(s){ return {pending:'⏳',approved:'✅',rejected:'❌'}[s]||''; }
+/* LOGS */
+async function loadLogs(){
+  try{
+    const r=await fetch('/api/activity_logs?limit=100');const data=await r.json();
+    const b=document.getElementById('logTbody');
+    if(!data.length){b.innerHTML=emptyRow(5,'🔍','No logs yet');return;}
+    b.innerHTML=data.map(l=>`<tr>
+      <td>${badge('bnorm',l.action||'—')}</td>
+      <td style="font-weight:600;">@${l.performed_by||'—'}</td>
+      <td style="color:var(--onv);">${l.target||'—'}</td>
+      <td style="font-size:.78rem;color:var(--onv);max-width:180px;">${l.details?JSON.stringify(l.details):'—'}</td>
+      <td style="font-size:.78rem;white-space:nowrap;">${fdtm(l.timestamp)}</td>
+    </tr>`).join('');
+  }catch(e){console.error(e);}
+}
 
-/* ═══ INIT ═══ */
-loadStudents();
-loadRooms();
+/* INIT */
+document.getElementById('aD').value=new Date().toISOString().split('T')[0];
+document.getElementById('fM').value=new Date().toISOString().slice(0,7);
+loadDashboard();
 loadRequests();
-loadSecurity();
-setInterval(loadRequests, 4000);
+setInterval(()=>{loadRequests();loadDashboard();},4000);
 </script>
 </body>
 </html>
