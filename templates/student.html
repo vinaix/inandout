@@ -1,505 +1,1339 @@
-```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-<title>Student Dashboard</title>
-
-<link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;600&display=swap" rel="stylesheet">
-
+<title>Student Portal — Hostel</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Syne:wght@600;700;800&display=swap" rel="stylesheet">
 <style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-*{
-box-sizing:border-box;
+:root {
+  --ink: #0b1426;
+  --ink2: #162035;
+  --blue: #2563eb;
+  --blue-light: #3b82f6;
+  --teal: #0d9488;
+  --amber: #f59e0b;
+  --green: #10b981;
+  --red: #ef4444;
+  --surface: #ffffff;
+  --surface2: #f7f9fc;
+  --border: #e4e9f0;
+  --text: #0f172a;
+  --muted: #64748b;
+  --sidebar-w: 260px;
 }
 
-body{
-margin:0;
-font-family:"Google Sans",Arial;
-background:#f1f5f9;
-display:flex;
-height:100vh;
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--surface2);
+  color: var(--text);
+  min-height: 100vh;
+  display: flex;
 }
 
-/* SIDEBAR */
-
-.sidebar{
-width:240px;
-background:#0f172a;
-color:white;
-padding:30px 20px;
-display:flex;
-flex-direction:column;
+/* ── SIDEBAR ── */
+.sidebar {
+  width: var(--sidebar-w);
+  min-height: 100vh;
+  background: var(--ink);
+  position: fixed;
+  top: 0; left: 0;
+  display: flex;
+  flex-direction: column;
+  z-index: 100;
+  overflow: hidden;
 }
 
-.logo{
-font-size:20px;
-font-weight:600;
-margin-bottom:40px;
+.sidebar::before {
+  content: '';
+  position: absolute;
+  top: -80px; right: -80px;
+  width: 220px; height: 220px;
+  background: radial-gradient(circle, rgba(37,99,235,0.18) 0%, transparent 70%);
+  pointer-events: none;
 }
 
-.menu button{
-width:100%;
-padding:12px;
-margin-bottom:10px;
-border:none;
-background:#1e293b;
-color:white;
-border-radius:8px;
-cursor:pointer;
-text-align:left;
-font-size:14px;
+.sidebar::after {
+  content: '';
+  position: absolute;
+  bottom: 60px; left: -60px;
+  width: 180px; height: 180px;
+  background: radial-gradient(circle, rgba(13,148,136,0.12) 0%, transparent 70%);
+  pointer-events: none;
 }
 
-.menu button:hover{
-background:#2563eb;
+/* Profile strip at top of sidebar */
+.sidebar-profile {
+  padding: 28px 22px 22px;
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  position: relative;
+  z-index: 1;
 }
 
-.logout{
-margin-top:auto;
-color:#94a3b8;
-text-decoration:none;
-font-size:14px;
+.sidebar-avatar-wrap {
+  position: relative;
+  display: inline-block;
+  margin-bottom: 14px;
 }
 
-/* MAIN */
-
-.main{
-flex:1;
-padding:40px;
-overflow:auto;
+.sidebar-avatar {
+  width: 58px; height: 58px;
+  border-radius: 16px;
+  object-fit: cover;
+  border: 2.5px solid rgba(255,255,255,0.15);
+  display: block;
+  background: var(--ink2);
 }
 
-/* CARD */
-
-.card{
-background:white;
-padding:30px;
-border-radius:14px;
-box-shadow:0 10px 30px rgba(0,0,0,0.06);
-margin-bottom:30px;
+.avatar-initials {
+  width: 58px; height: 58px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, var(--blue), var(--teal));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Syne', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  color: white;
+  border: 2.5px solid rgba(255,255,255,0.1);
 }
 
-h2{
-margin-top:0;
+.online-dot {
+  position: absolute;
+  bottom: -2px; right: -2px;
+  width: 13px; height: 13px;
+  background: var(--green);
+  border-radius: 50%;
+  border: 2px solid var(--ink);
 }
 
-/* PROFILE */
-
-.profile-box{
-display:flex;
-gap:30px;
-align-items:center;
+.sidebar-name {
+  font-family: 'Syne', sans-serif;
+  font-size: 15px;
+  font-weight: 700;
+  color: white;
+  line-height: 1.2;
 }
 
-.profile-img{
-width:110px;
-height:110px;
-border-radius:50%;
-object-fit:cover;
-border:3px solid #e5e7eb;
-background:#e2e8f0;
+.sidebar-meta {
+  font-size: 11.5px;
+  color: rgba(255,255,255,0.38);
+  margin-top: 3px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
 }
 
-.profile-info{
-flex:1;
+.sidebar-room-pill {
+  background: rgba(37,99,235,0.25);
+  color: #93c5fd;
+  font-size: 10.5px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 20px;
 }
 
-.profile-info label{
-font-size:13px;
-color:#64748b;
-display:block;
-margin-top:10px;
+/* Nav */
+.sidebar-nav {
+  padding: 18px 14px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  position: relative;
+  z-index: 1;
 }
 
-.profile-info input{
-width:100%;
-padding:10px;
-border:1px solid #e2e8f0;
-border-radius:6px;
-margin-top:5px;
-font-family:"Google Sans";
+.nav-section-label {
+  font-size: 9.5px;
+  letter-spacing: 1.4px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.22);
+  padding: 10px 12px 5px;
+  margin-top: 4px;
 }
 
-/* BUTTON */
-
-.btn{
-margin-top:15px;
-background:#2563eb;
-color:white;
-border:none;
-padding:10px 16px;
-border-radius:6px;
-cursor:pointer;
-font-size:14px;
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 14px;
+  border-radius: 9px;
+  cursor: pointer;
+  color: rgba(255,255,255,0.55);
+  font-size: 13.5px;
+  font-weight: 500;
+  transition: all 0.18s;
+  position: relative;
+  user-select: none;
 }
 
-.btn:hover{
-background:#1d4ed8;
+.nav-item:hover {
+  background: rgba(255,255,255,0.07);
+  color: rgba(255,255,255,0.9);
 }
 
-/* TEXTAREA */
-
-textarea{
-width:100%;
-padding:10px;
-border:1px solid #e2e8f0;
-border-radius:6px;
-font-family:"Google Sans";
-resize:none;
+.nav-item.active {
+  background: rgba(37,99,235,0.22);
+  color: white;
 }
 
-/* TABLE */
-
-table{
-width:100%;
-border-collapse:collapse;
-margin-top:20px;
+.nav-item.active::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 20%; bottom: 20%;
+  width: 3px;
+  background: var(--blue-light);
+  border-radius: 0 3px 3px 0;
 }
 
-th,td{
-padding:12px;
-border-bottom:1px solid #e5e7eb;
-text-align:left;
-font-size:14px;
+.nav-ico { font-size: 17px; width: 22px; text-align: center; flex-shrink: 0; }
+
+.nav-pending {
+  margin-left: auto;
+  background: var(--amber);
+  color: var(--ink);
+  font-size: 10px;
+  font-weight: 700;
+  padding: 2px 7px;
+  border-radius: 20px;
 }
 
-th{
-color:#64748b;
-font-weight:500;
+.sidebar-footer {
+  padding: 14px;
+  border-top: 1px solid rgba(255,255,255,0.06);
+  position: relative;
+  z-index: 1;
 }
 
-.status-approved{
-color:green;
-font-weight:500;
+.logout-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  color: rgba(255,255,255,0.4);
+  font-size: 13px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.18s;
 }
 
-.status-pending{
-color:orange;
-font-weight:500;
+.logout-link:hover {
+  background: rgba(239,68,68,0.12);
+  color: #fca5a5;
 }
 
-.status-rejected{
-color:red;
-font-weight:500;
+/* ── MAIN ── */
+.main-wrap {
+  margin-left: var(--sidebar-w);
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
-/* SECTIONS */
-
-.section{
-display:none;
+.topbar {
+  background: white;
+  border-bottom: 1px solid var(--border);
+  height: 58px;
+  padding: 0 30px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 50;
 }
 
-.section.active{
-display:block;
+.topbar-left { display: flex; align-items: center; gap: 14px; }
+
+.page-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 17px;
+  font-weight: 700;
+  color: var(--text);
 }
 
+.breadcrumb {
+  font-size: 11.5px;
+  color: var(--muted);
+}
+
+.topbar-right { display: flex; align-items: center; gap: 12px; }
+
+.notif-btn {
+  width: 34px; height: 34px;
+  border-radius: 8px;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-size: 15px;
+  transition: background 0.15s;
+  position: relative;
+}
+
+.notif-btn:hover { background: #eef2ff; }
+
+.notif-dot {
+  position: absolute;
+  top: 5px; right: 5px;
+  width: 7px; height: 7px;
+  background: var(--red);
+  border-radius: 50%;
+  border: 1.5px solid white;
+}
+
+/* ── PAGE CONTENT ── */
+.page-content { padding: 26px 30px; flex: 1; }
+
+.page { display: none; animation: fadeUp 0.25s ease; }
+.page.active { display: block; }
+@keyframes fadeUp { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+
+/* ── OVERVIEW HERO ── */
+.hero-banner {
+  background: linear-gradient(120deg, var(--ink) 0%, var(--ink2) 60%, #1a3a6e 100%);
+  border-radius: 14px;
+  padding: 28px 30px;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 22px;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-banner::before {
+  content: '';
+  position: absolute;
+  right: -30px; top: -40px;
+  width: 220px; height: 220px;
+  background: radial-gradient(circle, rgba(37,99,235,0.3) 0%, transparent 65%);
+}
+
+.hero-banner::after {
+  content: '';
+  position: absolute;
+  right: 80px; bottom: -50px;
+  width: 160px; height: 160px;
+  background: radial-gradient(circle, rgba(13,148,136,0.2) 0%, transparent 65%);
+}
+
+.hero-text { position: relative; z-index: 1; }
+
+.hero-greeting {
+  font-size: 12px;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.45);
+  margin-bottom: 6px;
+}
+
+.hero-name {
+  font-family: 'Syne', sans-serif;
+  font-size: 24px;
+  font-weight: 800;
+  line-height: 1.15;
+  margin-bottom: 8px;
+}
+
+.hero-sub {
+  font-size: 13px;
+  color: rgba(255,255,255,0.5);
+}
+
+.hero-stats {
+  display: flex;
+  gap: 24px;
+  position: relative;
+  z-index: 1;
+}
+
+.hero-stat {
+  text-align: center;
+}
+
+.hero-stat-val {
+  font-family: 'Syne', sans-serif;
+  font-size: 26px;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.hero-stat-label {
+  font-size: 10.5px;
+  color: rgba(255,255,255,0.4);
+  letter-spacing: 0.5px;
+  margin-top: 4px;
+  text-transform: uppercase;
+}
+
+.hero-divider {
+  width: 1px;
+  height: 40px;
+  background: rgba(255,255,255,0.1);
+  align-self: center;
+}
+
+/* ── CARDS ── */
+.card {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.card-header {
+  padding: 16px 22px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.card-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.card-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+.card-body { padding: 22px; }
+
+/* ── FORM ── */
+.form-group { margin-bottom: 16px; }
+.form-label {
+  display: block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 6px;
+}
+
+.form-input {
+  width: 100%;
+  padding: 10px 13px;
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  font-size: 13.5px;
+  font-family: 'DM Sans', sans-serif;
+  color: var(--text);
+  background: white;
+  outline: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.form-input:focus {
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+}
+
+.form-input::placeholder { color: #b0bec5; }
+
+textarea.form-input {
+  resize: none;
+  line-height: 1.5;
+}
+
+/* ── PROFILE SECTION ── */
+.profile-layout {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 28px;
+  align-items: start;
+}
+
+.profile-photo-zone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.profile-photo-frame {
+  width: 100px; height: 100px;
+  border-radius: 20px;
+  overflow: hidden;
+  border: 2px solid var(--border);
+  background: var(--surface2);
+  position: relative;
+}
+
+.profile-photo-frame img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+}
+
+.photo-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  opacity: 0;
+  transition: opacity 0.2s;
+  cursor: pointer;
+}
+
+.profile-photo-frame:hover .photo-overlay { opacity: 1; }
+
+.photo-hint {
+  font-size: 11px;
+  color: var(--muted);
+  text-align: center;
+  max-width: 90px;
+  line-height: 1.4;
+}
+
+/* ── BUTTONS ── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 18px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  font-family: 'DM Sans', sans-serif;
+  transition: all 0.15s;
+}
+
+.btn-primary { background: var(--blue); color: white; }
+.btn-primary:hover { background: #1d4ed8; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(37,99,235,0.25); }
+
+.btn-ink { background: var(--ink); color: white; }
+.btn-ink:hover { background: var(--ink2); }
+
+.btn-ghost { background: white; color: var(--text); border: 1.5px solid var(--border); }
+.btn-ghost:hover { background: var(--surface2); }
+
+.btn-teal { background: var(--teal); color: white; }
+.btn-teal:hover { background: #0f766e; }
+
+.btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none !important; }
+
+/* ── SPINNER ── */
+.spinner {
+  width: 14px; height: 14px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-top-color: white;
+  border-radius: 50%;
+  animation: spin 0.6s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── BADGE ── */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 11.5px;
+  font-weight: 600;
+}
+
+.badge-pending { background: #fef3c7; color: #92400e; }
+.badge-approved { background: #d1fae5; color: #065f46; }
+.badge-rejected { background: #fee2e2; color: #991b1b; }
+
+/* ── REQUEST TABLE ── */
+.table-wrap { overflow-x: auto; }
+
+table { width: 100%; border-collapse: collapse; }
+
+thead tr { background: var(--surface2); }
+
+th {
+  text-align: left;
+  font-size: 10.5px;
+  font-weight: 700;
+  color: var(--muted);
+  padding: 10px 16px;
+  letter-spacing: 0.7px;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--border);
+}
+
+td {
+  padding: 13px 16px;
+  font-size: 13.5px;
+  border-bottom: 1px solid #f1f5f9;
+  color: var(--text);
+  vertical-align: middle;
+}
+
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: #fafcff; }
+
+/* ── ROOM INFO ── */
+.room-info-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 14px;
+}
+
+.room-info-item {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 16px 18px;
+}
+
+.room-info-item .rii-label {
+  font-size: 10.5px;
+  font-weight: 700;
+  color: var(--muted);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+
+.room-info-item .rii-val {
+  font-family: 'Syne', sans-serif;
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.bed-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.bed-tile {
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  padding: 12px 8px;
+  text-align: center;
+  transition: all 0.15s;
+}
+
+.bed-tile.mine {
+  border-color: var(--blue);
+  background: #eff6ff;
+}
+
+.bed-tile .bed-letter {
+  font-family: 'Syne', sans-serif;
+  font-size: 18px;
+  font-weight: 800;
+  color: var(--muted);
+}
+
+.bed-tile.mine .bed-letter { color: var(--blue); }
+
+.bed-tile .bed-name {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 4px;
+  line-height: 1.3;
+}
+
+.bed-tile.mine .bed-name { color: var(--blue); font-weight: 600; }
+
+/* ── EMPTY STATE ── */
+.empty-state {
+  text-align: center;
+  padding: 44px 20px;
+  color: var(--muted);
+}
+
+.empty-state .ei { font-size: 38px; margin-bottom: 10px; opacity: 0.4; }
+.empty-state p { font-size: 13.5px; }
+
+/* ── TOAST ── */
+#toast-box {
+  position: fixed;
+  top: 20px; right: 22px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.toast {
+  background: var(--ink);
+  color: white;
+  padding: 12px 16px;
+  border-radius: 9px;
+  font-size: 13px;
+  font-weight: 500;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 250px;
+  animation: toastIn 0.22s ease;
+}
+
+.toast.success { border-left: 4px solid var(--green); }
+.toast.error { border-left: 4px solid var(--red); }
+.toast.info { border-left: 4px solid var(--blue); }
+
+@keyframes toastIn { from{opacity:0;transform:translateX(16px)} to{opacity:1;transform:translateX(0)} }
+@keyframes toastOut { from{opacity:1} to{opacity:0;transform:translateX(16px)} }
+
+/* ── CHAR COUNTER ── */
+.char-counter { font-size: 11px; color: var(--muted); text-align: right; margin-top: 4px; }
+
+/* ── STATUS TIMELINE ── */
+.timeline { display: flex; flex-direction: column; gap: 0; }
+
+.tl-item {
+  display: flex;
+  gap: 14px;
+  padding: 14px 0;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.tl-item:last-child { border-bottom: none; }
+
+.tl-left {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+}
+
+.tl-dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  margin-top: 3px;
+  flex-shrink: 0;
+}
+
+.tl-dot.pending { background: var(--amber); }
+.tl-dot.approved { background: var(--green); }
+.tl-dot.rejected { background: var(--red); }
+
+.tl-line {
+  flex: 1;
+  width: 1.5px;
+  background: var(--border);
+  min-height: 20px;
+}
+
+.tl-reason { font-size: 13.5px; font-weight: 500; color: var(--text); }
+.tl-meta { font-size: 11.5px; color: var(--muted); margin-top: 4px; display: flex; gap: 12px; }
+
+/* ── NOTICE BANNER ── */
+.notice {
+  background: #eff6ff;
+  border: 1px solid #bfdbfe;
+  border-radius: 9px;
+  padding: 13px 16px;
+  font-size: 13px;
+  color: #1e40af;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 18px;
+}
+
+.notice-icon { font-size: 16px; flex-shrink: 0; margin-top: 1px; }
 </style>
-
 </head>
 
 <body>
+<div id="toast-box"></div>
 
-<!-- SIDEBAR -->
+<!-- ══ SIDEBAR ══ -->
+<aside class="sidebar">
+  <div class="sidebar-profile">
+    <div class="sidebar-avatar-wrap">
+      <div id="sidebarAvatarInitials" class="avatar-initials">?</div>
+      <img id="sidebarAvatarImg" class="sidebar-avatar" style="display:none;">
+      <div class="online-dot"></div>
+    </div>
+    <div class="sidebar-name" id="sidebarName">Loading…</div>
+    <div class="sidebar-meta">
+      Student &nbsp;·&nbsp;
+      <span class="sidebar-room-pill" id="sidebarRoom">—</span>
+    </div>
+  </div>
 
-<div class="sidebar">
+  <nav class="sidebar-nav">
+    <div class="nav-section-label">My Portal</div>
 
-<div class="logo">Converse Labs</div>
+    <div class="nav-item active" onclick="showPage('overview', this)">
+      <span class="nav-ico">🏠</span> Overview
+    </div>
 
-<div class="menu">
+    <div class="nav-item" onclick="showPage('profile', this)">
+      <span class="nav-ico">👤</span> Edit Profile
+    </div>
 
-<button onclick="showSection('profile')">Edit Profile</button>
+    <div class="nav-section-label">Leave</div>
 
-<button onclick="showSection('request')">Send Request</button>
+    <div class="nav-item" onclick="showPage('request', this)">
+      <span class="nav-ico">📝</span> New Request
+    </div>
 
-<button onclick="showSection('status')">Request Status</button>
+    <div class="nav-item" onclick="showPage('history', this)">
+      <span class="nav-ico">📋</span> My Requests
+      <span class="nav-pending" id="pendingBadge" style="display:none;">0</span>
+    </div>
 
-<button onclick="showSection('room')">Room Info</button>
+    <div class="nav-section-label">Accommodation</div>
 
-</div>
+    <div class="nav-item" onclick="showPage('room', this)">
+      <span class="nav-ico">🛏️</span> Room Info
+    </div>
+  </nav>
 
-<a href="/logout" class="logout">Logout</a>
+  <div class="sidebar-footer">
+    <a href="/logout" class="logout-link">
+      <span>🚪</span> Sign Out
+    </a>
+  </div>
+</aside>
 
-</div>
+<!-- ══ MAIN WRAP ══ -->
+<div class="main-wrap">
+  <!-- Topbar -->
+  <div class="topbar">
+    <div class="topbar-left">
+      <div>
+        <div class="page-title" id="topTitle">Overview</div>
+        <div class="breadcrumb" id="topSub">Hostel Portal / Dashboard</div>
+      </div>
+    </div>
+    <div class="topbar-right">
+      <div class="notif-btn" onclick="showPage('history', document.querySelectorAll('.nav-item')[3])" title="Leave requests">
+        🔔
+        <div class="notif-dot" id="notifDot" style="display:none;"></div>
+      </div>
+    </div>
+  </div>
 
+  <!-- Pages -->
+  <div class="page-content">
 
-<!-- MAIN CONTENT -->
+    <!-- ══ OVERVIEW ══ -->
+    <div id="overviewPage" class="page active">
+      <div class="hero-banner">
+        <div class="hero-text">
+          <div class="hero-greeting">Welcome back</div>
+          <div class="hero-name" id="heroName">—</div>
+          <div class="hero-sub" id="heroSub">Room — &nbsp;·&nbsp; Bed —</div>
+        </div>
+        <div class="hero-stats">
+          <div class="hero-stat">
+            <div class="hero-stat-val" id="statTotal">—</div>
+            <div class="hero-stat-label">Total Requests</div>
+          </div>
+          <div class="hero-divider"></div>
+          <div class="hero-stat">
+            <div class="hero-stat-val" id="statPending" style="color:var(--amber);">—</div>
+            <div class="hero-stat-label">Pending</div>
+          </div>
+          <div class="hero-divider"></div>
+          <div class="hero-stat">
+            <div class="hero-stat-val" id="statApproved" style="color:var(--green);">—</div>
+            <div class="hero-stat-label">Approved</div>
+          </div>
+        </div>
+      </div>
 
-<div class="main">
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:18px;">
+        <!-- Recent activity -->
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">Recent Leave Activity</div>
+              <div class="card-sub">Your latest requests</div>
+            </div>
+          </div>
+          <div class="card-body" style="padding:0 22px;">
+            <div id="overviewActivity" class="timeline"></div>
+          </div>
+        </div>
 
-<!-- PROFILE -->
+        <!-- Quick links -->
+        <div class="card">
+          <div class="card-header">
+            <div>
+              <div class="card-title">Quick Actions</div>
+              <div class="card-sub">Jump to common tasks</div>
+            </div>
+          </div>
+          <div class="card-body" style="display:flex;flex-direction:column;gap:10px;">
+            <button class="btn btn-ink" style="justify-content:flex-start;" onclick="showPage('request', document.querySelectorAll('.nav-item')[2])">
+              <span>📝</span> Submit Leave Request
+            </button>
+            <button class="btn btn-ghost" style="justify-content:flex-start;" onclick="showPage('history', document.querySelectorAll('.nav-item')[3])">
+              <span>📋</span> View My Requests
+            </button>
+            <button class="btn btn-ghost" style="justify-content:flex-start;" onclick="showPage('profile', document.querySelectorAll('.nav-item')[1])">
+              <span>👤</span> Edit My Profile
+            </button>
+            <button class="btn btn-ghost" style="justify-content:flex-start;" onclick="showPage('room', document.querySelectorAll('.nav-item')[4])">
+              <span>🛏️</span> View Room Info
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
 
-<div id="profile" class="card section active">
+    <!-- ══ PROFILE ══ -->
+    <div id="profilePage" class="page">
+      <div class="card" style="max-width:620px;">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Edit Profile</div>
+            <div class="card-sub">Update your name and photo</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="profile-layout">
+            <div class="profile-photo-zone">
+              <div class="profile-photo-frame" onclick="document.getElementById('photoFileInput').click()">
+                <img id="profilePhotoPreview" src="" style="display:none;">
+                <div id="profilePhotoInitials" class="avatar-initials" style="width:100%;height:100%;border-radius:0;font-size:28px;">?</div>
+                <div class="photo-overlay">📷</div>
+              </div>
+              <div class="photo-hint">Click to upload new photo</div>
+              <input type="file" id="photoFileInput" accept="image/*" style="display:none;">
+            </div>
 
-<h2>Edit Profile</h2>
+            <div>
+              <div class="form-group">
+                <label class="form-label">Full Name</label>
+                <input class="form-input" id="profileName" placeholder="Your full name">
+              </div>
+              <div class="form-group">
+                <label class="form-label">Username</label>
+                <input class="form-input" id="profileUsername" disabled style="background:var(--surface2);color:var(--muted);">
+              </div>
+              <div style="display:flex;gap:10px;margin-top:4px;">
+                <button class="btn btn-primary" onclick="updateProfile()" id="profileSaveBtn">
+                  <span>✓</span> Save Changes
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
 
-<div class="profile-box">
+    <!-- ══ LEAVE REQUEST ══ -->
+    <div id="requestPage" class="page">
+      <div class="card" style="max-width:560px;">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Submit Leave Request</div>
+            <div class="card-sub">Your warden will review and respond</div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="notice">
+            <span class="notice-icon">ℹ️</span>
+            <span>Submit this form before leaving the hostel premises. Approvals are required for overnight or extended absences.</span>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Reason for Leave</label>
+            <textarea class="form-input" id="leaveReason" rows="5" placeholder="Describe the reason for your leave (e.g. visiting family, medical appointment, college event)..." maxlength="400" oninput="updateCharCount()"></textarea>
+            <div class="char-counter"><span id="charCount">0</span> / 400</div>
+          </div>
+          <button class="btn btn-primary" onclick="submitLeave()" id="leaveSubmitBtn">
+            <span>📤</span> Submit Request
+          </button>
+        </div>
+      </div>
+    </div>
 
-<img id="photoPreview" class="profile-img">
+    <!-- ══ REQUEST HISTORY ══ -->
+    <div id="historyPage" class="page">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+        <div>
+          <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:700;">My Leave Requests</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:2px;">All your submissions and their status</div>
+        </div>
+        <div style="display:flex;gap:8px;" id="historyFilters">
+          <button class="btn btn-ink" style="padding:6px 13px;font-size:12px;" onclick="filterHistory('all',this)">All</button>
+          <button class="btn btn-ghost" style="padding:6px 13px;font-size:12px;" onclick="filterHistory('pending',this)">⏳ Pending</button>
+          <button class="btn btn-ghost" style="padding:6px 13px;font-size:12px;" onclick="filterHistory('approved',this)">✅ Approved</button>
+          <button class="btn btn-ghost" style="padding:6px 13px;font-size:12px;" onclick="filterHistory('rejected',this)">❌ Rejected</button>
+        </div>
+      </div>
 
-<div class="profile-info">
+      <div class="card">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Reason</th>
+                <th>Room</th>
+                <th>Status</th>
+                <th>Date</th>
+              </tr>
+            </thead>
+            <tbody id="historyTable"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
 
-<label>Name</label>
-<input id="name">
+    <!-- ══ ROOM INFO ══ -->
+    <div id="roomPage" class="page">
+      <div style="font-family:'Syne',sans-serif;font-size:15px;font-weight:700;margin-bottom:16px;">Room Information</div>
+      <div class="room-info-grid" style="margin-bottom:22px;">
+        <div class="room-info-item">
+          <div class="rii-label">Room Number</div>
+          <div class="rii-val" id="roomNumber">—</div>
+        </div>
+        <div class="room-info-item">
+          <div class="rii-label">My Bed</div>
+          <div class="rii-val" id="roomBed" style="color:var(--blue);">—</div>
+        </div>
+        <div class="room-info-item">
+          <div class="rii-label">Occupancy</div>
+          <div class="rii-val" id="roomOccupancy">—</div>
+        </div>
+      </div>
 
-<label>Upload Photo</label>
-<input type="file" id="photo">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Bed Layout</div>
+          <div class="card-sub">Your bed is highlighted in blue</div>
+        </div>
+        <div class="card-body">
+          <div class="bed-grid" id="bedGrid">
+            <!-- Populated by JS -->
+          </div>
+        </div>
+      </div>
+    </div>
 
-<button class="btn" onclick="updateProfile()">Update Profile</button>
-
-</div>
-
-</div>
-
-</div>
-
-
-<!-- LEAVE REQUEST -->
-
-<div id="request" class="card section">
-
-<h2>Leave Request</h2>
-
-<p style="color:#64748b;font-size:14px">
-Submit a request when leaving the hostel.
-</p>
-
-<textarea id="reason" rows="4" placeholder="Enter reason"></textarea>
-
-<button class="btn" onclick="sendRequest()">Submit Request</button>
-
-</div>
-
-
-<!-- REQUEST STATUS -->
-
-<div id="status" class="card section">
-
-<h2>My Requests</h2>
-
-<table>
-
-<thead>
-
-<tr>
-<th>Reason</th>
-<th>Status</th>
-<th>Room</th>
-<th>Date</th>
-</tr>
-
-</thead>
-
-<tbody id="requestTable"></tbody>
-
-</table>
-
-</div>
-
-
-<!-- ROOM INFO -->
-
-<div id="room" class="card section">
-
-<h2>Room Information</h2>
-
-<p><b>Room Number:</b> <span id="roomNo"></span></p>
-
-</div>
-
-</div>
-
+  </div><!-- /page-content -->
+</div><!-- /main-wrap -->
 
 <script>
+/* ═══════════════════ STATE ═══════════════════ */
+let me = {};
+let myRequests = [];
+let historyFilter = 'all';
+let photoBase64 = null;
 
-let currentUser=""
-let currentRoom=""
+const pageMeta = {
+  overview:  ['Overview',       'Hostel Portal / Dashboard'],
+  profile:   ['Edit Profile',   'Hostel Portal / Profile'],
+  request:   ['Leave Request',  'Hostel Portal / New Request'],
+  history:   ['My Requests',    'Hostel Portal / History'],
+  room:      ['Room Info',      'Hostel Portal / Accommodation'],
+};
 
-/* SWITCH SECTIONS */
-
-function showSection(id){
-
-document.querySelectorAll(".section").forEach(s=>{
-s.classList.remove("active")
-})
-
-document.getElementById(id).classList.add("active")
-
+/* ═══════════════════ NAVIGATION ═══════════════════ */
+function showPage(page, el) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(page + 'Page').classList.add('active');
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  if (el) el.classList.add('active');
+  const [t, s] = pageMeta[page] || [page, ''];
+  document.getElementById('topTitle').textContent = t;
+  document.getElementById('topSub').textContent = s;
+  if (page === 'history') renderHistory();
+  if (page === 'room') renderRoom();
 }
 
-
-/* LOAD USER DATA */
-
-async function loadUser(){
-
-const res = await fetch("/api/me",{credentials:"same-origin"})
-
-if(!res.ok) return
-
-const data = await res.json()
-
-currentUser = data.username
-currentRoom = data.room
-
-document.getElementById("name").value = data.name
-document.getElementById("roomNo").innerText = data.room
-
-if(data.photo){
-
-let photo = data.photo
-
-/* fix missing base64 prefix */
-
-if(!photo.startsWith("data:image")){
-photo = "data:image/png;base64," + photo
+/* ═══════════════════ TOAST ═══════════════════ */
+function toast(msg, type = 'info') {
+  const icons = { success: '✅', error: '❌', info: 'ℹ️' };
+  const el = document.createElement('div');
+  el.className = `toast ${type}`;
+  el.innerHTML = `<span>${icons[type]}</span><span>${msg}</span>`;
+  document.getElementById('toast-box').appendChild(el);
+  setTimeout(() => {
+    el.style.animation = 'toastOut 0.22s ease forwards';
+    setTimeout(() => el.remove(), 250);
+  }, 3500);
 }
 
-document.getElementById("photoPreview").src = photo
+/* ═══════════════════ LOAD USER ═══════════════════ */
+async function loadUser() {
+  try {
+    const res = await fetch('/api/me', { credentials: 'same-origin' });
+    if (!res.ok) return;
+    me = await res.json();
 
+    // Sidebar
+    document.getElementById('sidebarName').textContent = me.name || me.username;
+    document.getElementById('sidebarRoom').textContent = me.room ? `Room ${me.room}` : '—';
+    document.getElementById('sidebarAvatarInitials').textContent = (me.name || me.username || '?')[0].toUpperCase();
+
+    if (me.photo) {
+      setPhoto(me.photo);
+    }
+
+    // Hero
+    document.getElementById('heroName').textContent = me.name || me.username;
+    document.getElementById('heroSub').textContent = `Room ${me.room || '—'} · Bed ${me.bed || '—'}`;
+
+    // Profile form
+    document.getElementById('profileName').value = me.name || '';
+    document.getElementById('profileUsername').value = me.username || '';
+    document.getElementById('profilePhotoInitials').textContent = (me.name || me.username || '?')[0].toUpperCase();
+
+    if (me.photo) {
+      const src = me.photo.startsWith('data:') ? me.photo : `data:image/png;base64,${me.photo}`;
+      const img = document.getElementById('profilePhotoPreview');
+      img.src = src;
+      img.style.display = 'block';
+      document.getElementById('profilePhotoInitials').style.display = 'none';
+    }
+
+    // Room info
+    document.getElementById('roomNumber').textContent = me.room || '—';
+    document.getElementById('roomBed').textContent = `Bed ${me.bed || '—'}`;
+
+    await loadRequests();
+  } catch(e) { console.error(e); }
 }
 
-loadRequests()
+function setPhoto(photo) {
+  const src = photo.startsWith('data:') ? photo : `data:image/png;base64,${photo}`;
 
+  // Sidebar
+  const sImg = document.getElementById('sidebarAvatarImg');
+  sImg.src = src;
+  sImg.style.display = 'block';
+  document.getElementById('sidebarAvatarInitials').style.display = 'none';
+
+  // Profile preview
+  const pImg = document.getElementById('profilePhotoPreview');
+  pImg.src = src;
+  pImg.style.display = 'block';
+  document.getElementById('profilePhotoInitials').style.display = 'none';
 }
 
+/* ═══════════════════ PHOTO PICK ═══════════════════ */
+document.getElementById('photoFileInput').addEventListener('change', e => {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    photoBase64 = reader.result; // full data URL
+    const img = document.getElementById('profilePhotoPreview');
+    img.src = reader.result;
+    img.style.display = 'block';
+    document.getElementById('profilePhotoInitials').style.display = 'none';
+  };
+  reader.readAsDataURL(file);
+});
 
-/* UPDATE PROFILE */
+/* ═══════════════════ UPDATE PROFILE ═══════════════════ */
+async function updateProfile() {
+  const name = document.getElementById('profileName').value.trim();
+  if (!name) { toast('Name cannot be empty', 'error'); return; }
 
-async function updateProfile(){
+  const btn = document.getElementById('profileSaveBtn');
+  btn.innerHTML = '<span class="spinner"></span> Saving…';
+  btn.disabled = true;
 
-const name = document.getElementById("name").value
-const file = document.getElementById("photo").files[0]
+  try {
+    const form = new FormData();
+    form.append('name', name);
 
-let base64=""
+    if (photoBase64) {
+      // strip data URL prefix — backend expects raw base64
+      const raw = photoBase64.split(',')[1] || photoBase64;
+      form.append('photo', raw);
+    }
 
-if(file){
+    const res = await fetch('/api/update_profile', {
+      method: 'POST',
+      body: form,
+      credentials: 'same-origin'
+    });
 
-const reader = new FileReader()
+    if (res.ok) {
+      me.name = name;
+      document.getElementById('sidebarName').textContent = name;
+      document.getElementById('heroName').textContent = name;
+      toast('Profile updated successfully!', 'success');
+      photoBase64 = null;
+    } else {
+      toast('Failed to update profile', 'error');
+    }
+  } catch { toast('Network error', 'error'); }
 
-reader.onload = async function(){
-
-base64 = reader.result
-
-await sendProfile(name,base64)
-
+  btn.innerHTML = '<span>✓</span> Save Changes';
+  btn.disabled = false;
 }
 
-reader.readAsDataURL(file)
-
-}else{
-
-await sendProfile(name,null)
-
+/* ═══════════════════ CHAR COUNTER ═══════════════════ */
+function updateCharCount() {
+  const val = document.getElementById('leaveReason').value.length;
+  document.getElementById('charCount').textContent = val;
 }
 
+/* ═══════════════════ SUBMIT LEAVE ═══════════════════ */
+async function submitLeave() {
+  const reason = document.getElementById('leaveReason').value.trim();
+  if (!reason) { toast('Please enter a reason', 'error'); return; }
+
+  const btn = document.getElementById('leaveSubmitBtn');
+  btn.innerHTML = '<span class="spinner"></span> Submitting…';
+  btn.disabled = true;
+
+  try {
+    const res = await fetch('/api/request', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        student: me.username,
+        room: me.room,
+        reason: reason
+      }),
+      credentials: 'same-origin'
+    });
+
+    if (res.ok) {
+      toast('Leave request submitted!', 'success');
+      document.getElementById('leaveReason').value = '';
+      document.getElementById('charCount').textContent = '0';
+      await loadRequests();
+    } else {
+      toast('Failed to submit request', 'error');
+    }
+  } catch { toast('Network error', 'error'); }
+
+  btn.innerHTML = '<span>📤</span> Submit Request';
+  btn.disabled = false;
 }
 
+/* ═══════════════════ LOAD REQUESTS ═══════════════════ */
+async function loadRequests() {
+  try {
+    const res = await fetch('/api/my_requests', { credentials: 'same-origin' });
+    if (!res.ok) return;
+    myRequests = await res.json();
 
-async function sendProfile(name,photo){
+    const total = myRequests.length;
+    const pending = myRequests.filter(r => r.status === 'pending').length;
+    const approved = myRequests.filter(r => r.status === 'approved').length;
 
-const form = new FormData()
+    document.getElementById('statTotal').textContent = total;
+    document.getElementById('statPending').textContent = pending;
+    document.getElementById('statApproved').textContent = approved;
 
-form.append("name",name)
+    // Sidebar badge
+    const badge = document.getElementById('pendingBadge');
+    if (pending > 0) { badge.style.display = 'inline'; badge.textContent = pending; }
+    else { badge.style.display = 'none'; }
 
-if(photo) form.append("photo",photo)
+    // Notif dot
+    document.getElementById('notifDot').style.display = pending > 0 ? 'block' : 'none';
 
-await fetch("/api/update_profile",{
-method:"POST",
-body:form,
-credentials:"same-origin"
-})
-
-alert("Profile updated")
-
+    renderOverviewActivity();
+    renderHistory();
+  } catch(e) { console.error(e); }
 }
 
-
-/* SEND REQUEST */
-
-async function sendRequest(){
-
-const reason = document.getElementById("reason").value.trim()
-
-if(!reason){
-alert("Enter reason")
-return
+/* ═══════════════════ OVERVIEW ACTIVITY ═══════════════════ */
+function renderOverviewActivity() {
+  const box = document.getElementById('overviewActivity');
+  if (!myRequests.length) {
+    box.innerHTML = '<div class="empty-state"><div class="ei">📋</div><p>No requests yet</p></div>';
+    return;
+  }
+  const recent = [...myRequests].slice(-5).reverse();
+  box.innerHTML = recent.map((r, i) => `
+    <div class="tl-item">
+      <div class="tl-left">
+        <div class="tl-dot ${r.status}"></div>
+        ${i < recent.length - 1 ? '<div class="tl-line"></div>' : ''}
+      </div>
+      <div>
+        <div class="tl-reason">${r.reason || '—'}</div>
+        <div class="tl-meta">
+          <span><span class="badge badge-${r.status}">${statusIcon(r.status)} ${capitalize(r.status)}</span></span>
+          <span>Room ${r.room || '—'}</span>
+          ${r.created ? `<span>${fmtDate(r.created)}</span>` : ''}
+        </div>
+      </div>
+    </div>
+  `).join('');
 }
 
-await fetch("/api/request",{
-
-method:"POST",
-
-headers:{
-"Content-Type":"application/json"
-},
-
-body:JSON.stringify({
-
-student:currentUser,
-room:currentRoom,
-reason:reason
-
-}),
-
-credentials:"same-origin"
-
-})
-
-alert("Request submitted")
-
-document.getElementById("reason").value=""
-
-loadRequests()
-
+/* ═══════════════════ HISTORY TABLE ═══════════════════ */
+function filterHistory(f, btn) {
+  historyFilter = f;
+  document.querySelectorAll('#historyFilters .btn').forEach(b => {
+    b.className = 'btn btn-ghost';
+    b.style.padding = '6px 13px'; b.style.fontSize = '12px';
+  });
+  btn.className = 'btn btn-ink';
+  btn.style.padding = '6px 13px'; btn.style.fontSize = '12px';
+  renderHistory();
 }
 
-
-/* LOAD REQUESTS */
-
-async function loadRequests(){
-
-const res = await fetch("/api/my_requests",{credentials:"same-origin"})
-
-if(!res.ok) return
-
-const data = await res.json()
-
-const table = document.getElementById("requestTable")
-
-table.innerHTML=""
-
-if(data.length===0){
-
-table.innerHTML="<tr><td colspan='4'>No requests yet</td></tr>"
-return
-
+function renderHistory() {
+  const filtered = historyFilter === 'all' ? myRequests : myRequests.filter(r => r.status === historyFilter);
+  const box = document.getElementById('historyTable');
+  if (!filtered.length) {
+    box.innerHTML = `<tr><td colspan="4"><div class="empty-state"><div class="ei">📋</div><p>No ${historyFilter === 'all' ? '' : historyFilter} requests</p></div></td></tr>`;
+    return;
+  }
+  box.innerHTML = filtered.map(r => `
+    <tr>
+      <td style="max-width:240px;font-size:13px;">${r.reason || '—'}</td>
+      <td><span style="font-size:12.5px;color:var(--muted);">Room ${r.room || '—'}</span></td>
+      <td><span class="badge badge-${r.status}">${statusIcon(r.status)} ${capitalize(r.status)}</span></td>
+      <td style="font-size:12px;color:var(--muted);">${r.created ? fmtDate(r.created) : '—'}</td>
+    </tr>
+  `).join('');
 }
 
-data.forEach(r=>{
+/* ═══════════════════ ROOM RENDER ═══════════════════ */
+function renderRoom() {
+  const myBed = me.bed || '';
+  const beds = ['A', 'B', 'C', 'D', 'E'];
+  const occupied = beds.filter(b => b <= 'E').length; // show all 5 slots
 
-table.innerHTML += `
-<tr>
-<td>${r.reason}</td>
-<td class="status-${r.status}">${r.status}</td>
-<td>${r.room}</td>
-<td>${new Date(r.created).toLocaleDateString()}</td>
-</tr>
-`
+  document.getElementById('roomOccupancy').textContent = `Bed ${myBed}`;
 
-})
-
+  const grid = document.getElementById('bedGrid');
+  grid.innerHTML = beds.map(b => `
+    <div class="bed-tile ${b === myBed ? 'mine' : ''}">
+      <div class="bed-letter">${b}</div>
+      <div class="bed-name">${b === myBed ? 'Your Bed' : 'Bed ' + b}</div>
+    </div>
+  `).join('');
 }
 
+/* ═══════════════════ HELPERS ═══════════════════ */
+function capitalize(s) { return s ? s[0].toUpperCase() + s.slice(1) : ''; }
+function statusIcon(s) { return { pending: '⏳', approved: '✅', rejected: '❌' }[s] || ''; }
+function fmtDate(d) {
+  try {
+    const dt = typeof d === 'object' && d._seconds
+      ? new Date(d._seconds * 1000)
+      : new Date(d);
+    return dt.toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' });
+  } catch { return '—'; }
+}
 
-/* INIT */
-
-window.onload = loadUser
-
+/* ═══════════════════ INIT ═══════════════════ */
+window.onload = loadUser;
+setInterval(loadRequests, 6000);
 </script>
-
 </body>
 </html>
-```
