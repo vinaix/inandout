@@ -418,6 +418,39 @@ def my_requests(request: Request):
 
     return requests
 
+# -------------------------
+# UPDATE STUDENT PROFILE
+# -------------------------
+
+class UpdateProfile(BaseModel):
+    name: str | None = None
+    photo: str | None = None
+
+
+@app.put("/api/update_profile")
+def update_profile(data: UpdateProfile, request: Request):
+
+    require_role(request, "student")
+
+    username = request.session.get("user")
+
+    if not username:
+        raise HTTPException(status_code=401)
+
+    update_data = {}
+
+    if data.name:
+        update_data["name"] = data.name
+
+    if data.photo:
+        update_data["photo"] = data.photo
+
+    db.collection("users").document(username).update(update_data)
+
+    return {"status": "profile updated"}
+
+
+
 @app.get("/api/me")
 def me(request: Request):
 
