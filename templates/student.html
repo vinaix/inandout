@@ -11,8 +11,6 @@
 
 <style>
 
-/* ---------- THEME ---------- */
-
 :root{
 --text:#1d1d1f;
 --muted:#6e6e73;
@@ -31,8 +29,6 @@
 --glass:rgba(255,255,255,0.7);
 }
 
-/* ---------- GLOBAL ---------- */
-
 *{box-sizing:border-box}
 
 body{
@@ -42,7 +38,7 @@ background:var(--bg);
 color:var(--text);
 }
 
-/* ---------- NAV ---------- */
+/* NAV */
 
 nav{
 position:fixed;
@@ -66,7 +62,7 @@ nav strong{
 font-size:1.3rem;
 }
 
-/* ---------- MAIN ---------- */
+/* MAIN */
 
 .container{
 max-width:900px;
@@ -74,7 +70,7 @@ margin:auto;
 padding:100px 20px 40px;
 }
 
-/* ---------- CARDS ---------- */
+/* CARDS */
 
 .card{
 background:var(--card);
@@ -85,7 +81,7 @@ box-shadow:0 10px 30px rgba(0,0,0,0.06);
 margin-bottom:24px;
 }
 
-/* ---------- PROFILE ---------- */
+/* PROFILE */
 
 .profile{
 display:flex;
@@ -109,7 +105,11 @@ color:var(--muted);
 font-size:14px;
 }
 
-/* ---------- BUTTON ---------- */
+.edit-btn{
+margin-left:auto;
+}
+
+/* BUTTON */
 
 button{
 background:var(--primary);
@@ -125,7 +125,7 @@ button:hover{
 background:var(--primary-hover);
 }
 
-/* ---------- INPUT ---------- */
+/* INPUT */
 
 textarea,input{
 width:100%;
@@ -141,7 +141,7 @@ outline:none;
 border-color:var(--primary);
 }
 
-/* ---------- TABLE ---------- */
+/* TABLE */
 
 table{
 width:100%;
@@ -201,6 +201,20 @@ border-bottom:1px solid #f0f0f0;
 <span>Room <span id="room"></span></span>
 </div>
 
+<button class="edit-btn" onclick="toggleProfile()">Edit</button>
+
+</div>
+
+<!-- EDIT PROFILE -->
+
+<div id="profileForm" class="hidden">
+
+<input id="editName" placeholder="Name">
+
+<input type="file" id="editPhoto" accept="image/*">
+
+<button onclick="saveProfile()">Save Profile</button>
+
 </div>
 
 </div>
@@ -219,7 +233,7 @@ Request permission when leaving the hostel.
 
 <div id="form" class="hidden">
 
-<textarea id="reason" rows="4" placeholder="Reason for leaving"></textarea>
+<textarea id="reasonInput" rows="4" placeholder="Reason for leaving"></textarea>
 
 <button onclick="submitRequest()">Submit</button>
 
@@ -258,13 +272,13 @@ Request permission when leaving the hostel.
 
 let currentUser=""
 let currentRoom=""
+let photoBase64=""
 
 /* LOAD USER */
 
 async function loadUser(){
 
 const res=await fetch("/api/me")
-
 const data=await res.json()
 
 currentUser=data.username
@@ -274,6 +288,8 @@ username.innerText=data.username
 name.innerText=data.name
 room.innerText=data.room
 
+editName.value=data.name
+
 if(data.photo){
 photo.src="data:image/png;base64,"+data.photo
 }
@@ -282,7 +298,64 @@ loadRequests()
 
 }
 
-/* TOGGLE FORM */
+/* TOGGLE PROFILE */
+
+function toggleProfile(){
+
+profileForm.classList.toggle("hidden")
+
+}
+
+/* PHOTO CONVERT */
+
+editPhoto.onchange = e => {
+
+const file = e.target.files[0]
+
+const reader = new FileReader()
+
+reader.onload = () => {
+
+photoBase64 = reader.result.split(",")[1]
+
+photo.src = reader.result
+
+}
+
+reader.readAsDataURL(file)
+
+}
+
+/* SAVE PROFILE */
+
+async function saveProfile(){
+
+const nameValue = editName.value.trim()
+
+await fetch("/api/update_profile",{
+
+method:"PUT",
+
+headers:{
+"Content-Type":"application/json"
+},
+
+body:JSON.stringify({
+name:nameValue,
+photo:photoBase64
+})
+
+})
+
+alert("Profile updated")
+
+toggleProfile()
+
+loadUser()
+
+}
+
+/* TOGGLE REQUEST FORM */
 
 function toggleForm(){
 
@@ -325,7 +398,6 @@ loadRequests()
 async function loadRequests(){
 
 const res=await fetch("/api/my_requests")
-
 const data=await res.json()
 
 tableBody.innerHTML=""
@@ -333,7 +405,6 @@ tableBody.innerHTML=""
 if(data.length===0){
 
 tableBody.innerHTML="<tr><td colspan='4'>No requests</td></tr>"
-
 return
 
 }
