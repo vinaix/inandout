@@ -299,7 +299,13 @@ let avatar
 
 if(student.photo){
 
-avatar=`<img src="data:image/png;base64,${student.photo}">`
+let src = student.photo
+
+if(!src.startsWith("data:image")){
+src = "data:image/png;base64," + src
+}
+
+avatar=`<img src="${src}">`
 
 }else{
 
