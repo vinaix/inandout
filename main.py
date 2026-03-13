@@ -210,6 +210,30 @@ def add_student(
     })
 
     return {"status": "student added"}
+
+
+# -------------------------
+# DELETE STUDENT
+# -------------------------
+
+@app.delete("/api/delete_student/{username}")
+def delete_student(username: str, request: Request):
+
+    require_role(request, "warden")
+
+    doc = db.collection("users").document(username).get()
+
+    if not doc.exists:
+        raise HTTPException(status_code=404, detail="Student not found")
+
+    user = doc.to_dict()
+
+    if user.get("role") != "student":
+        raise HTTPException(status_code=400, detail="Not a student")
+
+    db.collection("users").document(username).delete()
+
+    return {"status": "student deleted"}
 # -------------------------
 # GET STUDENTS
 # -------------------------
