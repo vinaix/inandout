@@ -5,57 +5,116 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Hostel Warden Dashboard</title>
+<title>In&Out – Warden Panel</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-<script src="https://cdn.tailwindcss.com"></script>
+<link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&display=swap" rel="stylesheet">
 
 <style>
 
+/* ---------- COLORS ---------- */
+
+:root{
+--text:#1d1d1f;
+--muted:#6e6e73;
+--border:#e5e5e7;
+
+--primary:#0071e3;
+--primary-hover:#0062c7;
+
+--bg:#f5f5f7;
+--card:#ffffff;
+
+--glass:rgba(255,255,255,0.7);
+}
+
+/* ---------- GLOBAL ---------- */
+
+*{box-sizing:border-box}
+
 body{
-font-family:Inter;
-background:#f8fafc;
-color:#0f172a;
+margin:0;
+font-family:"Google Sans",system-ui,sans-serif;
+background:var(--bg);
+color:var(--text);
+}
+
+/* ---------- NAVBAR ---------- */
+
+nav{
+position:fixed;
+top:0;
+width:100%;
+backdrop-filter:blur(14px);
+background:var(--glass);
+border-bottom:1px solid var(--border);
+}
+
+.nav-inner{
+max-width:1200px;
+margin:auto;
+padding:16px 24px;
+display:flex;
+justify-content:space-between;
+}
+
+nav strong{
+font-size:1.3rem;
+}
+
+/* ---------- LAYOUT ---------- */
+
+.layout{
+display:flex;
+padding-top:70px;
 }
 
 .sidebar{
 width:230px;
-background:white;
-border-right:1px solid #e5e7eb;
-position:fixed;
-height:100vh;
-padding:24px;
+border-right:1px solid var(--border);
+padding:30px 20px;
+}
+
+.sidebar div{
+margin-bottom:14px;
+cursor:pointer;
+color:var(--muted);
+font-size:15px;
+}
+
+.sidebar div:hover{
+color:var(--primary);
 }
 
 .main{
-margin-left:230px;
-padding:30px;
+flex:1;
+padding:40px;
 }
+
+/* ---------- CARDS ---------- */
 
 .card{
-background:white;
-border:1px solid #e5e7eb;
-border-radius:10px;
-padding:20px;
+background:var(--card);
+border:1px solid var(--border);
+border-radius:18px;
+padding:24px;
+box-shadow:0 8px 24px rgba(0,0,0,0.06);
+margin-bottom:24px;
 }
 
-.nav-item{
-cursor:pointer;
-padding:8px 0;
-font-size:14px;
+/* ---------- GRID ---------- */
+
+.grid{
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:20px;
 }
 
-.nav-item:hover{
-color:#2563eb;
+.stat{
+font-size:28px;
+margin-top:10px;
 }
 
-.btn{
-background:#2563eb;
-color:white;
-padding:7px 14px;
-border-radius:6px;
-font-size:14px;
-}
+/* ---------- TABLE ---------- */
 
 table{
 width:100%;
@@ -65,45 +124,81 @@ border-collapse:collapse;
 th{
 text-align:left;
 font-size:13px;
-color:#64748b;
+color:var(--muted);
 padding:10px;
-border-bottom:1px solid #e5e7eb;
+border-bottom:1px solid var(--border);
 }
 
 td{
-padding:12px 10px;
-border-bottom:1px solid #f1f5f9;
+padding:12px;
+border-bottom:1px solid #f0f0f0;
+}
+
+/* ---------- BUTTON ---------- */
+
+button{
+background:var(--primary);
+color:white;
+border:none;
+padding:8px 16px;
+border-radius:20px;
+cursor:pointer;
+}
+
+button:hover{
+background:var(--primary-hover);
+}
+
+/* ---------- INPUT ---------- */
+
+input,select{
+width:100%;
+padding:10px;
+margin-top:10px;
+border-radius:10px;
+border:1px solid var(--border);
+}
+
+/* ---------- FORM GRID ---------- */
+
+.form-grid{
+display:grid;
+grid-template-columns:1fr 1fr;
+gap:10px;
+}
+
+/* ---------- HIDE ---------- */
+
+.hidden{
+display:none;
 }
 
 </style>
-
 </head>
 
 <body>
+
+<nav>
+<div class="nav-inner">
+<strong>In&Out</strong>
+<span>Hostel Warden Panel</span>
+</div>
+</nav>
+
+<div class="layout">
 
 <!-- SIDEBAR -->
 
 <div class="sidebar">
 
-<h2 class="text-xl font-semibold mb-8">Hostel Admin</h2>
+<div onclick="showPage('dashboard')">Dashboard</div>
+<div onclick="showPage('students')">Students</div>
+<div onclick="showPage('rooms')">Rooms</div>
+<div onclick="showPage('security')">Security Staff</div>
+<div onclick="showPage('requests')">Leave Requests</div>
 
-<div class="space-y-3">
-
-<div class="nav-item" onclick="showPage('dashboard')">Dashboard</div>
-
-<div class="nav-item" onclick="showPage('students')">Students</div>
-
-<div class="nav-item" onclick="showPage('rooms')">Rooms</div>
-
-<div class="nav-item" onclick="showPage('requests')">Leave Requests</div>
-
-<div class="nav-item" onclick="showPage('security')">Security Staff</div>
-
-</div>
-
-<div class="mt-10">
-<a href="/logout" class="btn">Logout</a>
-</div>
+<br>
+<a href="/logout">Logout</a>
 
 </div>
 
@@ -115,49 +210,44 @@ border-bottom:1px solid #f1f5f9;
 
 <div id="dashboardPage">
 
-<h1 class="text-2xl font-semibold mb-6">Dashboard</h1>
+<h2>Dashboard</h2>
 
-<div class="grid grid-cols-3 gap-6">
-
-<div class="card">
-<div class="text-sm text-gray-500">Students</div>
-<div id="studentCount" class="text-2xl mt-2">0</div>
-</div>
+<div class="grid">
 
 <div class="card">
-<div class="text-sm text-gray-500">Rooms</div>
-<div id="roomCount" class="text-2xl mt-2">0</div>
+Students
+<div id="studentCount" class="stat">0</div>
 </div>
 
 <div class="card">
-<div class="text-sm text-gray-500">Pending Requests</div>
-<div id="requestCount" class="text-2xl mt-2">0</div>
+Rooms
+<div id="roomCount" class="stat">0</div>
+</div>
+
+<div class="card">
+Pending Requests
+<div id="requestCount" class="stat">0</div>
 </div>
 
 </div>
 
 </div>
 
-<!-- STUDENTS PAGE -->
+<!-- STUDENTS -->
 
 <div id="studentsPage" class="hidden">
 
-<div class="flex justify-between mb-4">
+<h2>Students</h2>
 
-<h1 class="text-xl font-semibold">Students</h1>
+<div class="card">
 
-<button onclick="toggle('studentFormBox')" class="btn">Add Student</button>
+<form id="studentForm" class="form-grid">
 
-</div>
+<input name="username" placeholder="Username">
+<input name="password" placeholder="Password">
 
-<div id="studentFormBox" class="card mb-6 hidden">
-
-<form id="studentForm" class="grid grid-cols-2 gap-4">
-
-<input name="username" placeholder="Username" required>
-<input name="password" placeholder="Password" required>
-<input name="name" placeholder="Full Name" required>
-<input name="room" placeholder="Room Number" required>
+<input name="name" placeholder="Full Name">
+<input name="room" placeholder="Room">
 
 <select name="bed">
 <option>A</option>
@@ -171,7 +261,7 @@ border-bottom:1px solid #f1f5f9;
 
 <input type="hidden" name="photo" id="photoBase64">
 
-<button class="btn col-span-2">Create Student</button>
+<button>Create Student</button>
 
 </form>
 
@@ -187,6 +277,7 @@ border-bottom:1px solid #f1f5f9;
 <th>Name</th>
 <th>Room</th>
 <th>Bed</th>
+<th>Action</th>
 </tr>
 </thead>
 
@@ -198,21 +289,15 @@ border-bottom:1px solid #f1f5f9;
 
 </div>
 
-<!-- ROOMS PAGE -->
+<!-- ROOMS -->
 
 <div id="roomsPage" class="hidden">
 
-<div class="flex justify-between mb-4">
+<h2>Create Room</h2>
 
-<h1 class="text-xl font-semibold">Rooms</h1>
+<div class="card">
 
-<button onclick="toggle('roomFormBox')" class="btn">Create Room</button>
-
-</div>
-
-<div id="roomFormBox" class="card mb-6 hidden">
-
-<form id="roomForm" class="grid grid-cols-3 gap-4">
+<form id="roomForm" class="form-grid">
 
 <input name="room_number" placeholder="Room">
 
@@ -222,7 +307,7 @@ border-bottom:1px solid #f1f5f9;
 <input name="bedD" placeholder="Bed D">
 <input name="bedE" placeholder="Bed E">
 
-<button class="btn col-span-3">Create Room</button>
+<button>Create Room</button>
 
 </form>
 
@@ -251,11 +336,58 @@ border-bottom:1px solid #f1f5f9;
 
 </div>
 
-<!-- REQUESTS PAGE -->
+<!-- SECURITY STAFF -->
+
+<div id="securityPage" class="hidden">
+
+<h2>Security Staff</h2>
+
+<div class="card">
+
+<form id="securityForm" class="form-grid">
+
+<input name="username" placeholder="Username">
+<input name="password" placeholder="Password">
+
+<input name="name" placeholder="Full Name">
+
+<select name="shift">
+<option>Morning</option>
+<option>Evening</option>
+<option>Night</option>
+</select>
+
+<button>Add Security</button>
+
+</form>
+
+</div>
+
+<div class="card">
+
+<table>
+
+<thead>
+<tr>
+<th>Name</th>
+<th>Username</th>
+<th>Shift</th>
+</tr>
+</thead>
+
+<tbody id="securityTable"></tbody>
+
+</table>
+
+</div>
+
+</div>
+
+<!-- REQUESTS -->
 
 <div id="requestsPage" class="hidden">
 
-<h1 class="text-xl font-semibold mb-4">Leave Requests</h1>
+<h2>Leave Requests</h2>
 
 <div class="card">
 
@@ -280,10 +412,11 @@ border-bottom:1px solid #f1f5f9;
 </div>
 
 </div>
+</div>
 
 <script>
 
-/* PAGE NAVIGATION */
+/* PAGE SWITCH */
 
 function showPage(page){
 
@@ -293,57 +426,40 @@ document.getElementById(page+"Page").classList.remove("hidden")
 
 }
 
-/* TOGGLE */
+/* IMAGE BASE64 */
 
-function toggle(id){
-document.getElementById(id).classList.toggle("hidden")
-}
-
-/* IMAGE ENCODE */
-
-document.addEventListener("change",function(e){
-
-if(e.target.id==="photoFile"){
-
+photoFile.onchange=e=>{
 const reader=new FileReader()
-
-reader.onload=()=>{
-
-document.getElementById("photoBase64").value=reader.result.split(",")[1]
-
-}
-
+reader.onload=()=>photoBase64.value=reader.result.split(",")[1]
 reader.readAsDataURL(e.target.files[0])
-
 }
 
-})
-
-/* STUDENTS */
+/* LOAD STUDENTS */
 
 async function loadStudents(){
 
 const res=await fetch("/api/students")
 const data=await res.json()
 
-document.getElementById("studentCount").innerText=data.length
+studentCount.innerText=data.length
 
-const box=document.getElementById("studentsTable")
-box.innerHTML=""
+studentsTable.innerHTML=""
 
 data.forEach(s=>{
 
-box.innerHTML+=`
+studentsTable.innerHTML+=`
 
 <tr>
 
-<td>
-<img src="data:image/png;base64,${s.photo||''}" class="w-10 h-10 rounded-full">
-</td>
+<td><img src="data:image/png;base64,${s.photo||''}" width="40"></td>
 
 <td>${s.name}</td>
 <td>${s.room}</td>
 <td>${s.bed}</td>
+
+<td>
+<button onclick="deleteStudent('${s.username}')">Delete</button>
+</td>
 
 </tr>
 
@@ -353,21 +469,32 @@ box.innerHTML+=`
 
 }
 
-/* ROOMS */
+/* DELETE STUDENT */
+
+async function deleteStudent(username){
+
+if(!confirm("Delete student?")) return
+
+await fetch("/api/delete_student/"+username,{method:"DELETE"})
+
+loadStudents()
+
+}
+
+/* LOAD ROOMS */
 
 async function loadRooms(){
 
 const res=await fetch("/api/rooms")
 const data=await res.json()
 
-document.getElementById("roomCount").innerText=data.length
+roomCount.innerText=data.length
 
-const box=document.getElementById("roomsTable")
-box.innerHTML=""
+roomsTable.innerHTML=""
 
 data.forEach(r=>{
 
-box.innerHTML+=`
+roomsTable.innerHTML+=`
 
 <tr>
 <td>${r.room}</td>
@@ -384,21 +511,47 @@ box.innerHTML+=`
 
 }
 
-/* REQUESTS */
+/* LOAD SECURITY */
+
+async function loadSecurity(){
+
+const res=await fetch("/api/security_staff")
+const data=await res.json()
+
+securityTable.innerHTML=""
+
+data.forEach(s=>{
+
+securityTable.innerHTML+=`
+
+<tr>
+
+<td>${s.name}</td>
+<td>${s.username}</td>
+<td>${s.shift}</td>
+
+</tr>
+
+`
+
+})
+
+}
+
+/* LOAD REQUESTS */
 
 async function loadRequests(){
 
 const res=await fetch("/api/requests")
 const data=await res.json()
 
-document.getElementById("requestCount").innerText=data.filter(r=>r.status=="pending").length
+requestCount.innerText=data.filter(r=>r.status=="pending").length
 
-const box=document.getElementById("requestsTable")
-box.innerHTML=""
+requestsTable.innerHTML=""
 
 data.forEach(r=>{
 
-box.innerHTML+=`
+requestsTable.innerHTML+=`
 
 <tr>
 
@@ -409,9 +562,8 @@ box.innerHTML+=`
 
 <td>
 
-<button onclick="approve('${r.id}')" class="btn text-xs">Approve</button>
-
-<button onclick="reject('${r.id}')" class="btn bg-red-500 text-xs">Reject</button>
+<button onclick="approve('${r.id}')">Approve</button>
+<button onclick="reject('${r.id}')">Reject</button>
 
 </td>
 
@@ -448,16 +600,35 @@ loadStudents()
 
 roomForm.onsubmit=async e=>{
 e.preventDefault()
+
 const data=Object.fromEntries(new FormData(roomForm))
-await fetch("/api/create_room",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(data)})
+
+await fetch("/api/create_room",{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify(data)
+})
+
 roomForm.reset()
 loadRooms()
+}
+
+securityForm.onsubmit=async e=>{
+e.preventDefault()
+
+await fetch("/api/add_security",{method:"POST",body:new FormData(securityForm)})
+
+securityForm.reset()
+
+loadSecurity()
+
 }
 
 /* INITIAL LOAD */
 
 loadStudents()
 loadRooms()
+loadSecurity()
 loadRequests()
 
 setInterval(loadRequests,4000)
