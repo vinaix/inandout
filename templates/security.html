@@ -3,111 +3,150 @@
 <head>
 
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width,initial-scale=1">
 
-<title>Security Dashboard | Hostel Access</title>
+<title>In&Out Security</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@400;500;600&display=swap" rel="stylesheet">
 
 <style>
 
+/* ------------------ THEME ------------------ */
+
+:root{
+--text:#1d1d1f;
+--muted:#6e6e73;
+--border:#e5e5e7;
+--bg:#f5f5f7;
+--card:#ffffff;
+--accent:#0071e3;
+--success:#34c759;
+--glass:rgba(255,255,255,0.7);
+}
+
+/* ------------------ GLOBAL ------------------ */
+
 *{
+box-sizing:border-box;
 margin:0;
 padding:0;
-box-sizing:border-box;
-font-family:Inter, sans-serif;
+font-family:"SF Pro Display",system-ui,sans-serif;
 }
 
 body{
-background:#f5f7fa;
-display:flex;
-height:100vh;
+background:var(--bg);
+color:var(--text);
 }
 
-/* SIDEBAR */
+/* ------------------ NAVBAR ------------------ */
 
-.sidebar{
-width:240px;
-background:#0f172a;
-color:white;
-padding:30px 20px;
-display:flex;
-flex-direction:column;
+nav{
+position:fixed;
+top:0;
+width:100%;
+backdrop-filter:blur(14px);
+background:var(--glass);
+border-bottom:1px solid var(--border);
+z-index:10;
 }
 
-.logo{
-font-size:20px;
-font-weight:600;
-margin-bottom:40px;
-}
-
-.nav a{
-display:block;
-padding:12px;
-margin-bottom:10px;
-border-radius:8px;
-text-decoration:none;
-color:#cbd5e1;
-}
-
-.nav a:hover{
-background:#1e293b;
-color:white;
-}
-
-/* MAIN */
-
-.main{
-flex:1;
-padding:40px;
-overflow:auto;
-}
-
-.header{
+.nav-inner{
+max-width:1100px;
+margin:auto;
+padding:16px 20px;
 display:flex;
 justify-content:space-between;
 align-items:center;
+}
+
+.logo{
+font-weight:600;
+font-size:18px;
+}
+
+.nav-actions{
+display:flex;
+gap:16px;
+align-items:center;
+}
+
+.nav-actions button{
+background:none;
+border:none;
+color:var(--accent);
+font-weight:500;
+cursor:pointer;
+}
+
+.logout{
+text-decoration:none;
+color:var(--muted);
+font-size:14px;
+}
+
+/* ------------------ PAGE ------------------ */
+
+.container{
+max-width:1100px;
+margin:auto;
+padding:100px 20px 40px;
+}
+
+.header{
 margin-bottom:30px;
 }
 
 .header h1{
-font-size:24px;
-color:#1e293b;
+font-size:28px;
+margin-bottom:6px;
 }
 
-/* GRID */
+.header p{
+color:var(--muted);
+font-size:14px;
+}
+
+/* ------------------ GRID ------------------ */
 
 .grid{
 display:grid;
-grid-template-columns:repeat(auto-fill,minmax(320px,1fr));
-gap:24px;
+grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+gap:20px;
 }
 
-/* STUDENT CARD */
+/* ------------------ CARD ------------------ */
 
 .card{
-background:white;
-border-radius:14px;
+background:var(--card);
+border:1px solid var(--border);
+border-radius:18px;
 padding:20px;
-box-shadow:0 6px 20px rgba(0,0,0,0.08);
 display:flex;
 gap:16px;
-align-items:center;
-border-left:6px solid #22c55e;
+align-items:flex-start;
+box-shadow:0 6px 20px rgba(0,0,0,0.05);
+transition:transform .2s ease;
 }
 
+.card:hover{
+transform:translateY(-3px);
+}
+
+/* ------------------ AVATAR ------------------ */
+
 .avatar{
-width:70px;
-height:70px;
+width:56px;
+height:56px;
 border-radius:50%;
 overflow:hidden;
-background:#e2e8f0;
+background:#e5e5ea;
 display:flex;
 align-items:center;
 justify-content:center;
 font-weight:600;
-font-size:20px;
-color:#475569;
+font-size:18px;
+color:#555;
+flex-shrink:0;
 }
 
 .avatar img{
@@ -116,6 +155,8 @@ height:100%;
 object-fit:cover;
 }
 
+/* ------------------ INFO ------------------ */
+
 .info{
 flex:1;
 }
@@ -123,98 +164,134 @@ flex:1;
 .name{
 font-weight:600;
 font-size:16px;
-color:#0f172a;
 }
 
 .room{
-font-size:14px;
-color:#64748b;
-margin-top:4px;
+font-size:13px;
+color:var(--muted);
+margin-top:2px;
 }
 
 .reason{
 margin-top:10px;
 font-size:14px;
-color:#334155;
-background:#f1f5f9;
-padding:8px;
-border-radius:6px;
+background:#f2f2f7;
+padding:8px 10px;
+border-radius:8px;
 }
 
+/* ------------------ STATUS ------------------ */
+
 .status{
+margin-top:10px;
 font-size:12px;
+background:var(--success);
 color:white;
-background:#22c55e;
 padding:5px 10px;
 border-radius:20px;
 width:max-content;
-margin-top:8px;
+font-weight:500;
 }
 
-.refresh{
-background:#0f172a;
-color:white;
-border:none;
-padding:10px 18px;
-border-radius:8px;
-cursor:pointer;
+/* ------------------ EMPTY ------------------ */
+
+.empty{
+text-align:center;
+color:var(--muted);
+margin-top:80px;
+font-size:15px;
 }
 
-.refresh:hover{
-background:#1e293b;
+/* ------------------ MOBILE ------------------ */
+
+@media (max-width:600px){
+
+.header h1{
+font-size:22px;
+}
+
+.container{
+padding:90px 16px 30px;
+}
+
+.card{
+padding:16px;
+}
+
 }
 
 </style>
 </head>
 
-
 <body>
 
-<!-- SIDEBAR -->
+<!-- NAV -->
 
-<div class="sidebar">
+<nav>
+
+<div class="nav-inner">
 
 <div class="logo">
-Hostel Security
+In&Out Security
 </div>
 
-<div class="nav">
-<a href="#">Approved Students</a>
-<a href="#" onclick="loadApproved()">Refresh</a>
-<a href="/logout">Logout</a>
-</div>
+<div class="nav-actions">
+
+<button onclick="loadApproved()">Refresh</button>
+
+<a href="/logout" class="logout">
+Logout
+</a>
 
 </div>
 
+</div>
 
-<!-- MAIN -->
+</nav>
 
-<div class="main">
+<!-- PAGE -->
+
+<div class="container">
 
 <div class="header">
 
-<h1>Approved Leave Students</h1>
+<h1>Approved Leave</h1>
 
-<button class="refresh" onclick="loadApproved()">
-Refresh
-</button>
+<p>
+Students currently permitted to leave the hostel
+</p>
 
 </div>
 
-<div class="grid" id="approvedList"></div>
+<div id="approvedList" class="grid"></div>
+
+<div id="empty" class="empty" style="display:none">
+No approved students right now
+</div>
 
 </div>
 
 
 <script>
 
+/* ---------------- LOAD APPROVED ---------------- */
+
 async function loadApproved(){
 
 const res = await fetch("/api/approved")
 const data = await res.json()
 
-const container = document.getElementById("approvedList")
-container.innerHTML=""
+const grid = document.getElementById("approvedList")
+const empty = document.getElementById("empty")
+
+grid.innerHTML=""
+
+if(data.length===0){
+empty.style.display="block"
+return
+}
+
+empty.style.display="none"
 
 data.forEach(student=>{
 
@@ -226,9 +303,9 @@ avatar=`<img src="data:image/png;base64,${student.photo}">`
 
 }else{
 
-const initials = student.name ? student.name.charAt(0).toUpperCase() : "S"
+const initial = (student.name || student.username)[0].toUpperCase()
 
-avatar=`${initials}`
+avatar=`${initial}`
 
 }
 
@@ -237,35 +314,25 @@ const card=`
 <div class="card">
 
 <div class="avatar">
-
 ${avatar}
-
 </div>
 
 <div class="info">
 
 <div class="name">
-
 ${student.name || student.username}
-
 </div>
 
 <div class="room">
-
-Room : ${student.room}
-
+Room ${student.room}
 </div>
 
 <div class="reason">
-
 ${student.reason}
-
 </div>
 
 <div class="status">
-
 APPROVED
-
 </div>
 
 </div>
@@ -274,13 +341,17 @@ APPROVED
 
 `
 
-container.innerHTML+=card
+grid.innerHTML+=card
 
 })
 
 }
 
+/* INIT */
+
 loadApproved()
+
+/* AUTO REFRESH */
 
 setInterval(loadApproved,5000)
 
